@@ -27,10 +27,14 @@ import com.embabel.agent.config.models.OpenAiModels
 import com.embabel.agent.core.CoreToolGroups
 import com.embabel.agent.domain.library.InternetResource
 import com.embabel.agent.domain.library.InternetResources
+import com.embabel.agent.domain.persistence.FindEntitiesRequest
+import com.embabel.agent.domain.persistence.support.naturalLanguageRepository
 import com.embabel.agent.prompt.Persona
 import com.embabel.common.ai.model.LlmOptions
 import com.embabel.common.ai.model.ModelSelectionCriteria.Companion.byName
 import com.embabel.common.ai.prompt.PromptContributor
+import com.embabel.example.travel.service.Person
+import com.embabel.example.travel.service.PersonRepository
 
 sealed interface TravelBrief : PromptContributor {
     val brief: String
@@ -69,6 +73,10 @@ data class JourneyTravelBrief(
     """.trimIndent()
 }
 
+data class Travelers(
+    val people: List<Person>,
+)
+
 data class PointOfInterest(
     val name: String,
     val description: String,
@@ -104,11 +112,23 @@ class TravelPlan(
 class TravelPlanner(
     val persona: Persona = TravelPlannerPersona,
     val wordCount: Int = 500,
+    private val personRepository: PersonRepository,
 ) {
+
+    @Action
+    fun lookupPeople(
+        travelBrief: TravelBrief,
+        context: OperationContext,
+    ): Travelers {
+        val nlr = personRepository.naturalLanguageRepository({ it.id }, context, LlmOptions())
+        val entities = nlr.find(FindEntitiesRequest(content = travelBrief.brief))
+        return Travelers(entities.matches.map { it.match })
+    }
 
     @Action
     fun findPointsOfInterest(
         travelBrief: TravelBrief,
+        travelers: Travelers,
     ): ItineraryIdeas {
         return using(
             llm = LlmOptions(model = AnthropicModels.CLAUDE_35_HAIKU),
@@ -120,6 +140,8 @@ class TravelPlanner(
                 Consider the following travel brief.
                 ${travelBrief.contribution()}
                 Find points of interest that are relevant to the travel brief.
+                Travelers:
+                ${travelers.people.joinToString("\n")}
             """.trimIndent(),
             )
     }

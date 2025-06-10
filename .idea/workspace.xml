@@ -4,10 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6aebacf7-492e-455c-9eb4-ede326f2eee3" name="Changes" comment="OGM working">
+    <list default="true" id="6aebacf7-492e-455c-9eb4-ede326f2eee3" name="Changes" comment="Polishing">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel/service/PersonService.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel/service/PersonService.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cypher/populate.cypher" beforeDir="false" afterPath="$PROJECT_DIR$/cypher/populate.cypher" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel/TravelPlannerShell.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel/TravelPlannerShell.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -155,6 +155,7 @@
       <recent name="$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel" />
     </key>
     <key name="K2MoveDeclarationsDialog.RECENT_PACKAGE_KEY">
+      <recent name="com.embabel.example.travel.service" />
       <recent name="com.embabel.example.travel" />
       <recent name="com.embabel.example.travel.config" />
     </key>
@@ -267,7 +268,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1749536255712</updated>
-      <workItem from="1749536256859" duration="9549000" />
+      <workItem from="1749536256859" duration="12226000" />
     </task>
     <task id="LOCAL-00001" summary="First version">
       <option name="closed" value="true" />
@@ -317,7 +318,39 @@
       <option name="project" value="LOCAL" />
       <updated>1749549138848</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="OGM working">
+      <option name="closed" value="true" />
+      <created>1749551471918</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1749551471918</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Polishing">
+      <option name="closed" value="true" />
+      <created>1749551962510</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1749551962510</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Polishing">
+      <option name="closed" value="true" />
+      <created>1749552987233</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1749552987233</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Polishing">
+      <option name="closed" value="true" />
+      <created>1749553883301</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1749553883301</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -327,7 +360,8 @@
     <MESSAGE value="First version" />
     <MESSAGE value="Add Neo" />
     <MESSAGE value="OGM working" />
-    <option name="LAST_COMMIT_MESSAGE" value="OGM working" />
+    <MESSAGE value="Polishing" />
+    <option name="LAST_COMMIT_MESSAGE" value="Polishing" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

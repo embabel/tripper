@@ -27,6 +27,10 @@ Run the shell script to start Embabel under Spring Shell:
 
 When the Embabel shell comes up, use the `plan-travel` command.
 
+## Architecture
+
+https://github.com/neo4j/neo4j-ogm-spring
+
 
 
 
