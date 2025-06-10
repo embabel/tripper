@@ -6,9 +6,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="example-kotlin-parent" />
         <module name="travel-planner-agent" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="example-kotlin-parent" target="21" />
+    </bytecodeTargetLevel>
   </component>
 </project>

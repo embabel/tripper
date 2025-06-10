@@ -40,6 +40,7 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+
             <!-- Embabel Common BOM For Unit Tests-->
             <dependency>
                 <groupId>com.embabel.common</groupId>
@@ -56,6 +57,11 @@
         <dependency>
             <groupId>com.embabel.agent</groupId>
             <artifactId>embabel-agent-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.embabel.agent</groupId>
+            <artifactId>embabel-agent-rag</artifactId>
         </dependency>
 
         <dependency>
