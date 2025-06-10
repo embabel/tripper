@@ -19,13 +19,20 @@ import com.embabel.agent.core.AgentPlatform
 import com.embabel.agent.core.ProcessOptions
 import com.embabel.agent.core.Verbosity
 import com.embabel.agent.shell.markdownToConsole
+import com.embabel.example.travel.service.PersonService
 import org.springframework.shell.standard.ShellComponent
 import org.springframework.shell.standard.ShellMethod
 
 @ShellComponent("Travel planner commands")
 internal class TravelPlannerShell(
+    private val personService: PersonService,
     private val agentPlatform: AgentPlatform,
 ) {
+    @ShellMethod
+    fun findPeople(): String {
+        return personService.loadPeople().toString()
+    }
+
     @ShellMethod
     fun planTravel() {
         val travelBrief = JourneyTravelBrief(
