@@ -40,6 +40,7 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+
             <!-- Embabel Common BOM For Unit Tests-->
             <dependency>
                 <groupId>com.embabel.common</groupId>
@@ -60,10 +61,20 @@
 
         <dependency>
             <groupId>com.embabel.agent</groupId>
+            <artifactId>embabel-agent-rag</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.embabel.agent</groupId>
             <artifactId>embabel-agent-test</artifactId>
         </dependency>
 
-
+        <dependency>
+            <groupId>org.neo4j</groupId>
+            <artifactId>neo4j-ogm-spring-boot-starter</artifactId>
+            <version>1.2.5</version>
+        </dependency>
+        
         <dependency>
             <groupId>com.embabel.common</groupId>
             <artifactId>embabel-common-core</artifactId>
@@ -119,7 +130,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
             </plugin>
-            
+
         </plugins>
     </build>
 

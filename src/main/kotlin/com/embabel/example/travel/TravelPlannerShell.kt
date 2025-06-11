@@ -19,13 +19,23 @@ import com.embabel.agent.core.AgentPlatform
 import com.embabel.agent.core.ProcessOptions
 import com.embabel.agent.core.Verbosity
 import com.embabel.agent.shell.markdownToConsole
+import com.embabel.example.travel.service.PersonRepository
+import com.embabel.example.travel.service.PersonService
 import org.springframework.shell.standard.ShellComponent
 import org.springframework.shell.standard.ShellMethod
 
 @ShellComponent("Travel planner commands")
 internal class TravelPlannerShell(
+    private val personService: PersonService,
     private val agentPlatform: AgentPlatform,
+    private val personRepository: PersonRepository,
 ) {
+    @ShellMethod
+    fun findPeople(
+    ): String {
+        return personService.loadPeople().toString()
+    }
+
     @ShellMethod
     fun planTravel() {
         val travelBrief = JourneyTravelBrief(
@@ -33,11 +43,7 @@ internal class TravelPlannerShell(
             to = "Paris",
             dates = "June 1-5 2025 arriving in Paris on June 5",
             brief = """
-                The travelers are interested in history, art, food, wine
-                and classical music.
-                They love walking and cycling.
-                They are driving in a car that has no power.
-                   They would like to take back roads and see nice countryside.
+                Rod and Lynda would like to take back roads and see nice countryside.
             """.trimIndent(),
         )
 

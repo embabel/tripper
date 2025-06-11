@@ -4,22 +4,95 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6aebacf7-492e-455c-9eb4-ede326f2eee3" name="Changes" comment="First version">
-      <change afterPath="$PROJECT_DIR$/shell.cmd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/shell.ps1" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/shell.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel/TravelPlannerShell.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+    <list default="true" id="6aebacf7-492e-455c-9eb4-ede326f2eee3" name="Changes" comment="Polishing">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel/TravelPlanner.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel/TravelPlanner.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Kotlin Class" />
+      </list>
+    </option>
+  </component>
+  <component name="FormatOnSaveOptions">
+    <option name="myRunOnSave" value="true" />
+    <option name="myAllFileTypesSelected" value="false" />
+    <option name="mySelectedFileTypes">
+      <set>
+        <option value="Angular2Html" />
+        <option value="AsciiDoc" />
+        <option value="CSS" />
+        <option value="Chameleon" />
+        <option value="Cypher" />
+        <option value="Cython" />
+        <option value="DGM" />
+        <option value="DTD" />
+        <option value="EditorConfig" />
+        <option value="FTL" />
+        <option value="Flow" />
+        <option value="Gradle" />
+        <option value="Gradle Declarative Configuration Language" />
+        <option value="Groovy" />
+        <option value="HTML" />
+        <option value="HTTP Request" />
+        <option value="Handlebars/Mustache" />
+        <option value="HiveQL" />
+        <option value="JAVA" />
+        <option value="JSHELL" />
+        <option value="JSHint" />
+        <option value="JSON" />
+        <option value="JSON-lines" />
+        <option value="JSON5" />
+        <option value="JSP" />
+        <option value="JSPX" />
+        <option value="JSX" />
+        <option value="Java module" />
+        <option value="JavaScript" />
+        <option value="Jinja2" />
+        <option value="Jupyter" />
+        <option value="Kotlin" />
+        <option value="Less" />
+        <option value="Markdown" />
+        <option value="PostCSS" />
+        <option value="Python" />
+        <option value="PythonStub" />
+        <option value="Qute" />
+        <option value="RNG Compact" />
+        <option value="Redis" />
+        <option value="SARIF" />
+        <option value="SCSS" />
+        <option value="SQL" />
+        <option value="SVG" />
+        <option value="Sass" />
+        <option value="Shell Script" />
+        <option value="SourceMap" />
+        <option value="TOML" />
+        <option value="TypeScript" />
+        <option value="TypeScript JSX" />
+        <option value="VTL" />
+        <option value="Vue.js" />
+        <option value="XHTML" />
+        <option value="XML" />
+        <option value="YAML" />
+        <option value="gdsl" />
+        <option value="logback" />
+        <option value="protobuf" />
+        <option value="prototext" />
+        <option value="tsconfig" />
+      </set>
+    </option>
+  </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitHubPullRequestSearchHistory"><![CDATA[{
@@ -34,6 +107,9 @@
     "accountId": "5aed4c99-1955-4d37-8c82-a8508823a753"
   }
 }]]></component>
+  <component name="OptimizeOnSaveOptions">
+    <option name="myRunOnSave" value="true" />
+  </component>
   <component name="ProjectColorInfo"><![CDATA[{
   "associatedIndex": 5
 }]]></component>
@@ -57,23 +133,29 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "Spring Boot.TravelAgentApplication.executor": "Run",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "ogm",
     "last_opened_file_path": "/Users/rjohnson/dev/embabel.com/travel-planner-agent",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "actions.on.save",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="ReactorSettings">
+    <option name="notificationShown" value="true" />
+  </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel" />
     </key>
     <key name="K2MoveDeclarationsDialog.RECENT_PACKAGE_KEY">
+      <recent name="com.embabel.example.travel.service" />
       <recent name="com.embabel.example.travel" />
+      <recent name="com.embabel.example.travel.config" />
     </key>
   </component>
   <component name="RunManager" selected="Spring Boot.TravelAgentApplication">
@@ -133,8 +215,9 @@
       </method>
     </configuration>
     <configuration name="TravelAgentApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
-      <module name="example-kotlin-parent" />
-      <option name="SPRING_BOOT_MAIN_CLASS" value="com.embabel.template.TravelAgentApplication" />
+      <option name="ACTIVE_PROFILES" value="neo,severance,docker-desktop,shell" />
+      <module name="travel-planner-agent" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.embabel.example.travel.TravelAgentApplication" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="com.embabel.template.*" />
@@ -158,6 +241,10 @@
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <method v="2" />
     </configuration>
+    <list>
+      <item itemvalue="Spring Boot.ProjectNameApplication" />
+      <item itemvalue="Spring Boot.TravelAgentApplication" />
+    </list>
     <recent_temporary>
       <list>
         <item itemvalue="Spring Boot.TravelAgentApplication" />
@@ -179,7 +266,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1749536255712</updated>
-      <workItem from="1749536256859" duration="856000" />
+      <workItem from="1749536256859" duration="18909000" />
     </task>
     <task id="LOCAL-00001" summary="First version">
       <option name="closed" value="true" />
@@ -197,7 +284,79 @@
       <option name="project" value="LOCAL" />
       <updated>1749536823672</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="First version">
+      <option name="closed" value="true" />
+      <created>1749537119946</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1749537119946</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Add Neo">
+      <option name="closed" value="true" />
+      <created>1749543579131</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1749543579131</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Add Neo">
+      <option name="closed" value="true" />
+      <created>1749544232014</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1749544232014</updated>
+    </task>
+    <task id="LOCAL-00006" summary="OGM working">
+      <option name="closed" value="true" />
+      <created>1749549138848</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1749549138848</updated>
+    </task>
+    <task id="LOCAL-00007" summary="OGM working">
+      <option name="closed" value="true" />
+      <created>1749551471918</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1749551471918</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Polishing">
+      <option name="closed" value="true" />
+      <created>1749551962510</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1749551962510</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Polishing">
+      <option name="closed" value="true" />
+      <created>1749552987233</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1749552987233</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Polishing">
+      <option name="closed" value="true" />
+      <created>1749553883301</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1749553883301</updated>
+    </task>
+    <task id="LOCAL-00011" summary="Polishing">
+      <option name="closed" value="true" />
+      <created>1749554146922</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1749554146922</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -205,6 +364,25 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="First version" />
-    <option name="LAST_COMMIT_MESSAGE" value="First version" />
+    <MESSAGE value="Add Neo" />
+    <MESSAGE value="OGM working" />
+    <MESSAGE value="Polishing" />
+    <option name="LAST_COMMIT_MESSAGE" value="Polishing" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>jar://$MAVEN_REPOSITORY$/org/springframework/spring-beans/6.2.3/spring-beans-6.2.3-sources.jar!/org/springframework/beans/BeanUtils.java</url>
+          <line>221</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>jar://$MAVEN_REPOSITORY$/org/neo4j/neo4j-ogm-core/3.2.17/neo4j-ogm-core-3.2.17.jar!/org/neo4j/ogm/session/delegates/SaveDelegate.class</url>
+          <line>54</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
