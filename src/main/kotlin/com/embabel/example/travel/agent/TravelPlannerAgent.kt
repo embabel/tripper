@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.embabel.example.travel
+package com.embabel.example.travel.agent
 
 import com.embabel.agent.api.annotation.AchievesGoal
 import com.embabel.agent.api.annotation.Action
@@ -25,113 +25,68 @@ import com.embabel.agent.api.dsl.parallelMap
 import com.embabel.agent.config.models.AnthropicModels
 import com.embabel.agent.config.models.OpenAiModels
 import com.embabel.agent.core.CoreToolGroups
-import com.embabel.agent.domain.library.InternetResource
-import com.embabel.agent.domain.library.InternetResources
 import com.embabel.agent.domain.persistence.FindEntitiesRequest
 import com.embabel.agent.domain.persistence.support.naturalLanguageRepository
 import com.embabel.agent.prompt.Persona
+import com.embabel.agent.prompt.ResponseFormat
+import com.embabel.agent.prompt.RoleGoalBackstory
 import com.embabel.common.ai.model.LlmOptions
 import com.embabel.common.ai.model.ModelSelectionCriteria.Companion.byName
-import com.embabel.common.ai.prompt.PromptContributor
-import com.embabel.example.travel.service.Person
 import com.embabel.example.travel.service.PersonRepository
+import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.ConfigurationProperties
 
-sealed interface TravelBrief : PromptContributor {
-    val brief: String
-    val dates: String
-
-}
-
-data class ExplorationTravelBrief(
-    val areaToExplore: String,
-    val stayingAt: String,
-    override val brief: String,
-    override val dates: String,
-) : TravelBrief {
-
-    override fun contribution(): String =
-        """
-        Area to explore: $areaToExplore
-        Staying at: $stayingAt
-        Brief: $brief
-        Dates: $dates
-    """.trimIndent()
-}
-
-data class JourneyTravelBrief(
-    val from: String,
-    val to: String,
-    override val brief: String,
-    override val dates: String,
-) : TravelBrief {
-
-    override fun contribution(): String =
-        """
-        Journey from: $from to: $to
-        Dates: $dates
-        Brief: $brief
-    """.trimIndent()
-}
-
-data class Travelers(
-    val people: List<Person>,
-)
-
-data class PointOfInterest(
-    val name: String,
-    val description: String,
-    val location: String,
-)
-
-data class ItineraryIdeas(
-    val pointsOfInterest: List<PointOfInterest>,
-)
-
-data class ResearchedPointOfInterest(
-    val pointOfInterest: PointOfInterest,
-    val research: String,
-    override val links: List<InternetResource>,
-) : InternetResources
-
-data class PointOfInterestFindings(
-    val pointsOfInterest: List<ResearchedPointOfInterest>,
-)
-
-val TravelPlannerPersona = Persona(
+val HermesPersona = Persona(
     name = "Hermes",
     persona = "You are an expert travel planner",
     voice = "friendly and concise",
     objective = "Make a detailed travel plan meeting requirements",
 )
 
-class TravelPlan(
-    val plan: String,
+val Researcher = RoleGoalBackstory(
+    role = "Researcher",
+    goal = "Research points of interest for a travel plan",
+    backstory = "You are an expert researcher who can find interesting stories about art, culture, and famous people associated with places.",
 )
 
 @ConfigurationProperties("embabel.travel.planner")
 data class TravelPlannerProperties(
-    val wordCount: Int = 500,
-    val persona: Persona = TravelPlannerPersona,
+    val wordCount: Int = 700,
+    val travelPlannerPersona: Persona = HermesPersona,
+    val researcher: RoleGoalBackstory = Researcher,
+    val toolCallControl: ToolCallControl = ToolCallControl(),
+    private val thinkerModel: String = AnthropicModels.CLAUDE_37_SONNET,
+    private val researcherModel: String = OpenAiModels.GPT_41_MINI,
 ) {
-    companion object {
-        const val PREFIX = "embabel.travel.planner"
-    }
+    val thinkerLlm = LlmOptions(
+        criteria = byName(thinkerModel),
+    )
+
+    val researcherLlm = LlmOptions(
+        criteria = byName(researcherModel),
+    )
+
 }
 
 @Agent(description = "Make a detailed travel plan")
-class TravelPlanner(
+class TravelPlannerAgent(
     private val config: TravelPlannerProperties,
     private val personRepository: PersonRepository,
 ) {
 
+    private val logger = LoggerFactory.getLogger(TravelPlannerAgent::class.java)
+
     @Action
-    fun lookupPeople(
+    fun lookupTravelers(
         travelBrief: TravelBrief,
         context: OperationContext,
-    ): Travelers {
+    ): Travelers? {
         val nlr = personRepository.naturalLanguageRepository({ it.id }, context, LlmOptions())
         val entities = nlr.find(FindEntitiesRequest(content = travelBrief.brief))
+        if (entities.matches.isEmpty()) {
+            logger.info("No travelers found for travel brief: {}", travelBrief.brief)
+            return null
+        }
         return Travelers(entities.matches.map { it.match })
     }
 
@@ -141,17 +96,18 @@ class TravelPlanner(
         travelers: Travelers,
     ): ItineraryIdeas {
         return using(
-            llm = LlmOptions(model = AnthropicModels.CLAUDE_35_HAIKU),
-            toolGroups = setOf(CoreToolGroups.WEB, CoreToolGroups.MAPS),
+            llm = config.thinkerLlm,
+            toolGroups = setOf(CoreToolGroups.WEB, CoreToolGroups.MAPS, CoreToolGroups.MATH),
+            promptContributors = listOf(
+                config.travelPlannerPersona,
+                travelers,
+            ),
         )
-            .withPromptContributor(config.persona)
             .create(
                 prompt = """
                 Consider the following travel brief.
                 ${travelBrief.contribution()}
-                Find points of interest that are relevant to the travel brief.
-                Travelers:
-                ${travelers.people.joinToString("\n")}
+                Find points of interest that are relevant to the travel brief and travelers.
             """.trimIndent(),
             )
     }
@@ -159,12 +115,18 @@ class TravelPlanner(
     @Action
     fun researchPointsOfInterest(
         travelBrief: TravelBrief,
-        itineraryIdeas: ItineraryIdeas, context: OperationContext
+        travelers: Travelers,
+        itineraryIdeas: ItineraryIdeas,
+        context: OperationContext,
     ): PointOfInterestFindings {
+        logger.info(
+            "Researching {} points of interest: {}",
+            itineraryIdeas.pointsOfInterest.size,
+            itineraryIdeas.pointsOfInterest.sortedBy { it.name }.joinToString { it.name },
+        )
         val promptRunner = context.promptRunner(
-            llm = LlmOptions(
-                byName(OpenAiModels.GPT_41_MINI)
-            ),
+            llm = config.researcherLlm,
+            promptContributors = listOf(config.researcher, travelers, config.toolCallControl),
             toolGroups = setOf(CoreToolGroups.WEB, CoreToolGroups.BROWSER_AUTOMATION),
         )
         val poiFindings = itineraryIdeas.pointsOfInterest.parallelMap(context) { poi ->
@@ -173,6 +135,9 @@ class TravelPlanner(
                 Research the following point of interest.
                 Consider in particular interesting stories about art and culture and famous people.
                 Your audience: ${travelBrief.brief}
+                Dates to consider: ${travelBrief.startDate} to ${travelBrief.endDate}
+                If any particularly important events are happening here during this time, mention them
+                and list specific dates.
                 <point-of-interest-to-research>
                 ${poi.name}
                 ${poi.description}
@@ -187,23 +152,42 @@ class TravelPlanner(
     }
 
     @AchievesGoal(
-        description = "Create a detailed travel plan based on the travel brief and itinerary ideas",
+        description = "Create a detailed travel plan based on a given travel brief",
     )
     @Action
     fun createTravelPlan(
         travelBrief: TravelBrief,
+        travelers: Travelers,
         poiFindings: PointOfInterestFindings,
     ): TravelPlan {
         return using(
-            LlmOptions(AnthropicModels.CLAUDE_37_SONNET),
-            toolGroups = setOf(CoreToolGroups.WEB, CoreToolGroups.MAPS)
+            config.thinkerLlm,
+            toolGroups = setOf(CoreToolGroups.WEB, CoreToolGroups.MAPS, CoreToolGroups.MATH),
         )
-            .withPromptContributor(config.persona)
-            .create<TravelPlan>(
+            .withPromptContributors(
+                listOf(
+                    config.travelPlannerPersona, travelers, ResponseFormat.MARKDOWN,
+                )
+            )
+            .create(
                 prompt = """
                 Given the following travel brief, create a detailed plan.
-                <brief> ${travelBrief.contribution()}</brief>
+                
+                ${
+                    (travelBrief as? JourneyTravelBrief)?.let {
+                        """
+                    Plan the journey to minimize travel time.
+                    However, consider any important events or places of interest along the way
+                    that might inform routing.
+                    Include total distances.
+                    Include one or more links to the whole trip in Google Maps format.
+                """.trimIndent()
+                    } ?: ""
+                }
+                
+                <brief>${travelBrief.contribution()}</brief>
                 Consider the weather in your recommendations. Use mapping tools to consider distance of driving or walking.
+                
                 Write up in ${config.wordCount} words or less.
                 Include links.
 
@@ -220,8 +204,6 @@ class TravelPlanner(
                 """.trimIndent()
                     }
                 }
-
-                Create a markdown plan.
             """.trimIndent(),
             )
     }

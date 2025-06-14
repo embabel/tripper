@@ -4,9 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6aebacf7-492e-455c-9eb4-ede326f2eee3" name="Changes" comment="Polishing">
+    <list default="true" id="6aebacf7-492e-455c-9eb4-ede326f2eee3" name="Changes" comment="Update domain objects">
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel/agent/ToolCallControl.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel/TravelPlanner.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel/TravelPlanner.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel/TravelPlannerShell.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel/TravelPlannerShell.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel/agent/TravelPlanner.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel/agent/TravelPlannerAgent.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -17,6 +19,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Kotlin Class" />
+        <option value="Kotlin File" />
       </list>
     </option>
   </component>
@@ -154,6 +157,7 @@
       <recent name="$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel" />
     </key>
     <key name="K2MoveDeclarationsDialog.RECENT_PACKAGE_KEY">
+      <recent name="com.embabel.example.travel.agent" />
       <recent name="com.embabel.example.travel.service" />
       <recent name="com.embabel.example.travel" />
       <recent name="com.embabel.example.travel.config" />
@@ -267,7 +271,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1749536255712</updated>
-      <workItem from="1749536256859" duration="25637000" />
+      <workItem from="1749536256859" duration="32305000" />
     </task>
     <task id="LOCAL-00001" summary="First version">
       <option name="closed" value="true" />
@@ -365,7 +369,39 @@
       <option name="project" value="LOCAL" />
       <updated>1749633300397</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="Add config">
+      <option name="closed" value="true" />
+      <created>1749873864213</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1749873864213</updated>
+    </task>
+    <task id="LOCAL-00014" summary="Update domain objects">
+      <option name="closed" value="true" />
+      <created>1749874705755</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1749874705755</updated>
+    </task>
+    <task id="LOCAL-00015" summary="Update domain objects">
+      <option name="closed" value="true" />
+      <created>1749875305754</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1749875305754</updated>
+    </task>
+    <task id="LOCAL-00016" summary="Update domain objects">
+      <option name="closed" value="true" />
+      <created>1749887066718</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1749887066718</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -376,7 +412,9 @@
     <MESSAGE value="Add Neo" />
     <MESSAGE value="OGM working" />
     <MESSAGE value="Polishing" />
-    <option name="LAST_COMMIT_MESSAGE" value="Polishing" />
+    <MESSAGE value="Add config" />
+    <MESSAGE value="Update domain objects" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update domain objects" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

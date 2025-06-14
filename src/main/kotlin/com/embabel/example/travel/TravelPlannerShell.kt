@@ -19,16 +19,18 @@ import com.embabel.agent.core.AgentPlatform
 import com.embabel.agent.core.ProcessOptions
 import com.embabel.agent.core.Verbosity
 import com.embabel.agent.shell.markdownToConsole
-import com.embabel.example.travel.service.PersonRepository
+import com.embabel.example.travel.agent.JourneyTravelBrief
+import com.embabel.example.travel.agent.TravelPlan
 import com.embabel.example.travel.service.PersonService
+import org.apache.commons.text.WordUtils
 import org.springframework.shell.standard.ShellComponent
 import org.springframework.shell.standard.ShellMethod
+import java.time.LocalDate
 
 @ShellComponent("Travel planner commands")
 internal class TravelPlannerShell(
     private val personService: PersonService,
     private val agentPlatform: AgentPlatform,
-    private val personRepository: PersonRepository,
 ) {
     @ShellMethod
     fun findPeople(
@@ -39,9 +41,11 @@ internal class TravelPlannerShell(
     @ShellMethod
     fun planTravel() {
         val travelBrief = JourneyTravelBrief(
-            from = "Nice",
-            to = "Paris",
-            dates = "June 1-5 2025 arriving in Paris on June 5",
+            from = "Antwerp",
+            to = "Bordeaux",
+            startDate = LocalDate.of(2025, 10, 10),
+            endDate = LocalDate.of(2025, 11, 5),
+            transportPreference = "car",
             brief = """
                 Rod and Lynda would like to take back roads and see nice countryside.
             """.trimIndent(),
@@ -59,6 +63,6 @@ internal class TravelPlannerShell(
         )
         val travelPlan = ap.lastResult() as TravelPlan
 
-        println("Travel Plan: ${markdownToConsole(travelPlan.plan)}")
+        println("Travel Plan: ${WordUtils.wrap(markdownToConsole(travelPlan.plan), 100)}")
     }
 }
