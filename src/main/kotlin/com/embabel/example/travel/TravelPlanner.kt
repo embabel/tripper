@@ -35,6 +35,7 @@ import com.embabel.common.ai.model.ModelSelectionCriteria.Companion.byName
 import com.embabel.common.ai.prompt.PromptContributor
 import com.embabel.example.travel.service.Person
 import com.embabel.example.travel.service.PersonRepository
+import org.springframework.boot.context.properties.ConfigurationProperties
 
 sealed interface TravelBrief : PromptContributor {
     val brief: String
@@ -108,10 +109,19 @@ class TravelPlan(
     val plan: String,
 )
 
+@ConfigurationProperties("embabel.travel.planner")
+data class TravelPlannerProperties(
+    val wordCount: Int = 500,
+    val persona: Persona = TravelPlannerPersona,
+) {
+    companion object {
+        const val PREFIX = "embabel.travel.planner"
+    }
+}
+
 @Agent(description = "Make a detailed travel plan")
 class TravelPlanner(
-    val persona: Persona = TravelPlannerPersona,
-    val wordCount: Int = 500,
+    private val config: TravelPlannerProperties,
     private val personRepository: PersonRepository,
 ) {
 
@@ -134,7 +144,7 @@ class TravelPlanner(
             llm = LlmOptions(model = AnthropicModels.CLAUDE_35_HAIKU),
             toolGroups = setOf(CoreToolGroups.WEB, CoreToolGroups.MAPS),
         )
-            .withPromptContributor(persona)
+            .withPromptContributor(config.persona)
             .create(
                 prompt = """
                 Consider the following travel brief.
@@ -151,15 +161,14 @@ class TravelPlanner(
         travelBrief: TravelBrief,
         itineraryIdeas: ItineraryIdeas, context: OperationContext
     ): PointOfInterestFindings {
-        val pr = context.promptRunner(
+        val promptRunner = context.promptRunner(
             llm = LlmOptions(
-//                byName("ai/llama3.2"),
                 byName(OpenAiModels.GPT_41_MINI)
             ),
-            toolGroups = setOf(CoreToolGroups.WEB),
+            toolGroups = setOf(CoreToolGroups.WEB, CoreToolGroups.BROWSER_AUTOMATION),
         )
         val poiFindings = itineraryIdeas.pointsOfInterest.parallelMap(context) { poi ->
-            pr.create<ResearchedPointOfInterest>(
+            promptRunner.create<ResearchedPointOfInterest>(
                 prompt = """
                 Research the following point of interest.
                 Consider in particular interesting stories about art and culture and famous people.
@@ -189,13 +198,13 @@ class TravelPlanner(
             LlmOptions(AnthropicModels.CLAUDE_37_SONNET),
             toolGroups = setOf(CoreToolGroups.WEB, CoreToolGroups.MAPS)
         )
-            .withPromptContributor(persona)
+            .withPromptContributor(config.persona)
             .create<TravelPlan>(
                 prompt = """
                 Given the following travel brief, create a detailed plan.
                 <brief> ${travelBrief.contribution()}</brief>
                 Consider the weather in your recommendations. Use mapping tools to consider distance of driving or walking.
-                Write up in $wordCount words or less.
+                Write up in ${config.wordCount} words or less.
                 Include links.
 
                 Recount at least one interesting story about a famous person
