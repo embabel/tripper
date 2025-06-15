@@ -1,9 +1,11 @@
 package com.embabel.example.travel.agent
 
+import com.embabel.agent.domain.library.HasContent
 import com.embabel.agent.domain.library.InternetResource
 import com.embabel.agent.domain.library.InternetResources
 import com.embabel.common.ai.prompt.PromptContributor
 import com.embabel.example.travel.service.Person
+import com.fasterxml.jackson.annotation.JsonPropertyDescription
 import java.time.LocalDate
 
 sealed interface TravelBrief : PromptContributor {
@@ -77,6 +79,29 @@ data class PointOfInterestFindings(
     val pointsOfInterest: List<ResearchedPointOfInterest>,
 )
 
-class TravelPlan(
+class MarkdownTravelPlan(
+    @JsonPropertyDescription("Catchy title appropriate to the travelers and travel brief")
+    val title: String,
+    @JsonPropertyDescription("Detailed travel plan")
     val plan: String,
-)
+
+    @JsonPropertyDescription("Links to maps or other resources related to the travel plan")
+    val mapLinks: List<String>,
+    @JsonPropertyDescription("Links to images")
+    val imageLinks: List<InternetResource>,
+    @JsonPropertyDescription("Links to pages with more information about the travel plan")
+    val pageLinks: List<InternetResource>,
+) : HasContent {
+
+    override val content: String
+        get() = """
+            $title
+            $plan
+            Maps:
+            ${if (mapLinks.isNotEmpty()) "Maps: ${mapLinks.joinToString(", ")}" else ""}
+            Pages:
+            ${pageLinks.joinToString("\n") { "${it.url} - ${it.summary}" }}
+            Images:
+            ${imageLinks.joinToString("\n") { "${it.url} - ${it.summary}" }}           
+        """.trimIndent()
+}

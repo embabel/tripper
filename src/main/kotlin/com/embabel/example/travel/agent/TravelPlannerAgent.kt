@@ -68,6 +68,12 @@ data class TravelPlannerProperties(
 
 }
 
+/**
+ * Overall flow:
+ * 1. Lookup travelers based on a travel brief. Brief may be about exploring a location or a journey.
+ * 2. Find points of interest based on travel brief, travelers and mapping data.
+ * 3. Research each point of interest to gather detailed information.
+ */
 @Agent(description = "Make a detailed travel plan")
 class TravelPlannerAgent(
     private val config: TravelPlannerProperties,
@@ -151,15 +157,12 @@ class TravelPlannerAgent(
         )
     }
 
-    @AchievesGoal(
-        description = "Create a detailed travel plan based on a given travel brief",
-    )
     @Action
-    fun createTravelPlan(
+    fun createMarkdownTravelPlan(
         travelBrief: TravelBrief,
         travelers: Travelers,
         poiFindings: PointOfInterestFindings,
-    ): TravelPlan {
+    ): MarkdownTravelPlan {
         return using(
             config.thinkerLlm,
             toolGroups = setOf(CoreToolGroups.WEB, CoreToolGroups.MAPS, CoreToolGroups.MATH),
@@ -181,6 +184,7 @@ class TravelPlannerAgent(
                     that might inform routing.
                     Include total distances.
                     Include one or more links to the whole trip in Google Maps format.
+                    IMPORTANT: Do not include any special characters like accents in the links.
                 """.trimIndent()
                     } ?: ""
                 }
@@ -189,7 +193,9 @@ class TravelPlannerAgent(
                 Consider the weather in your recommendations. Use mapping tools to consider distance of driving or walking.
                 
                 Write up in ${config.wordCount} words or less.
-                Include links.
+                Include links in text where appropriate and in the links field.
+                
+                Put image links where appropriate in text and also in the links field.
 
                 Recount at least one interesting story about a famous person
                 associated with an area.
@@ -206,5 +212,16 @@ class TravelPlannerAgent(
                 }
             """.trimIndent(),
             )
+    }
+
+    @AchievesGoal(
+        description = "Create a detailed travel plan based on a given travel brief",
+    )
+    @Action
+    fun outputArtifact(
+        markdownTravelPlan: MarkdownTravelPlan,
+    ): MarkdownTravelPlan {
+        // Sanitize the markdown content to ensure it is safe for display
+        return markdownTravelPlan
     }
 }

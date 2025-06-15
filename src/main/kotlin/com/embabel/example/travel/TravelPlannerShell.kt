@@ -20,7 +20,7 @@ import com.embabel.agent.core.ProcessOptions
 import com.embabel.agent.core.Verbosity
 import com.embabel.agent.shell.markdownToConsole
 import com.embabel.example.travel.agent.JourneyTravelBrief
-import com.embabel.example.travel.agent.TravelPlan
+import com.embabel.example.travel.agent.MarkdownTravelPlan
 import com.embabel.example.travel.service.PersonService
 import org.apache.commons.text.WordUtils
 import org.springframework.shell.standard.ShellComponent
@@ -52,7 +52,8 @@ internal class TravelPlannerShell(
         )
 
         val ap = agentPlatform.runAgentWithInput(
-            agent = agentPlatform.agents().single { it.name == "TravelPlanner" },
+            agent = agentPlatform.agents().singleOrNull { it.name.lowercase().contains("travel") }
+                ?: error("No travel agent found. Please ensure the travel agent is registered."),
             input = travelBrief,
             processOptions = ProcessOptions(
                 verbosity = Verbosity(
@@ -61,7 +62,7 @@ internal class TravelPlannerShell(
                 ),
             )
         )
-        val travelPlan = ap.lastResult() as TravelPlan
+        val travelPlan = ap.lastResult() as MarkdownTravelPlan
 
         println("Travel Plan: ${WordUtils.wrap(markdownToConsole(travelPlan.plan), 100)}")
     }
