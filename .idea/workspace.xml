@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6aebacf7-492e-455c-9eb4-ede326f2eee3" name="Changes" comment="Update domain objects">
+    <list default="true" id="6aebacf7-492e-455c-9eb4-ede326f2eee3" name="Changes" comment="Parallelization">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel/TravelPlannerShell.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel/TravelPlannerShell.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel/agent/TravelPlannerAgent.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel/agent/TravelPlannerAgent.kt" afterDir="false" />
@@ -271,7 +271,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1749536255712</updated>
-      <workItem from="1749536256859" duration="39572000" />
+      <workItem from="1749536256859" duration="49802000" />
     </task>
     <task id="LOCAL-00001" summary="First version">
       <option name="closed" value="true" />
@@ -409,7 +409,23 @@
       <option name="project" value="LOCAL" />
       <updated>1749887782656</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="Richer domain objects">
+      <option name="closed" value="true" />
+      <created>1749952646427</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1749952646427</updated>
+    </task>
+    <task id="LOCAL-00019" summary="Parallelization">
+      <option name="closed" value="true" />
+      <created>1749967893151</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1749967893151</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -422,7 +438,9 @@
     <MESSAGE value="Polishing" />
     <MESSAGE value="Add config" />
     <MESSAGE value="Update domain objects" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update domain objects" />
+    <MESSAGE value="Richer domain objects" />
+    <MESSAGE value="Parallelization" />
+    <option name="LAST_COMMIT_MESSAGE" value="Parallelization" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -436,6 +454,11 @@
           <url>jar://$MAVEN_REPOSITORY$/org/neo4j/neo4j-ogm-core/3.2.17/neo4j-ogm-core-3.2.17.jar!/org/neo4j/ogm/session/delegates/SaveDelegate.class</url>
           <line>54</line>
           <option name="timeStamp" value="2" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel/TravelPlannerShell.kt</url>
+          <line>68</line>
+          <option name="timeStamp" value="3" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

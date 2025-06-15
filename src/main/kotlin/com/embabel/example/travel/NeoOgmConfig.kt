@@ -30,13 +30,13 @@ import org.springframework.transaction.annotation.EnableTransactionManagement
 @EnableTransactionManagement
 class NeoOgmConfig {
 
-    @Value("\${spring.data.neo4j.uri}")
+    @Value("\${spring.neo4j.uri}")
     private lateinit var uri: String
 
-    @Value("\${spring.data.neo4j.username}")
+    @Value("\${spring.neo4j.authentication.username}")
     private lateinit var username: String
 
-    @Value("\${spring.data.neo4j.password}")
+    @Value("\${spring.neo4j.authentication.password}")
     private lateinit var password: String
 
     @Bean

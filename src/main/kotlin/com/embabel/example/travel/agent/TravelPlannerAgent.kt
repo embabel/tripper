@@ -135,7 +135,10 @@ class TravelPlannerAgent(
             promptContributors = listOf(config.researcher, travelers, config.toolCallControl),
             toolGroups = setOf(CoreToolGroups.WEB, CoreToolGroups.BROWSER_AUTOMATION),
         )
-        val poiFindings = itineraryIdeas.pointsOfInterest.parallelMap(context) { poi ->
+        val poiFindings = itineraryIdeas.pointsOfInterest.parallelMap(
+            context = context,
+            concurrencyLevel = 6,
+        ) { poi ->
             promptRunner.create<ResearchedPointOfInterest>(
                 prompt = """
                 Research the following point of interest.
@@ -196,6 +199,8 @@ class TravelPlannerAgent(
                 Include links in text where appropriate and in the links field.
                 
                 Put image links where appropriate in text and also in the links field.
+                IMPORTANT: Image links must come from the web pages you found, not from
+                general knowledge.
 
                 Recount at least one interesting story about a famous person
                 associated with an area.

@@ -65,5 +65,7 @@ internal class TravelPlannerShell(
         val travelPlan = ap.lastResult() as MarkdownTravelPlan
 
         println("Travel Plan: ${WordUtils.wrap(markdownToConsole(travelPlan.plan), 100)}")
+
+        println(travelPlan)
     }
 }

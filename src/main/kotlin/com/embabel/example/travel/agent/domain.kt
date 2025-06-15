@@ -79,7 +79,7 @@ data class PointOfInterestFindings(
     val pointsOfInterest: List<ResearchedPointOfInterest>,
 )
 
-class MarkdownTravelPlan(
+data class MarkdownTravelPlan(
     @JsonPropertyDescription("Catchy title appropriate to the travelers and travel brief")
     val title: String,
     @JsonPropertyDescription("Detailed travel plan")
