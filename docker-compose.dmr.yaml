@@ -1,0 +1,15 @@
+services:
+
+  llama3.2:
+    provider:
+      type: model
+      options:
+        model: ai/llama3.2
+
+  qwen3:
+    provider:
+      type: model
+      options:
+        model: jimclark106/qwen3:4b-F16
+
+

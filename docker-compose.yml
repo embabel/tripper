@@ -1,17 +1,38 @@
 services:
-  llama3.2:
-    image: ollama/ollama:latest
-    ports:
-      - "11434:11434"
-    environment:
-      - OLLAMA_MODELS=llama3.2
-  qwen3:
-    image: ollama/ollama:latest
-    ports:
-      - "11435:11434"
-    environment:
-      - OLLAMA_MODELS=qwen2.5
 
+  mcp-gateway:
+    image: docker/agents_gateway:v2
+    ports:
+      - 9011:9011
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "/run/host-services/backend.sock:/run/host-services/backend.sock"
+      - "./docker-mcp.yaml:/app/docker-mcp.yaml"
+      - "./config.yaml:/app/config.yaml"
+    command:
+      - --verbose
+      - --transport=sse
+      - --catalog=/app/docker-mcp.yaml
+      - --config=/app/config.yaml
+      - --secrets=/run/secrets/mcp_secret
+      - --servers=brave
+      - --servers=wikipedia-mcp
+      - --servers=puppeteer
+      - --servers=github
+      - --servers=google-maps
+      - --tools=brave_web_search
+      - --tools=wikipedia-mcp:*
+      - --tools=github:add_issue_comment
+      - --tools=github:create_issue
+      - --tools=github:list_issues
+      - --tools=github:get_issue
+      - --tools=github:list_pull_requests
+      - --tools=github:get_pull_request
+      - --tools=puppeteer:puppeteer*
+      - --tools=google-maps:maps_*
+      - --port=9011
+    secrets:
+      - mcp_secret
 
   zipkin:
     image: 'openzipkin/zipkin:latest'
@@ -27,3 +48,8 @@ services:
     environment:
       - NEO4J_AUTH=${NEO4J_USERNAME:-neo4j}/${NEO4J_PASSWORD:-brahmsian}
       - NEO4J_PLUGINS=["apoc"]
+
+secrets:
+  mcp_secret:
+    file: ./.mcp.env
+

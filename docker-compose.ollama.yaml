@@ -1,0 +1,14 @@
+services:
+  llama3.2:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    environment:
+      - OLLAMA_MODELS=llama3.2
+  qwen3:
+    image: ollama/ollama:latest
+    ports:
+      - "11435:11434"
+    environment:
+      - OLLAMA_MODELS=qwen2.5
+
