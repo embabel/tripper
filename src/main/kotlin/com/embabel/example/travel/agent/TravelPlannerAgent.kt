@@ -27,9 +27,10 @@ import com.embabel.agent.config.models.OpenAiModels
 import com.embabel.agent.core.CoreToolGroups
 import com.embabel.agent.domain.persistence.FindEntitiesRequest
 import com.embabel.agent.domain.persistence.support.naturalLanguageRepository
-import com.embabel.agent.prompt.Persona
 import com.embabel.agent.prompt.ResponseFormat
-import com.embabel.agent.prompt.RoleGoalBackstory
+import com.embabel.agent.prompt.element.ToolCallControl
+import com.embabel.agent.prompt.persona.Persona
+import com.embabel.agent.prompt.persona.RoleGoalBackstory
 import com.embabel.common.ai.model.LlmOptions
 import com.embabel.common.ai.model.ModelSelectionCriteria.Companion.byName
 import com.embabel.example.travel.service.PersonRepository
