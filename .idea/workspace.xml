@@ -4,13 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6aebacf7-492e-455c-9eb4-ede326f2eee3" name="Changes" comment="Days">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel/TravelPlannerShell.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel/TravelPlannerShell.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel/agent/TravelPlannerAgent.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel/agent/TravelPlannerAgent.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel/agent/domain.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel/agent/domain.kt" afterDir="false" />
-    </list>
+    <list default="true" id="6aebacf7-492e-455c-9eb4-ede326f2eee3" name="Changes" comment="Add htmx interface" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -158,6 +152,7 @@
       <recent name="$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel" />
     </key>
     <key name="K2MoveDeclarationsDialog.RECENT_PACKAGE_KEY">
+      <recent name="com.embabel.example.travel.web" />
       <recent name="com.embabel.example.travel.agent" />
       <recent name="com.embabel.example.travel.service" />
       <recent name="com.embabel.example.travel" />
@@ -173,7 +168,7 @@
       </method>
     </configuration>
     <configuration name="TravelAgentApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
-      <option name="ACTIVE_PROFILES" value="neo,severance,docker-desktop,shell" />
+      <option name="ACTIVE_PROFILES" value="neo,severance,docker-desktop" />
       <module name="travel-planner-agent" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.embabel.example.travel.TravelAgentApplication" />
       <extension name="coverage">
@@ -212,7 +207,7 @@
       <option name="presentableId" value="Default" />
       <updated>1749536255712</updated>
       <workItem from="1749536256859" duration="50708000" />
-      <workItem from="1750028738610" duration="10159000" />
+      <workItem from="1750028738610" duration="11732000" />
     </task>
     <task id="LOCAL-00001" summary="First version">
       <option name="closed" value="true" />
@@ -390,7 +385,31 @@
       <option name="project" value="LOCAL" />
       <updated>1750069893048</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="Introduce days">
+      <option name="closed" value="true" />
+      <created>1750070481858</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1750070481858</updated>
+    </task>
+    <task id="LOCAL-00024" summary="Add htmx interface">
+      <option name="closed" value="true" />
+      <created>1750071270850</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1750071270850</updated>
+    </task>
+    <task id="LOCAL-00025" summary="Add htmx interface">
+      <option name="closed" value="true" />
+      <created>1750071651440</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1750071651440</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -407,7 +426,9 @@
     <MESSAGE value="Parallelization" />
     <MESSAGE value="Update agent API" />
     <MESSAGE value="Days" />
-    <option name="LAST_COMMIT_MESSAGE" value="Days" />
+    <MESSAGE value="Introduce days" />
+    <MESSAGE value="Add htmx interface" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add htmx interface" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -426,6 +447,11 @@
           <url>file://$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel/TravelPlannerShell.kt</url>
           <line>69</line>
           <option name="timeStamp" value="3" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel/TravelPlanHtmxController.kt</url>
+          <line>37</line>
+          <option name="timeStamp" value="4" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

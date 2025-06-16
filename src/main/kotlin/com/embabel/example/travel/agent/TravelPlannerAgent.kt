@@ -179,21 +179,21 @@ class TravelPlannerAgent(
             )
             .create(
                 prompt = """
-                Given the following travel brief, create a detailed plan.                
-               
+                Given the following travel brief, create a detailed plan.
+
                 Plan the journey to minimize travel time.
                 However, consider any important events or places of interest along the way
                 that might inform routing.
                 Include total distances.
                 Include one or more links to the whole trip in Google Maps format.
                 IMPORTANT: Do not include any special characters like accents in the links.
-                             
+
                 <brief>${travelBrief.contribution()}</brief>
                 Consider the weather in your recommendations. Use mapping tools to consider distance of driving or walking.
-                
+
                 Write up in ${config.wordCount} words or less.
                 Include links in text where appropriate and in the links field.
-                
+
                 Put image links where appropriate in text and also in the links field.
                 IMPORTANT: Image links must come from the web pages you found, not from
                 general knowledge.
