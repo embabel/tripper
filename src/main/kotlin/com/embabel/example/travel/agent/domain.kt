@@ -104,6 +104,7 @@ data class TravelPlan(
         get() = """
             $title
             $plan
+            Days: ${days.joinToString(separator = "\n") { "${it.date} - ${it.stayingAt}" }}
             Maps:
             ${if (mapLinks.isNotEmpty()) "Maps: ${mapLinks.joinToString(", ")}" else ""}
             Pages:

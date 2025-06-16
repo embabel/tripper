@@ -19,6 +19,11 @@
 
 &nbsp;&nbsp;&nbsp;&nbsp;
 
+# Embabel Travel Planner Agent
+
+Start by populating the data by running the `cypher/populate.cypher` script against your Neo4j database. This script
+creates a list of travelers.
+
 Run the shell script to start Embabel under Spring Shell:
 
 ```bash

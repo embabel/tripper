@@ -48,6 +48,7 @@ internal class TravelPlannerShell(
             transportPreference = "car",
             brief = """
                 Rod and Lynda would like to take back roads and see nice countryside.
+                They would prefer to spend 2 nights in each location vs move every night.
             """.trimIndent(),
         )
 

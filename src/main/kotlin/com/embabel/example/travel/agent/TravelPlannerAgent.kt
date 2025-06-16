@@ -112,9 +112,10 @@ class TravelPlannerAgent(
         )
             .create(
                 prompt = """
-                Consider the following travel brief.
+                Consider the following travel brief for a journey from ${travelBrief.from} to ${travelBrief.to}.
                 ${travelBrief.contribution()}
                 Find points of interest that are relevant to the travel brief and travelers.
+                Use mapping tools to consider appropriate order
             """.trimIndent(),
             )
     }
