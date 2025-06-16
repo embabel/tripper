@@ -27,15 +27,16 @@ interface PersonRepository : Neo4jRepository<Person, Long> {
 
 
 @Service
-@Transactional
 class PersonService(
     private val personRepository: PersonRepository,
 ) {
 
+    @Transactional
     fun save(p: Person) {
         personRepository.save(p, 10)
     }
 
+    @Transactional(readOnly = true)
     fun loadPeople(): List<Person> {
         return personRepository.findAll().toList()
     }

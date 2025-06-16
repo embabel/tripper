@@ -69,7 +69,8 @@ data class Travelers(
 ) : PromptContributor {
 
     override fun contribution(): String =
-        "Travelers:\n" + people.joinToString(separator = "\n") {
+        if (people.isEmpty()) "No information could be found about travelers"
+        else "Travelers:\n" + people.joinToString(separator = "\n") {
             "${it.name}: activities:${it.activities.joinToString(", ") { act -> act.name }}"
         }
 }

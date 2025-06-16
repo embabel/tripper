@@ -87,12 +87,11 @@ class TravelPlannerAgent(
     fun lookupTravelers(
         travelBrief: TravelBrief,
         context: OperationContext,
-    ): Travelers? {
+    ): Travelers {
         val nlr = personRepository.naturalLanguageRepository({ it.id }, context, LlmOptions())
         val entities = nlr.find(FindEntitiesRequest(content = travelBrief.brief))
         if (entities.matches.isEmpty()) {
             logger.info("No travelers found for travel brief: {}", travelBrief.brief)
-            return null
         }
         return Travelers(entities.matches.map { it.match })
     }
