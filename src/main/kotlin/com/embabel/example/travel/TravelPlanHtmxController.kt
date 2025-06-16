@@ -18,40 +18,45 @@ package com.embabel.example.travel
 import com.embabel.agent.core.AgentPlatform
 import com.embabel.agent.core.ProcessOptions
 import com.embabel.agent.core.Verbosity
-import com.embabel.agent.shell.markdownToConsole
 import com.embabel.example.travel.agent.JourneyTravelBrief
 import com.embabel.example.travel.agent.TravelPlan
-import com.embabel.example.travel.service.PersonService
-import org.apache.commons.text.WordUtils
-import org.springframework.shell.standard.ShellComponent
-import org.springframework.shell.standard.ShellMethod
+import org.springframework.format.annotation.DateTimeFormat
+import org.springframework.stereotype.Controller
+import org.springframework.ui.Model
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestParam
 import java.time.LocalDate
 
-@ShellComponent("Travel planner commands")
-internal class TravelPlannerShell(
-    private val personService: PersonService,
+@Controller
+class TravelPlanHtmxController(
     private val agentPlatform: AgentPlatform,
 ) {
-    @ShellMethod
-    fun findPeople(
-    ): String {
-        return personService.loadPeople().toString()
+
+    @GetMapping
+    fun showForm(model: Model): String {
+        model.addAttribute("travelBrief", JourneyTravelBrief("", "", "", "", LocalDate.now(), LocalDate.now()))
+        return "travel-form"
     }
 
-    @ShellMethod
-    fun planJourney() {
+    @PostMapping("/plan")
+    fun planJourney(
+        @RequestParam from: String,
+        @RequestParam to: String,
+        @RequestParam transportPreference: String,
+        @RequestParam brief: String,
+        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) startDate: LocalDate,
+        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) endDate: LocalDate,
+        model: Model
+    ): String {
         val travelBrief = JourneyTravelBrief(
-            from = "Antwerp",
-            to = "Bordeaux",
-            startDate = LocalDate.of(2025, 10, 10),
-            endDate = LocalDate.of(2025, 11, 5),
-            transportPreference = "car",
-            brief = """
-                Rod and Lynda would like to take back roads and see nice countryside.
-                They would prefer to spend 2 nights in each location vs move every night.
-            """.trimIndent(),
+            from = from,
+            to = to,
+            transportPreference = transportPreference,
+            brief = brief,
+            startDate = startDate,
+            endDate = endDate,
         )
-
         val ap = agentPlatform.runAgentWithInput(
             agent = agentPlatform.agents().singleOrNull { it.name.lowercase().contains("travel") }
                 ?: error("No travel agent found. Please ensure the travel agent is registered."),
@@ -64,9 +69,7 @@ internal class TravelPlannerShell(
             )
         )
         val travelPlan = ap.lastResult() as TravelPlan
-
-        println("Travel Plan: ${WordUtils.wrap(markdownToConsole(travelPlan.plan), 100)}")
-
-        println(travelPlan)
+        model.addAttribute("travelPlan", travelPlan)
+        return "travel-plan-htmx-result"
     }
 }

@@ -4,12 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6aebacf7-492e-455c-9eb4-ede326f2eee3" name="Changes" comment="Parallelization">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel/TravelPlannerShell.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel/TravelPlannerShell.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel/agent/TravelPlannerAgent.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel/agent/TravelPlannerAgent.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel/agent/domain.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel/agent/domain.kt" afterDir="false" />
-    </list>
+    <list default="true" id="6aebacf7-492e-455c-9eb4-ede326f2eee3" name="Changes" comment="Add htmx interface" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -137,7 +132,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "Spring Boot.TravelAgentApplication.executor": "Run",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "journey",
     "last_opened_file_path": "/Users/rjohnson/dev/embabel.com/travel-planner-agent",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -157,6 +152,7 @@
       <recent name="$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel" />
     </key>
     <key name="K2MoveDeclarationsDialog.RECENT_PACKAGE_KEY">
+      <recent name="com.embabel.example.travel.web" />
       <recent name="com.embabel.example.travel.agent" />
       <recent name="com.embabel.example.travel.service" />
       <recent name="com.embabel.example.travel" />
@@ -164,54 +160,6 @@
     </key>
   </component>
   <component name="RunManager" selected="Spring Boot.TravelAgentApplication">
-    <configuration default="true" type="JetRunConfigurationType">
-      <module name="travel-planner-agent" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
-      <module name="travel-planner-agent" />
-      <option name="filePath" />
-      <method v="2" />
-    </configuration>
-    <configuration default="true" type="PythonConfigurationType" factoryName="Python">
-      <module name="travel-planner-agent" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration default="true" type="Python.FlaskServer">
-      <module name="travel-planner-agent" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="launchJavascriptDebuger" value="false" />
-      <method v="2" />
-    </configuration>
     <configuration name="ProjectNameApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <module name="example-kotlin-parent" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.embabel.template.ProjectNameApplication" />
@@ -220,7 +168,7 @@
       </method>
     </configuration>
     <configuration name="TravelAgentApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
-      <option name="ACTIVE_PROFILES" value="neo,severance,docker-desktop,shell" />
+      <option name="ACTIVE_PROFILES" value="neo,severance,docker-desktop" />
       <module name="travel-planner-agent" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.embabel.example.travel.TravelAgentApplication" />
       <extension name="coverage">
@@ -232,19 +180,6 @@
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
-    </configuration>
-    <configuration default="true" type="Tox" factoryName="Tox">
-      <module name="travel-planner-agent" />
-      <option name="ENV_FILES" value="" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <method v="2" />
     </configuration>
     <list>
       <item itemvalue="Spring Boot.ProjectNameApplication" />
@@ -259,8 +194,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-fbdcb00ec9e3-intellij.indexing.shared.core-IU-251.25410.129" />
-        <option value="bundled-js-predefined-d6986cc7102b-6a121458b545-JavaScript-IU-251.25410.129" />
+        <option value="bundled-jdk-9823dce3aa75-fbdcb00ec9e3-intellij.indexing.shared.core-IU-251.26094.121" />
+        <option value="bundled-js-predefined-d6986cc7102b-b26f3e71634d-JavaScript-IU-251.26094.121" />
       </set>
     </attachedChunks>
   </component>
@@ -271,7 +206,8 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1749536255712</updated>
-      <workItem from="1749536256859" duration="49802000" />
+      <workItem from="1749536256859" duration="50708000" />
+      <workItem from="1750028738610" duration="11732000" />
     </task>
     <task id="LOCAL-00001" summary="First version">
       <option name="closed" value="true" />
@@ -425,7 +361,55 @@
       <option name="project" value="LOCAL" />
       <updated>1749967893151</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="Parallelization">
+      <option name="closed" value="true" />
+      <created>1749975372523</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1749975372523</updated>
+    </task>
+    <task id="LOCAL-00021" summary="Update agent API">
+      <option name="closed" value="true" />
+      <created>1750069157966</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1750069157966</updated>
+    </task>
+    <task id="LOCAL-00022" summary="Days">
+      <option name="closed" value="true" />
+      <created>1750069893048</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1750069893048</updated>
+    </task>
+    <task id="LOCAL-00023" summary="Introduce days">
+      <option name="closed" value="true" />
+      <created>1750070481858</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1750070481858</updated>
+    </task>
+    <task id="LOCAL-00024" summary="Add htmx interface">
+      <option name="closed" value="true" />
+      <created>1750071270850</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1750071270850</updated>
+    </task>
+    <task id="LOCAL-00025" summary="Add htmx interface">
+      <option name="closed" value="true" />
+      <created>1750071651440</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1750071651440</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -440,7 +424,11 @@
     <MESSAGE value="Update domain objects" />
     <MESSAGE value="Richer domain objects" />
     <MESSAGE value="Parallelization" />
-    <option name="LAST_COMMIT_MESSAGE" value="Parallelization" />
+    <MESSAGE value="Update agent API" />
+    <MESSAGE value="Days" />
+    <MESSAGE value="Introduce days" />
+    <MESSAGE value="Add htmx interface" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add htmx interface" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -457,8 +445,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="kotlin-line">
           <url>file://$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel/TravelPlannerShell.kt</url>
-          <line>68</line>
+          <line>69</line>
           <option name="timeStamp" value="3" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel/TravelPlanHtmxController.kt</url>
+          <line>37</line>
+          <option name="timeStamp" value="4" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

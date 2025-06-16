@@ -74,7 +74,7 @@
             <artifactId>neo4j-ogm-spring-boot-starter</artifactId>
             <version>1.2.5</version>
         </dependency>
-        
+
         <dependency>
             <groupId>com.embabel.common</groupId>
             <artifactId>embabel-common-core</artifactId>
@@ -88,6 +88,11 @@
         <dependency>
             <groupId>com.embabel.common</groupId>
             <artifactId>embabel-common-ai</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
 
         <!-- Unit and Integration Testing -->

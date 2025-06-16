@@ -1,7 +1,7 @@
 MATCH (n)
 DETACH DELETE n;
 
-DROP CONSTRAINT activity_name_unique;
+DROP CONSTRAINT activity_name_unique IF EXISTS;
 CREATE CONSTRAINT activity_name_unique FOR (a:Activity) REQUIRE a.name IS UNIQUE;
 
 CREATE (hiking:Activity {name: 'Hiking'})

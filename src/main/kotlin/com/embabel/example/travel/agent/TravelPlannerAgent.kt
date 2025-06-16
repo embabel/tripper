@@ -27,9 +27,10 @@ import com.embabel.agent.config.models.OpenAiModels
 import com.embabel.agent.core.CoreToolGroups
 import com.embabel.agent.domain.persistence.FindEntitiesRequest
 import com.embabel.agent.domain.persistence.support.naturalLanguageRepository
-import com.embabel.agent.prompt.Persona
 import com.embabel.agent.prompt.ResponseFormat
-import com.embabel.agent.prompt.RoleGoalBackstory
+import com.embabel.agent.prompt.element.ToolCallControl
+import com.embabel.agent.prompt.persona.Persona
+import com.embabel.agent.prompt.persona.RoleGoalBackstory
 import com.embabel.common.ai.model.LlmOptions
 import com.embabel.common.ai.model.ModelSelectionCriteria.Companion.byName
 import com.embabel.example.travel.service.PersonRepository
@@ -98,7 +99,7 @@ class TravelPlannerAgent(
 
     @Action
     fun findPointsOfInterest(
-        travelBrief: TravelBrief,
+        travelBrief: JourneyTravelBrief,
         travelers: Travelers,
     ): ItineraryIdeas {
         return using(
@@ -111,16 +112,17 @@ class TravelPlannerAgent(
         )
             .create(
                 prompt = """
-                Consider the following travel brief.
+                Consider the following travel brief for a journey from ${travelBrief.from} to ${travelBrief.to}.
                 ${travelBrief.contribution()}
                 Find points of interest that are relevant to the travel brief and travelers.
+                Use mapping tools to consider appropriate order
             """.trimIndent(),
             )
     }
 
     @Action
     fun researchPointsOfInterest(
-        travelBrief: TravelBrief,
+        travelBrief: JourneyTravelBrief,
         travelers: Travelers,
         itineraryIdeas: ItineraryIdeas,
         context: OperationContext,
@@ -162,10 +164,10 @@ class TravelPlannerAgent(
 
     @Action
     fun createMarkdownTravelPlan(
-        travelBrief: TravelBrief,
+        travelBrief: JourneyTravelBrief,
         travelers: Travelers,
         poiFindings: PointOfInterestFindings,
-    ): MarkdownTravelPlan {
+    ): TravelPlan {
         return using(
             config.thinkerLlm,
             toolGroups = setOf(CoreToolGroups.WEB, CoreToolGroups.MAPS, CoreToolGroups.MATH),
@@ -178,26 +180,20 @@ class TravelPlannerAgent(
             .create(
                 prompt = """
                 Given the following travel brief, create a detailed plan.
-                
-                ${
-                    (travelBrief as? JourneyTravelBrief)?.let {
-                        """
-                    Plan the journey to minimize travel time.
-                    However, consider any important events or places of interest along the way
-                    that might inform routing.
-                    Include total distances.
-                    Include one or more links to the whole trip in Google Maps format.
-                    IMPORTANT: Do not include any special characters like accents in the links.
-                """.trimIndent()
-                    } ?: ""
-                }
-                
+
+                Plan the journey to minimize travel time.
+                However, consider any important events or places of interest along the way
+                that might inform routing.
+                Include total distances.
+                Include one or more links to the whole trip in Google Maps format.
+                IMPORTANT: Do not include any special characters like accents in the links.
+
                 <brief>${travelBrief.contribution()}</brief>
                 Consider the weather in your recommendations. Use mapping tools to consider distance of driving or walking.
-                
+
                 Write up in ${config.wordCount} words or less.
                 Include links in text where appropriate and in the links field.
-                
+
                 Put image links where appropriate in text and also in the links field.
                 IMPORTANT: Image links must come from the web pages you found, not from
                 general knowledge.
@@ -224,9 +220,9 @@ class TravelPlannerAgent(
     )
     @Action
     fun outputArtifact(
-        markdownTravelPlan: MarkdownTravelPlan,
-    ): MarkdownTravelPlan {
+        travelPlan: TravelPlan,
+    ): TravelPlan {
         // Sanitize the markdown content to ensure it is safe for display
-        return markdownTravelPlan
+        return travelPlan
     }
 }

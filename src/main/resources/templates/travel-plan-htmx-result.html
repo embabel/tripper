@@ -1,0 +1,30 @@
+<div th:if="${travelPlan != null}">
+    <h3 th:text="${travelPlan.title}"></h3>
+    <div th:text="${travelPlan.plan}"></div>
+    <div th:if="${travelPlan.days != null}">
+        <h4>Days</h4>
+        <ul>
+            <li th:each="day : ${travelPlan.days}" th:text="${day.date + ' - ' + day.stayingAt}"></li>
+        </ul>
+    </div>
+    <div th:if="${travelPlan.mapLinks != null && !#lists.isEmpty(travelPlan.mapLinks)}">
+        <h4>Maps</h4>
+        <ul>
+            <li th:each="map : ${travelPlan.mapLinks}" th:text="${map}"></li>
+        </ul>
+    </div>
+    <div th:if="${travelPlan.pageLinks != null && !#lists.isEmpty(travelPlan.pageLinks)}">
+        <h4>Pages</h4>
+        <ul>
+            <li th:each="page : ${travelPlan.pageLinks}" th:text="${page.url}"></li>
+        </ul>
+    </div>
+    <div th:if="${travelPlan.imageLinks != null && !#lists.isEmpty(travelPlan.imageLinks)}">
+        <h4>Images</h4>
+        <ul>
+            <li th:each="img : ${travelPlan.imageLinks}">
+                <img th:src="${img.url}" th:alt="${img.summary}" width="120"/>
+            </li>
+        </ul>
+    </div>
+</div>

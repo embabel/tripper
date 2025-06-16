@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Travel Planner HTMX</title>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+</head>
+<body>
+<h2>Journey Travel Brief</h2>
+<form hx-post="/plan" hx-target="#planResult" hx-swap="innerHTML">
+    <label>From: <input type="text" name="from" required></label><br/>
+    <label>To: <input type="text" name="to" required></label><br/>
+    <label>Transport Preference: <input type="text" name="transportPreference" required></label><br/>
+    <label>Brief:<br/>
+        <textarea name="brief" rows="4" cols="40" required></textarea>
+    </label><br/>
+    <label>Start Date: <input type="date" name="startDate" required></label><br/>
+    <label>End Date: <input type="date" name="endDate" required></label><br/>
+    <button type="submit">Plan Journey</button>
+</form>
+<div id="planResult"></div>
+</body>
+</html>
