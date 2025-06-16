@@ -20,6 +20,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;
 
 # Embabel Travel Planner Agent
+**WARNING - THIS IS WORK IN PROGRESS**
 
 Start by populating the data by running the `cypher/populate.cypher` script against your Neo4j database. This script
 creates a list of travelers.
