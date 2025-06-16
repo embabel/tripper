@@ -79,11 +79,18 @@ data class PointOfInterestFindings(
     val pointsOfInterest: List<ResearchedPointOfInterest>,
 )
 
-data class MarkdownTravelPlan(
+data class Day(
+    val date: LocalDate,
+    val stayingAt: String,
+)
+
+data class TravelPlan(
     @JsonPropertyDescription("Catchy title appropriate to the travelers and travel brief")
     val title: String,
     @JsonPropertyDescription("Detailed travel plan")
     val plan: String,
+    @JsonPropertyDescription("List of days in the travel plan")
+    val days: List<Day>,
 
     @JsonPropertyDescription("Links to maps or other resources related to the travel plan")
     val mapLinks: List<String>,

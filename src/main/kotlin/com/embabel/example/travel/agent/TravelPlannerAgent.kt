@@ -99,7 +99,7 @@ class TravelPlannerAgent(
 
     @Action
     fun findPointsOfInterest(
-        travelBrief: TravelBrief,
+        travelBrief: JourneyTravelBrief,
         travelers: Travelers,
     ): ItineraryIdeas {
         return using(
@@ -121,7 +121,7 @@ class TravelPlannerAgent(
 
     @Action
     fun researchPointsOfInterest(
-        travelBrief: TravelBrief,
+        travelBrief: JourneyTravelBrief,
         travelers: Travelers,
         itineraryIdeas: ItineraryIdeas,
         context: OperationContext,
@@ -163,10 +163,10 @@ class TravelPlannerAgent(
 
     @Action
     fun createMarkdownTravelPlan(
-        travelBrief: TravelBrief,
+        travelBrief: JourneyTravelBrief,
         travelers: Travelers,
         poiFindings: PointOfInterestFindings,
-    ): MarkdownTravelPlan {
+    ): TravelPlan {
         return using(
             config.thinkerLlm,
             toolGroups = setOf(CoreToolGroups.WEB, CoreToolGroups.MAPS, CoreToolGroups.MATH),
@@ -178,21 +178,15 @@ class TravelPlannerAgent(
             )
             .create(
                 prompt = """
-                Given the following travel brief, create a detailed plan.
-                
-                ${
-                    (travelBrief as? JourneyTravelBrief)?.let {
-                        """
-                    Plan the journey to minimize travel time.
-                    However, consider any important events or places of interest along the way
-                    that might inform routing.
-                    Include total distances.
-                    Include one or more links to the whole trip in Google Maps format.
-                    IMPORTANT: Do not include any special characters like accents in the links.
-                """.trimIndent()
-                    } ?: ""
-                }
-                
+                Given the following travel brief, create a detailed plan.                
+               
+                Plan the journey to minimize travel time.
+                However, consider any important events or places of interest along the way
+                that might inform routing.
+                Include total distances.
+                Include one or more links to the whole trip in Google Maps format.
+                IMPORTANT: Do not include any special characters like accents in the links.
+                             
                 <brief>${travelBrief.contribution()}</brief>
                 Consider the weather in your recommendations. Use mapping tools to consider distance of driving or walking.
                 
@@ -225,9 +219,9 @@ class TravelPlannerAgent(
     )
     @Action
     fun outputArtifact(
-        markdownTravelPlan: MarkdownTravelPlan,
-    ): MarkdownTravelPlan {
+        travelPlan: TravelPlan,
+    ): TravelPlan {
         // Sanitize the markdown content to ensure it is safe for display
-        return markdownTravelPlan
+        return travelPlan
     }
 }

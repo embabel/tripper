@@ -20,7 +20,7 @@ import com.embabel.agent.core.ProcessOptions
 import com.embabel.agent.core.Verbosity
 import com.embabel.agent.shell.markdownToConsole
 import com.embabel.example.travel.agent.JourneyTravelBrief
-import com.embabel.example.travel.agent.MarkdownTravelPlan
+import com.embabel.example.travel.agent.TravelPlan
 import com.embabel.example.travel.service.PersonService
 import org.apache.commons.text.WordUtils
 import org.springframework.shell.standard.ShellComponent
@@ -39,7 +39,7 @@ internal class TravelPlannerShell(
     }
 
     @ShellMethod
-    fun planTravel() {
+    fun planJourney() {
         val travelBrief = JourneyTravelBrief(
             from = "Antwerp",
             to = "Bordeaux",
@@ -62,7 +62,7 @@ internal class TravelPlannerShell(
                 ),
             )
         )
-        val travelPlan = ap.lastResult() as MarkdownTravelPlan
+        val travelPlan = ap.lastResult() as TravelPlan
 
         println("Travel Plan: ${WordUtils.wrap(markdownToConsole(travelPlan.plan), 100)}")
 
