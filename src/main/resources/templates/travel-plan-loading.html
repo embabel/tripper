@@ -1,0 +1,17 @@
+<div hx-get="/travel/journey/plan/status/[[${processId}]]"
+     hx-trigger="every 2s"
+     hx-swap="outerHTML">
+    <div class="loading">
+        <p>Planning your journey...</p>
+        <div class="spinner"></div>
+    </div>
+
+
+    <div th:if="${processId != null}"
+         hx-ext="sse"
+         th:attr="sse-connect='/events/process/' + ${processId}">
+        <div sse-swap="update" hx-swap="afterbegin">
+            <div id="notifications"></div>
+        </div>
+    </div>
+</div>

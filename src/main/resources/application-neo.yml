@@ -1,3 +1,4 @@
+
 spring:
   neo4j:
     uri: ${NEO4J_URI:bolt://localhost:7687}
@@ -10,5 +11,5 @@ spring:
         initialize-schema: false
 #        database-name: neo4j
         index-name: vector
-        embedding-dimension: 1536
+        embedding-dimension: 384
         distance-type: cosine

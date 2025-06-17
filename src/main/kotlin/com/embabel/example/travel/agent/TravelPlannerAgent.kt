@@ -88,12 +88,13 @@ class TravelPlannerAgent(
         travelBrief: TravelBrief,
         context: OperationContext,
     ): Travelers {
-        val nlr = personRepository.naturalLanguageRepository({ it.id }, context, LlmOptions())
-        val entities = nlr.find(FindEntitiesRequest(content = travelBrief.brief))
-        if (entities.matches.isEmpty()) {
-            logger.info("No travelers found for travel brief: {}", travelBrief.brief)
-        }
-        return Travelers(entities.matches.map { it.match })
+//        val nlr = personRepository.naturalLanguageRepository({ it.id }, context, LlmOptions())
+//        val entities = nlr.find(FindEntitiesRequest(content = travelBrief.brief))
+//        if (entities.matches.isEmpty()) {
+//            logger.info("No travelers found for travel brief: {}", travelBrief.brief)
+//        }
+//        return Travelers(entities.matches.map { it.match })
+        return Travelers(emptyList())
     }
 
     @Action

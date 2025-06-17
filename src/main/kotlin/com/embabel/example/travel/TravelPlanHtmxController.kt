@@ -16,6 +16,8 @@
 package com.embabel.example.travel
 
 import com.embabel.agent.core.AgentPlatform
+import com.embabel.agent.core.AgentProcessStatusCode
+import com.embabel.agent.core.IoBinding
 import com.embabel.agent.core.ProcessOptions
 import com.embabel.agent.core.Verbosity
 import com.embabel.example.travel.agent.JourneyTravelBrief
@@ -24,15 +26,17 @@ import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import java.time.LocalDate
 
 @Controller
-@RequestMapping(value=["/travel/journey", ""])
+@RequestMapping(value = ["/travel/journey", ""])
 class TravelPlanHtmxController(
     private val agentPlatform: AgentPlatform,
+    private val asyncWrapper: AsyncWrapper,
 ) {
 
     @GetMapping
@@ -85,19 +89,39 @@ class TravelPlanHtmxController(
             departureDate = departureDate,
             returnDate = returnDate,
         )
-        val ap = agentPlatform.runAgentWithInput(
-            agent = agentPlatform.agents().singleOrNull { it.name.lowercase().contains("travel") }
-                ?: error("No travel agent found. Please ensure the travel agent is registered."),
-            input = travelBrief,
+        val agent = agentPlatform.agents().singleOrNull { it.name.lowercase().contains("travel") }
+            ?: error("No travel agent found. Please ensure the travel agent is registered.")
+        val agentProcess = agentPlatform.createAgentProcess(
+            agent = agent,
             processOptions = ProcessOptions(
                 verbosity = Verbosity(
                     showPrompts = true,
                     showLlmResponses = true,
                 ),
+            ),
+            bindings = mapOf(
+                IoBinding.DEFAULT_BINDING to travelBrief,
             )
         )
-        val travelPlan = ap.lastResult() as TravelPlan
-        model.addAttribute("travelPlan", travelPlan)
-        return "travel-plan-htmx-result"
+        model.addAttribute("processId", agentProcess.id)
+
+        asyncWrapper.async { agentProcess.run() }
+
+        return "travel-plan-loading"
+    }
+
+    @GetMapping("/plan/status/{processId}")
+    fun checkPlanStatus(@PathVariable processId: String, model: Model): String {
+        val agentProcess = agentPlatform.getAgentProcess(processId)
+            ?: return "error" // Handle missing process
+
+        return if (agentProcess.status == AgentProcessStatusCode.COMPLETED) {
+            val travelPlan = agentProcess.lastResult() as TravelPlan
+            model.addAttribute("travelPlan", travelPlan)
+            "travel-plan-htmx-result"
+        } else {
+            model.addAttribute("processId", processId)
+            "travel-plan-loading" // Keep showing loading state
+        }
     }
 }

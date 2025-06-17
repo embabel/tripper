@@ -15,10 +15,12 @@
  */
 package com.embabel.example.travel
 
+import com.embabel.agent.config.models.OllamaModels
 import com.embabel.common.ai.model.EmbeddingService
 import org.neo4j.ogm.session.SessionFactory
 import org.slf4j.LoggerFactory
 import org.springframework.ai.embedding.EmbeddingModel
+import org.springframework.ai.ollama.OllamaEmbeddingModel
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -64,9 +66,11 @@ class NeoOgmConfig(
         return Neo4jTransactionManager(sessionFactory())
     }
 
+    // TODO this is nasty
     @Bean
     @Primary
-    fun embeddingModel(embeddingService: EmbeddingService): EmbeddingModel {
-        return embeddingService.model
+    fun embeddingModel(embeddingServices: List<EmbeddingService>): EmbeddingModel {
+        val es = embeddingServices.single {it.name.contains("all-minilm")}
+        return es.model
     }
 }
