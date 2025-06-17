@@ -14,9 +14,13 @@
         </ul>
     </div>
     <div th:if="${travelPlan.pageLinks != null && !#lists.isEmpty(travelPlan.pageLinks)}">
-        <h4>Pages</h4>
+        <h4>References</h4>
         <ul>
-            <li th:each="page : ${travelPlan.pageLinks}" th:text="${page.url}"></li>
+            <li th:each="page : ${travelPlan.pageLinks}">
+                <a th:href="${page.url}">
+                    <span th:text="${page.url}"></span>
+                </a>
+            </li>
         </ul>
     </div>
     <div th:if="${travelPlan.imageLinks != null && !#lists.isEmpty(travelPlan.imageLinks)}">
