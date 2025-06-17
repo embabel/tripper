@@ -28,8 +28,8 @@ services:
       - --tools=github:get_issue
       - --tools=github:list_pull_requests
       - --tools=github:get_pull_request
-      - --tools=puppeteer:puppeteer*
-      - --tools=google-maps:maps_*
+      - --tools=puppeteer:*
+      - --tools=google-maps:*
       - --port=9011
     secrets:
       - mcp_secret

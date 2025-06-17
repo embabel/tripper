@@ -25,6 +25,12 @@
 Start by populating the data by running the `cypher/populate.cypher` script against your Neo4j database. This script
 creates a list of travelers.
 
+Start up background services, local model runners, and MCP gateway by running:
+
+```bash
+docker compose --file docker-compose.yml --file docker-compose.dmr.yml up
+```
+
 Run the shell script to start Embabel under Spring Shell:
 
 ```bash
