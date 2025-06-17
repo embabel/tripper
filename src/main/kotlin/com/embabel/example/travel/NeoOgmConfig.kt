@@ -41,7 +41,7 @@ class NeoOgmConfig(
 ) {
 
     private val logger = LoggerFactory.getLogger(NeoOgmConfig::class.java)
-    
+
     @Bean
     fun configuration(): org.neo4j.ogm.config.Configuration {
         logger.info("Connecting to Neo4j at {} as user {}", uri, username)

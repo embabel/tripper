@@ -25,16 +25,16 @@ import java.time.LocalDate
 
 sealed interface TravelBrief : PromptContributor {
     val brief: String
-    val startDate: LocalDate
-    val endDate: LocalDate
+    val departureDate: LocalDate
+    val returnDate: LocalDate
 }
 
 data class ExplorationTravelBrief(
     val areaToExplore: String,
     val stayingAt: String,
     override val brief: String,
-    override val startDate: LocalDate,
-    override val endDate: LocalDate,
+    override val departureDate: LocalDate,
+    override val returnDate: LocalDate,
 ) : TravelBrief {
 
     override fun contribution(): String =
@@ -42,7 +42,7 @@ data class ExplorationTravelBrief(
         Area to explore: $areaToExplore
         Staying at: $stayingAt
         Brief: $brief
-        Dates: $startDate to $endDate
+        Dates: $departureDate to $returnDate
     """.trimIndent()
 }
 
@@ -51,14 +51,14 @@ data class JourneyTravelBrief(
     val to: String,
     val transportPreference: String,
     override val brief: String,
-    override val startDate: LocalDate,
-    override val endDate: LocalDate,
+    override val departureDate: LocalDate,
+    override val returnDate: LocalDate,
 ) : TravelBrief {
 
     override fun contribution(): String =
         """
         Journey from $from to $to
-        Dates: $startDate to $endDate
+        Dates: $departureDate to $returnDate
         Brief: $brief
         Transport preference: $transportPreference
     """.trimIndent()

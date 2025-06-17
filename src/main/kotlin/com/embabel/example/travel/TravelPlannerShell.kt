@@ -68,8 +68,8 @@ internal class TravelPlannerShell(
         val travelBrief = JourneyTravelBrief(
             from = "Antwerp",
             to = "Bordeaux",
-            startDate = LocalDate.of(2025, 10, 10),
-            endDate = LocalDate.of(2025, 11, 5),
+            departureDate = LocalDate.of(2025, 10, 10),
+            returnDate = LocalDate.of(2025, 11, 5),
             transportPreference = "car",
             brief = """
                 Rod and Lynda would like to take back roads and see nice countryside.

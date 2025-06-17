@@ -25,17 +25,45 @@ import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import java.time.LocalDate
 
 @Controller
+@RequestMapping(value=["/travel/journey", ""])
 class TravelPlanHtmxController(
     private val agentPlatform: AgentPlatform,
 ) {
 
     @GetMapping
-    fun showForm(model: Model): String {
-        model.addAttribute("travelBrief", JourneyTravelBrief("", "", "", "", LocalDate.now(), LocalDate.now()))
+    fun showForm(
+        @RequestParam(defaultValue = "Antwerp") from: String,
+        @RequestParam(defaultValue = "Bordeaux") to: String,
+        @RequestParam(defaultValue = "driving") transport: String,
+        @RequestParam(defaultValue = "Relaxed journey with historical sightseeing for Rod and Lynda") brief: String,
+        @RequestParam(required = false) departureDate: String?,
+        @RequestParam(required = false) returnDate: String?,
+        model: Model
+    ): String {
+        val defaultDepartureDate = departureDate?.let {
+            LocalDate.parse(it)
+        } ?: LocalDate.now()
+
+        val defaultReturnDate = returnDate?.let {
+            LocalDate.parse(it)
+        } ?: LocalDate.now()
+
+        model.addAttribute(
+            "travelBrief",
+            JourneyTravelBrief(
+                from = from,
+                to = to,
+                transportPreference = transport,
+                brief = brief,
+                departureDate = defaultDepartureDate,
+                returnDate = defaultReturnDate,
+            )
+        )
         return "travel-form"
     }
 
@@ -45,8 +73,8 @@ class TravelPlanHtmxController(
         @RequestParam to: String,
         @RequestParam transportPreference: String,
         @RequestParam brief: String,
-        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) startDate: LocalDate,
-        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) endDate: LocalDate,
+        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) departureDate: LocalDate,
+        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) returnDate: LocalDate,
         model: Model
     ): String {
         val travelBrief = JourneyTravelBrief(
@@ -54,8 +82,8 @@ class TravelPlanHtmxController(
             to = to,
             transportPreference = transportPreference,
             brief = brief,
-            startDate = startDate,
-            endDate = endDate,
+            departureDate = departureDate,
+            returnDate = returnDate,
         )
         val ap = agentPlatform.runAgentWithInput(
             agent = agentPlatform.agents().singleOrNull { it.name.lowercase().contains("travel") }

@@ -1,0 +1,170 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    color: #f1f5f9;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    background: rgba(30, 41, 59, 0.8);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    border: 1px solid rgba(148, 163, 184, 0.1);
+    padding: 25px; /* Reduced from 40px to 25px */
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px; /* Reduced from 30px to 20px */
+    font-size: 2.2rem;
+    background: linear-gradient(135deg, #60a5fa, #34d399, #fbbf24);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 700;
+}
+
+.travel-icon {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 12px; /* Reduced for compactness */
+    font-size: 2.5rem; /* Slightly smaller for compactness */
+}
+
+form {
+    display: grid;
+    gap: 15px; /* Reduced from 25px to 15px */
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 3px; /* Reduced margin-bottom */
+    padding: 0 0 2px 0; /* Reduce padding if any */
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px; /* Reduced from 20px to 12px */
+}
+
+label {
+    font-weight: 600;
+    margin-bottom: 3px; /* Reduced for compactness */
+    color: #cbd5e1;
+    font-size: 0.88rem; /* Slightly smaller for compactness */
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+input, textarea, select {
+    padding: 10px 12px; /* Reduced from 14px 16px to 10px 12px */
+    border: 2px solid rgba(148, 163, 184, 0.2);
+    border-radius: 12px;
+    background: rgba(15, 23, 42, 0.6);
+    color: #f1f5f9;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+}
+
+input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: #60a5fa;
+    box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.1);
+    transform: translateY(-2px);
+}
+
+input::placeholder, textarea::placeholder {
+    color: #64748b;
+}
+
+textarea {
+    resize: vertical;
+    min-height: 100px;
+    font-family: inherit;
+}
+
+.submit-btn {
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    color: white;
+    border: none;
+    padding: 10px 18px; /* Reduced for compactness */
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px; /* Reduced for compactness */
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    position: relative;
+    overflow: hidden;
+}
+
+.submit-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+}
+
+.submit-btn:active {
+    transform: translateY(-1px);
+}
+
+.submit-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.6s ease;
+}
+
+.submit-btn:hover::before {
+    left: 100%;
+}
+
+#planResult {
+    margin-top: 12px; /* Reduced for compactness */
+    padding: 10px; /* Reduced for compactness */
+    background: rgba(15, 23, 42, 0.4);
+    border-radius: 10px;
+    border: 1px solid rgba(148, 163, 184, 0.1);
+    min-height: 40px;
+    backdrop-filter: blur(5px);
+}
+
+.date-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px; /* Reduced from 20px to 12px */
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 10px; /* Reduced for compactness */
+        margin: 4px;
+    }
+
+    .form-row, .date-group {
+        grid-template-columns: 1fr;
+        gap: 7px; /* Reduced for compactness */
+    }
+
+    h2 {
+        font-size: 1.5rem;
+    }
+}

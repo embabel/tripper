@@ -1,20 +1,30 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Travel Planner HTMX</title>
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <link href="/css/dark.css"
+          rel="stylesheet">
 </head>
 <body>
-<h2>Journey Travel Brief</h2>
-<form hx-post="/plan" hx-target="#planResult" hx-swap="innerHTML">
-    <label>From: <input type="text" name="from" required></label><br/>
-    <label>To: <input type="text" name="to" required></label><br/>
-    <label>Transport Preference: <input type="text" name="transportPreference" required></label><br/>
-    <label>Brief:<br/>
-        <textarea name="brief" rows="4" cols="40" required></textarea>
+<h2>Embabel Journey Planner</h2>
+<form hx-post="/travel/journey/plan" hx-target="#planResult" hx-swap="innerHTML" th:object="${travelBrief}">
+    <label>From: <input type="text" name="from" th:field="*{from}" required></label><br/>
+    <label>To: <input type="text" name="to" th:field="*{to}" required></label><br/>
+    <label>Transport Preference:
+        <select name="transportPreference" th:field="*{transportPreference}" required>
+            <option value="">Select transport method</option>
+            <option value="driving">Driving</option>
+            <option value="train">Train</option>
+            <option value="cycling">Cycling</option>
+            <option value="flying">Flying</option>
+        </select>
     </label><br/>
-    <label>Start Date: <input type="date" name="startDate" required></label><br/>
-    <label>End Date: <input type="date" name="endDate" required></label><br/>
+    <label>Brief:<br/>
+        <textarea name="brief" rows="4" cols="40" th:field="*{brief}" required></textarea>
+    </label><br/>
+    <label>Start Date: <input type="date" name="startDate" th:field="*{departureDate}" required></label><br/>
+    <label>End Date: <input type="date" name="endDate" th:field="*{returnDate}" required></label><br/>
     <button type="submit">Plan Journey</button>
 </form>
 <div id="planResult"></div>

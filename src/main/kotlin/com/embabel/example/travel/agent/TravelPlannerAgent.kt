@@ -145,7 +145,7 @@ class TravelPlannerAgent(
                 Research the following point of interest.
                 Consider in particular interesting stories about art and culture and famous people.
                 Your audience: ${travelBrief.brief}
-                Dates to consider: ${travelBrief.startDate} to ${travelBrief.endDate}
+                Dates to consider: ${travelBrief.departureDate} to ${travelBrief.returnDate}
                 If any particularly important events are happening here during this time, mention them
                 and list specific dates.
                 <point-of-interest-to-research>
