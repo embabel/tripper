@@ -16,6 +16,7 @@
 package com.embabel.example.travel
 
 import org.neo4j.ogm.session.SessionFactory
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -28,19 +29,22 @@ import org.springframework.transaction.annotation.EnableTransactionManagement
 @Configuration
 @EnableNeo4jRepositories
 @EnableTransactionManagement
-class NeoOgmConfig {
-
+class NeoOgmConfig(
     @Value("\${spring.neo4j.uri}")
-    private lateinit var uri: String
+    private val uri: String,
 
     @Value("\${spring.neo4j.authentication.username}")
-    private lateinit var username: String
+    private val username: String,
 
     @Value("\${spring.neo4j.authentication.password}")
-    private lateinit var password: String
+    private val password: String,
+) {
 
+    private val logger = LoggerFactory.getLogger(NeoOgmConfig::class.java)
+    
     @Bean
     fun configuration(): org.neo4j.ogm.config.Configuration {
+        logger.info("Connecting to Neo4j at {} as user {}", uri, username)
         return org.neo4j.ogm.config.Configuration.Builder()
             .uri(uri)
             .credentials(username, password)

@@ -4,12 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6aebacf7-492e-455c-9eb4-ede326f2eee3" name="Changes" comment="Polishing">
+    <list default="true" id="6aebacf7-492e-455c-9eb4-ede326f2eee3" name="Changes" comment="Entity mapping">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cypher/populate.cypher" beforeDir="false" afterPath="$PROJECT_DIR$/cypher/populate.cypher" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel/TravelPlannerShell.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel/TravelPlannerShell.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel/service/Person.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel/service/Person.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel/service/PersonService.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel/service/PersonService.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel/agent/domain.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel/agent/domain.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -95,7 +92,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="main" />
+        <entry key="$PROJECT_DIR$" value="integrate-llmgb" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -140,7 +137,7 @@
     "Spring Boot.Shell.executor": "Run",
     "Spring Boot.TravelAgentApplication.executor": "Run",
     "git-widget-placeholder": "main",
-    "last_opened_file_path": "/Users/rjohnson/dev/embabel.com/travel-planner-agent",
+    "last_opened_file_path": "/Users/rjohnson/dev/embabel.com/travel-planner-agent/src/main/resources",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -155,6 +152,8 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/main/resources" />
+      <recent name="$PROJECT_DIR$/data" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel" />
     </key>
@@ -168,7 +167,11 @@
   </component>
   <component name="RunManager" selected="Spring Boot.Shell">
     <configuration name="Shell" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
-      <option name="ACTIVE_PROFILES" value="neo,hh,docker-desktop,shell" />
+      <option name="ACTIVE_PROFILES" value="hh,docker-desktop,shell,neo" />
+      <envs>
+        <env name="NEO4J_PASSWORD" value="havO4loqvE5httaupuAODkzEKzyzjgUUrB5JYfFoyCg" />
+        <env name="NEO4J_URI" value="neo4j+s://f3a25fab.databases.neo4j.io" />
+      </envs>
       <module name="travel-planner-agent" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.embabel.example.travel.TravelAgentApplication" />
       <extension name="coverage">
@@ -201,6 +204,7 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Spring Boot.Web" />
         <item itemvalue="Spring Boot.Web" />
       </list>
     </recent_temporary>
@@ -439,7 +443,15 @@
       <option name="project" value="LOCAL" />
       <updated>1750115816793</updated>
     </task>
-    <option name="localTasksCounter" value="28" />
+    <task id="LOCAL-00028" summary="Entity mapping">
+      <option name="closed" value="true" />
+      <created>1750125116603</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1750125116603</updated>
+    </task>
+    <option name="localTasksCounter" value="29" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -458,7 +470,8 @@
     <MESSAGE value="Introduce days" />
     <MESSAGE value="Add htmx interface" />
     <MESSAGE value="Polishing" />
-    <option name="LAST_COMMIT_MESSAGE" value="Polishing" />
+    <MESSAGE value="Entity mapping" />
+    <option name="LAST_COMMIT_MESSAGE" value="Entity mapping" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

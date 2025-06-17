@@ -20,12 +20,13 @@ import org.springframework.data.neo4j.repository.Neo4jRepository
 import org.springframework.stereotype.Repository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.util.*
 
 @Repository
-interface PersonRepository : Neo4jRepository<Person, Long> {
+interface PersonRepository : Neo4jRepository<Person, String> {
 
     @Depth(4)
-    fun findByName(name: String): Person?
+    override fun findById(name: String): Optional<Person>
 
 }
 

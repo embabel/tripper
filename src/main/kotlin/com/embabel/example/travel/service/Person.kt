@@ -15,31 +15,37 @@
  */
 package com.embabel.example.travel.service
 
-import org.neo4j.ogm.annotation.GeneratedValue
 import org.neo4j.ogm.annotation.Id
 import org.neo4j.ogm.annotation.NodeEntity
 import org.neo4j.ogm.annotation.Relationship
-import java.time.LocalDate
+
+interface NameAsId {
+
+    val id: String?
+
+    /**
+     * The name of the entity, which is used as the ID.
+     * This is a convenience for entities that do not have a separate ID field.
+     */
+    val name: String
+        get() = id ?: "Anon"
+}
 
 @NodeEntity
 data class Person(
-    val name: String,
     @Relationship(type = "ENJOYS", direction = Relationship.Direction.OUTGOING)
     val activities: List<Activity> = emptyList(),
     @Relationship(type = "VISITED", direction = Relationship.Direction.OUTGOING)
     val visit: List<Visit> = emptyList(),
     @Id
-    @GeneratedValue
-    val id: Long? = null,
-)
+    override val id: String? = null,
+) : NameAsId
 
 @NodeEntity
 data class Activity(
-    val name: String,
     @Id
-    @GeneratedValue
-    val id: Long? = null,
-)
+    override val id: String? = null,
+) : NameAsId
 
 /**
  * @param place The location of the visit. Must be nullable to handle depth.
@@ -51,16 +57,13 @@ data class Visit(
     val place: Place? = null,
     val rating: Int,
     val comment: String? = null,
-    val date: LocalDate,
+    val year: Int? = null,
     @Id
-    @GeneratedValue
-    val id: Long? = null,
-)
+    override val id: String? = null,
+) : NameAsId
 
 @NodeEntity
 data class Place(
-    val name: String,
     @Id
-    @GeneratedValue
-    val id: Long? = null,
-)
+    override val id: String? = null,
+) : NameAsId

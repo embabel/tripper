@@ -44,7 +44,7 @@ internal class TravelPlannerShell(
     fun p(
         name: String,
     ): String {
-        val person = personRepository.findByName(name)
+        val person = personRepository.findById(name)
         return "Returned person: $person"
     }
 
