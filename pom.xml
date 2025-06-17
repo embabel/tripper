@@ -60,8 +60,8 @@
         </dependency>
 
         <dependency>
-            <groupId>com.embabel.agent</groupId>
-            <artifactId>embabel-agent-rag</artifactId>
+            <groupId>org.springframework.ai</groupId>
+            <artifactId>spring-ai-starter-vector-store-neo4j</artifactId>
         </dependency>
 
         <dependency>

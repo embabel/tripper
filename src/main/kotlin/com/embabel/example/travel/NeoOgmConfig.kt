@@ -15,8 +15,10 @@
  */
 package com.embabel.example.travel
 
+import com.embabel.common.ai.model.EmbeddingService
 import org.neo4j.ogm.session.SessionFactory
 import org.slf4j.LoggerFactory
+import org.springframework.ai.embedding.EmbeddingModel
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -60,5 +62,11 @@ class NeoOgmConfig(
     @Primary
     fun transactionManager(): PlatformTransactionManager {
         return Neo4jTransactionManager(sessionFactory())
+    }
+
+    @Bean
+    @Primary
+    fun embeddingModel(embeddingService: EmbeddingService): EmbeddingModel {
+        return embeddingService.model
     }
 }

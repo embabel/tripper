@@ -8,6 +8,7 @@ spring:
     vectorstore:
       neo4j:
         initialize-schema: false
-        database-name: neo4j
+#        database-name: neo4j
+        index-name: vector
         embedding-dimension: 1536
         distance-type: cosine
