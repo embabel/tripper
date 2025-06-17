@@ -18,6 +18,8 @@ package com.embabel.example.travel
 import com.embabel.agent.core.AgentPlatform
 import com.embabel.agent.core.ProcessOptions
 import com.embabel.agent.core.Verbosity
+import com.embabel.agent.rag.RagRequest
+import com.embabel.agent.rag.RagService
 import com.embabel.agent.shell.markdownToConsole
 import com.embabel.example.travel.agent.JourneyTravelBrief
 import com.embabel.example.travel.agent.TravelPlan
@@ -33,6 +35,7 @@ internal class TravelPlannerShell(
     private val personService: PersonService,
     private val agentPlatform: AgentPlatform,
     private val personRepository: PersonRepository,
+    private val ragService: RagService,
 ) {
     @ShellMethod
     fun findPeople(
@@ -46,6 +49,14 @@ internal class TravelPlannerShell(
     ): String {
         val person = personRepository.findById(name)
         return "Returned person: $person"
+    }
+
+    @ShellMethod
+    fun rag(
+        query: String,
+    ): String {
+        val results = ragService.search(RagRequest(query = query))
+        return "Returned $results"
     }
 
 
