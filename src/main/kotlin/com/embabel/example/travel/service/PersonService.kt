@@ -15,6 +15,7 @@
  */
 package com.embabel.example.travel.service
 
+import org.springframework.data.neo4j.annotation.Depth
 import org.springframework.data.neo4j.repository.Neo4jRepository
 import org.springframework.stereotype.Repository
 import org.springframework.stereotype.Service
@@ -22,7 +23,10 @@ import org.springframework.transaction.annotation.Transactional
 
 @Repository
 interface PersonRepository : Neo4jRepository<Person, Long> {
+
+    @Depth(4)
     fun findByName(name: String): Person?
+
 }
 
 

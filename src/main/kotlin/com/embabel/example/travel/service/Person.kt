@@ -19,12 +19,15 @@ import org.neo4j.ogm.annotation.GeneratedValue
 import org.neo4j.ogm.annotation.Id
 import org.neo4j.ogm.annotation.NodeEntity
 import org.neo4j.ogm.annotation.Relationship
+import java.time.LocalDate
 
 @NodeEntity
 data class Person(
     val name: String,
     @Relationship(type = "ENJOYS", direction = Relationship.Direction.OUTGOING)
     val activities: List<Activity> = emptyList(),
+    @Relationship(type = "VISITED", direction = Relationship.Direction.OUTGOING)
+    val visit: List<Visit> = emptyList(),
     @Id
     @GeneratedValue
     val id: Long? = null,
@@ -32,6 +35,30 @@ data class Person(
 
 @NodeEntity
 data class Activity(
+    val name: String,
+    @Id
+    @GeneratedValue
+    val id: Long? = null,
+)
+
+/**
+ * @param place The location of the visit. Must be nullable to handle depth.
+ * @param rating The rating of the visit, from 1 to 5.
+ */
+@NodeEntity
+data class Visit(
+    @Relationship(type = "TO_PLACE", direction = Relationship.Direction.OUTGOING)
+    val place: Place? = null,
+    val rating: Int,
+    val comment: String? = null,
+    val date: LocalDate,
+    @Id
+    @GeneratedValue
+    val id: Long? = null,
+)
+
+@NodeEntity
+data class Place(
     val name: String,
     @Id
     @GeneratedValue

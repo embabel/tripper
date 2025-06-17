@@ -4,10 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6aebacf7-492e-455c-9eb4-ede326f2eee3" name="Changes" comment="Add htmx interface">
+    <list default="true" id="6aebacf7-492e-455c-9eb4-ede326f2eee3" name="Changes" comment="Polishing">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel/agent/TravelPlannerAgent.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel/agent/TravelPlannerAgent.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel/agent/domain.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel/agent/domain.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cypher/populate.cypher" beforeDir="false" afterPath="$PROJECT_DIR$/cypher/populate.cypher" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel/TravelPlannerShell.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel/TravelPlannerShell.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel/service/Person.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel/service/Person.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel/service/PersonService.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel/service/PersonService.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -136,6 +137,7 @@
     "RequestMappingsPanelWidth1": "75",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
+    "Spring Boot.Shell.executor": "Run",
     "Spring Boot.TravelAgentApplication.executor": "Run",
     "git-widget-placeholder": "main",
     "last_opened_file_path": "/Users/rjohnson/dev/embabel.com/travel-planner-agent",
@@ -164,15 +166,22 @@
       <recent name="com.embabel.example.travel.config" />
     </key>
   </component>
-  <component name="RunManager" selected="Spring Boot.TravelAgentApplication">
-    <configuration name="ProjectNameApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
-      <module name="example-kotlin-parent" />
-      <option name="SPRING_BOOT_MAIN_CLASS" value="com.embabel.template.ProjectNameApplication" />
+  <component name="RunManager" selected="Spring Boot.Shell">
+    <configuration name="Shell" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <option name="ACTIVE_PROFILES" value="neo,hh,docker-desktop,shell" />
+      <module name="travel-planner-agent" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.embabel.example.travel.TravelAgentApplication" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.embabel.template.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="TravelAgentApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
+    <configuration name="Web" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true">
       <option name="ACTIVE_PROFILES" value="neo,severance,docker-desktop" />
       <module name="travel-planner-agent" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.embabel.example.travel.TravelAgentApplication" />
@@ -187,12 +196,12 @@
       </method>
     </configuration>
     <list>
-      <item itemvalue="Spring Boot.ProjectNameApplication" />
-      <item itemvalue="Spring Boot.TravelAgentApplication" />
+      <item itemvalue="Spring Boot.Shell" />
+      <item itemvalue="Spring Boot.Web" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Spring Boot.TravelAgentApplication" />
+        <item itemvalue="Spring Boot.Web" />
       </list>
     </recent_temporary>
   </component>
@@ -212,7 +221,7 @@
       <option name="presentableId" value="Default" />
       <updated>1749536255712</updated>
       <workItem from="1749536256859" duration="50708000" />
-      <workItem from="1750028738610" duration="14501000" />
+      <workItem from="1750028738610" duration="18419000" />
     </task>
     <task id="LOCAL-00001" summary="First version">
       <option name="closed" value="true" />
@@ -422,7 +431,15 @@
       <option name="project" value="LOCAL" />
       <updated>1750071948577</updated>
     </task>
-    <option name="localTasksCounter" value="27" />
+    <task id="LOCAL-00027" summary="Polishing">
+      <option name="closed" value="true" />
+      <created>1750115816793</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1750115816793</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -432,7 +449,6 @@
     <MESSAGE value="First version" />
     <MESSAGE value="Add Neo" />
     <MESSAGE value="OGM working" />
-    <MESSAGE value="Polishing" />
     <MESSAGE value="Add config" />
     <MESSAGE value="Update domain objects" />
     <MESSAGE value="Richer domain objects" />
@@ -441,7 +457,8 @@
     <MESSAGE value="Days" />
     <MESSAGE value="Introduce days" />
     <MESSAGE value="Add htmx interface" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add htmx interface" />
+    <MESSAGE value="Polishing" />
+    <option name="LAST_COMMIT_MESSAGE" value="Polishing" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -458,7 +475,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="kotlin-line">
           <url>file://$PROJECT_DIR$/src/main/kotlin/com/embabel/example/travel/TravelPlannerShell.kt</url>
-          <line>69</line>
+          <line>83</line>
           <option name="timeStamp" value="3" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="kotlin-line">

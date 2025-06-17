@@ -21,6 +21,7 @@ import com.embabel.agent.core.Verbosity
 import com.embabel.agent.shell.markdownToConsole
 import com.embabel.example.travel.agent.JourneyTravelBrief
 import com.embabel.example.travel.agent.TravelPlan
+import com.embabel.example.travel.service.PersonRepository
 import com.embabel.example.travel.service.PersonService
 import org.apache.commons.text.WordUtils
 import org.springframework.shell.standard.ShellComponent
@@ -31,6 +32,7 @@ import java.time.LocalDate
 internal class TravelPlannerShell(
     private val personService: PersonService,
     private val agentPlatform: AgentPlatform,
+    private val personRepository: PersonRepository,
 ) {
     @ShellMethod
     fun findPeople(
@@ -39,6 +41,18 @@ internal class TravelPlannerShell(
     }
 
     @ShellMethod
+    fun p(
+        name: String,
+    ): String {
+        val person = personRepository.findByName(name)
+        return "Returned person: $person"
+    }
+
+
+    @ShellMethod(
+        "Plan a journey using the travel agent",
+        key = ["plan-journey", "j"]
+    )
     fun planJourney() {
         val travelBrief = JourneyTravelBrief(
             from = "Antwerp",
