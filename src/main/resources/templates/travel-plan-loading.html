@@ -1,17 +1,23 @@
-<div hx-get="/travel/journey/plan/status/[[${processId}]]"
+<div>Debug: processId = [[${processId}]]</div>
+<div th:text="'Polling URL: /travel/journey/plan/status/' + ${processId}"></div>
+<div th:text="'SSE URL: /events/process/' + ${processId}"></div>
+
+<div th:attr="hx-get='/travel/journey/status/' + ${processId}"
      hx-trigger="every 2s"
      hx-swap="outerHTML">
+
     <div class="loading">
         <p>Planning your journey...</p>
         <div class="spinner"></div>
     </div>
+</div>
 
-
-    <div th:if="${processId != null}"
-         hx-ext="sse"
-         th:attr="sse-connect='/events/process/' + ${processId}">
-        <div sse-swap="update" hx-swap="afterbegin">
-            <div id="notifications"></div>
-        </div>
+<div th:if="${processId != null and processId != ''}"
+     hx-ext="sse"
+     th:attr="sse-connect='/events/process/' + ${processId}"
+     sse-swap="update"
+     hx-swap="afterbegin">
+    <div id="notifications">
+        <!-- SSE updates will appear here -->
     </div>
 </div>

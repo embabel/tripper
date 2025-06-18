@@ -22,7 +22,9 @@ import com.embabel.agent.core.ProcessOptions
 import com.embabel.agent.core.Verbosity
 import com.embabel.example.travel.agent.JourneyTravelBrief
 import com.embabel.example.travel.agent.TravelPlan
+import jakarta.servlet.http.HttpServletResponse
 import org.springframework.format.annotation.DateTimeFormat
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.GetMapping
@@ -30,10 +32,11 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.server.ResponseStatusException
 import java.time.LocalDate
 
 @Controller
-@RequestMapping(value = ["/travel/journey", ""])
+@RequestMapping(value = ["/travel/journey"])
 class TravelPlanHtmxController(
     private val agentPlatform: AgentPlatform,
     private val asyncWrapper: AsyncWrapper,
@@ -104,16 +107,15 @@ class TravelPlanHtmxController(
             )
         )
         model.addAttribute("processId", agentProcess.id)
-
         asyncWrapper.async { agentProcess.run() }
 
         return "travel-plan-loading"
     }
 
-    @GetMapping("/plan/status/{processId}")
+    @GetMapping("/status/{processId}")
     fun checkPlanStatus(@PathVariable processId: String, model: Model): String {
         val agentProcess = agentPlatform.getAgentProcess(processId)
-            ?: return "error" // Handle missing process
+            ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Process not found")
 
         return if (agentProcess.status == AgentProcessStatusCode.COMPLETED) {
             val travelPlan = agentProcess.lastResult() as TravelPlan
