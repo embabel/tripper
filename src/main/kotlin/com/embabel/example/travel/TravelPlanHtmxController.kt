@@ -22,7 +22,6 @@ import com.embabel.agent.core.ProcessOptions
 import com.embabel.agent.core.Verbosity
 import com.embabel.example.travel.agent.JourneyTravelBrief
 import com.embabel.example.travel.agent.TravelPlan
-import jakarta.servlet.http.HttpServletResponse
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Controller
@@ -36,10 +35,21 @@ import org.springframework.web.server.ResponseStatusException
 import java.time.LocalDate
 
 @Controller
+@RequestMapping(value = [""])
+class HomeController(
+) {
+
+    @GetMapping
+    fun home(): String {
+        return "home"
+    }
+}
+
+@Controller
 @RequestMapping(value = ["/travel/journey"])
 class TravelPlanHtmxController(
     private val agentPlatform: AgentPlatform,
-    private val asyncWrapper: AsyncWrapper,
+    private val asyncer: Asyncer,
 ) {
 
     @GetMapping
@@ -107,7 +117,7 @@ class TravelPlanHtmxController(
             )
         )
         model.addAttribute("processId", agentProcess.id)
-        asyncWrapper.async { agentProcess.run() }
+        asyncer.async { agentProcess.run() }
 
         return "travel-plan-loading"
     }

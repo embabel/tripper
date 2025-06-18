@@ -70,7 +70,7 @@ class NeoOgmConfig(
     @Bean
     @Primary
     fun embeddingModel(embeddingServices: List<EmbeddingService>): EmbeddingModel {
-        val es = embeddingServices.single {it.name.contains("all-minilm")}
+        val es = embeddingServices.single { it.name.contains("all-minilm") }
         return es.model
     }
 }

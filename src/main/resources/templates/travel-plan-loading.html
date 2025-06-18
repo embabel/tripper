@@ -1,10 +1,12 @@
-<div>Debug: processId = [[${processId}]]</div>
-<div th:text="'Polling URL: /travel/journey/plan/status/' + ${processId}"></div>
-<div th:text="'SSE URL: /events/process/' + ${processId}"></div>
+<!--<div>Debug: processId = [[${processId}]]</div>-->
+<!--<div th:text="'Polling URL: /travel/journey/plan/status/' + ${processId}"></div>-->
+<!--<div th:text="'SSE URL: /events/process/' + ${processId}"></div>-->
 
+<!-- Polling for completion -->
 <div th:attr="hx-get='/travel/journey/status/' + ${processId}"
      hx-trigger="every 2s"
-     hx-swap="outerHTML">
+     hx-swap="outerHTML"
+     hx-select-oob="#notifications:afterbegin">
 
     <div class="loading">
         <p>Planning your journey...</p>
@@ -14,10 +16,13 @@
 
 <div th:if="${processId != null and processId != ''}"
      hx-ext="sse"
-     th:attr="sse-connect='/events/process/' + ${processId}"
-     sse-swap="update"
-     hx-swap="afterbegin">
-    <div id="notifications">
+     th:attr="sse-connect='/events/process/' + ${processId}">
+
+    <div id="notifications"
+         sse-swap="update"
+         hx-swap="afterbegin"
+         hx-swap-oob="true">
         <!-- SSE updates will appear here -->
+        <!-- Consider adding a max-height and overflow-y: auto for scrolling -->
     </div>
 </div>

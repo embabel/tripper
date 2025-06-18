@@ -55,7 +55,7 @@ internal class TravelPlannerShell(
     fun rag(
         query: String,
     ): String {
-        val results = ragService.search(RagRequest(query = query))
+        val results = ragService.search(RagRequest(query = query, topK = 5, similarityThreshold = 0.0))
         return "Returned $results"
     }
 
