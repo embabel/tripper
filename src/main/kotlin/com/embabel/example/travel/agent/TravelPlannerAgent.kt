@@ -135,7 +135,7 @@ class TravelPlannerAgent(
             itineraryIdeas.pointsOfInterest.sortedBy { it.name }.joinToString { it.name },
         )
         val promptRunner = context.promptRunner(
-            llm = config.researcherLlm,
+            llm = config.researcherLlm.withMaxTokens(5000),
             promptContributors = listOf(config.researcher, travelers, config.toolCallControl),
             toolGroups = setOf(
                 ToolGroupRequirement(CoreToolGroups.WEB),
@@ -173,7 +173,7 @@ class TravelPlannerAgent(
         travelers: Travelers,
         poiFindings: PointOfInterestFindings,
     ): TravelPlan {
-        return using(config.thinkerLlm)
+        return using(config.thinkerLlm.withMaxTokens(5000))
             .withToolGroups(setOf(CoreToolGroups.WEB, CoreToolGroups.MAPS, CoreToolGroups.MATH))
             .withPromptContributors(
                 listOf(
