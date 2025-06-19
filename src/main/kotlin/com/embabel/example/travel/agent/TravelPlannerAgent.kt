@@ -25,6 +25,7 @@ import com.embabel.agent.api.dsl.parallelMap
 import com.embabel.agent.config.models.AnthropicModels
 import com.embabel.agent.config.models.OpenAiModels
 import com.embabel.agent.core.CoreToolGroups
+import com.embabel.agent.core.ToolGroupRequirement
 import com.embabel.agent.domain.persistence.FindEntitiesRequest
 import com.embabel.agent.domain.persistence.support.naturalLanguageRepository
 import com.embabel.agent.prompt.ResponseFormat
@@ -103,12 +104,13 @@ class TravelPlannerAgent(
         travelers: Travelers,
     ): ItineraryIdeas {
         return using(
-            llm = config.thinkerLlm,
-            toolGroups = setOf(CoreToolGroups.WEB, CoreToolGroups.MAPS, CoreToolGroups.MATH),
+            llm = config.thinkerLlm.withMaxTokens(5000),
             promptContributors = listOf(
                 config.travelPlannerPersona,
                 travelers,
             ),
+        ).withToolGroups(
+            setOf(CoreToolGroups.WEB, CoreToolGroups.MAPS, CoreToolGroups.MATH),
         )
             .create(
                 prompt = """
@@ -135,7 +137,10 @@ class TravelPlannerAgent(
         val promptRunner = context.promptRunner(
             llm = config.researcherLlm,
             promptContributors = listOf(config.researcher, travelers, config.toolCallControl),
-            toolGroups = setOf(CoreToolGroups.WEB, CoreToolGroups.BROWSER_AUTOMATION),
+            toolGroups = setOf(
+                ToolGroupRequirement(CoreToolGroups.WEB),
+                ToolGroupRequirement(CoreToolGroups.BROWSER_AUTOMATION)
+            ),
         )
         val poiFindings = itineraryIdeas.pointsOfInterest.parallelMap(
             context = context,
@@ -168,10 +173,8 @@ class TravelPlannerAgent(
         travelers: Travelers,
         poiFindings: PointOfInterestFindings,
     ): TravelPlan {
-        return using(
-            config.thinkerLlm,
-            toolGroups = setOf(CoreToolGroups.WEB, CoreToolGroups.MAPS, CoreToolGroups.MATH),
-        )
+        return using(config.thinkerLlm)
+            .withToolGroups(setOf(CoreToolGroups.WEB, CoreToolGroups.MAPS, CoreToolGroups.MATH))
             .withPromptContributors(
                 listOf(
                     config.travelPlannerPersona, travelers, ResponseFormat.MARKDOWN,
