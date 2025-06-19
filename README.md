@@ -28,7 +28,7 @@ creates a list of travelers.
 Start up background services, local model runners, and MCP gateway by running:
 
 ```bash
-docker compose --file docker-compose.yml --file docker-compose.dmr.yml up
+docker compose --file compose.yaml --file compose.dmr.yaml up
 ```
 
 Run the shell script to start Embabel under Spring Shell:
