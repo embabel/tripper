@@ -199,8 +199,6 @@ class TravelPlannerAgent(
                 However, consider any important events or places of interest along the way
                 that might inform routing.
                 Include total distances.
-                Include one or more links to the whole trip in Google Maps format.
-                IMPORTANT: Do not include any special characters like accents in the links.
 
                 <brief>${travelBrief.contribution()}</brief>
                 Consider the weather in your recommendations. Use mapping tools to consider distance of driving or walking.

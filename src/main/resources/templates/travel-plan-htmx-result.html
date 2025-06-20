@@ -7,12 +7,8 @@
             <li th:each="day : ${travelPlan.days}" th:text="${day.date + ' - ' + day.stayingAt}"></li>
         </ul>
     </div>
-    <div th:if="${travelPlan.mapLinks != null && !#lists.isEmpty(travelPlan.mapLinks)}">
-        <h4>Maps</h4>
-        <ul>
-            <li th:each="map : ${travelPlan.mapLinks}" th:text="${map}"></li>
-        </ul>
-    </div>
+    <h4>Map</h4>
+    <img th:src="${travelPlan.journeyMapImage(600,400)}" alt="Map of the journey" width="600" height="400"/>
     <div th:if="${travelPlan.pageLinks != null && !#lists.isEmpty(travelPlan.pageLinks)}">
         <h4>References</h4>
         <ul>
