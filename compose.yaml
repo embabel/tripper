@@ -1,0 +1,60 @@
+services:
+
+  mcp-gateway:
+    image: docker/agents_gateway:v2
+    ports:
+      - 9011:9011
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "/run/host-services/backend.sock:/run/host-services/backend.sock"
+      - "./docker-mcp.yaml:/app/docker-mcp.yaml"
+      - "./config.yaml:/app/config.yaml"
+    command:
+      - --verbose
+      - --transport=sse
+      - --catalog=/app/docker-mcp.yaml
+      - --config=/app/config.yaml
+      - --secrets=/run/secrets/mcp_secret
+      - --servers=brave
+      - --servers=wikipedia-mcp
+      - --servers=puppeteer
+      - --servers=github
+      - --servers=google-maps
+      - --tools=brave_web_search
+      - --tools=wikipedia-mcp:*
+      - --tools=github:add_issue_comment
+      - --tools=github:create_issue
+      - --tools=github:list_issues
+      - --tools=github:get_issue
+      - --tools=github:list_pull_requests
+      - --tools=github:get_pull_request
+      - --tools=puppeteer:*
+      - --tools=google-maps:*
+      - --port=9011
+    secrets:
+      - mcp_secret
+
+  zipkin:
+    image: 'openzipkin/zipkin:latest'
+    ports:
+      - "9411:9411"
+
+  neo4j:
+    image: neo4j:5.26
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+      - "7473:7473"
+    volumes:
+      - neo4j_data:/data
+    environment:
+      - NEO4J_AUTH=${NEO4J_USERNAME:-neo4j}/${NEO4J_PASSWORD:-brahmsian}
+      - NEO4J_PLUGINS=["apoc"]
+
+secrets:
+  mcp_secret:
+    file: ./.mcp.env
+
+volumes:
+  neo4j_data:
+
