@@ -13,6 +13,8 @@ embabel-agent-api/src/main/resources/mcp/**
 # Compiled class file
 *.class
 
+.mcp.env
+
 # Log file
 *.log
 

@@ -21,13 +21,14 @@ import com.embabel.agent.api.annotation.Agent
 import com.embabel.agent.api.annotation.using
 import com.embabel.agent.api.common.OperationContext
 import com.embabel.agent.api.common.create
+import com.embabel.agent.api.common.createObjectIfPossible
 import com.embabel.agent.api.dsl.parallelMap
 import com.embabel.agent.config.models.AnthropicModels
 import com.embabel.agent.config.models.OpenAiModels
 import com.embabel.agent.core.CoreToolGroups
 import com.embabel.agent.core.ToolGroupRequirement
-import com.embabel.agent.domain.persistence.FindEntitiesRequest
-import com.embabel.agent.domain.persistence.support.naturalLanguageRepository
+import com.embabel.agent.domain.io.UserInput
+import com.embabel.agent.domain.special.Megazord
 import com.embabel.agent.prompt.ResponseFormat
 import com.embabel.agent.prompt.element.ToolCallControl
 import com.embabel.agent.prompt.persona.Persona
@@ -96,6 +97,30 @@ class TravelPlannerAgent(
 //        }
 //        return Travelers(entities.matches.map { it.match })
         return Travelers(emptyList())
+    }
+
+    data class MZ(val travelers: Travelers, val b: TravelBrief) : Megazord
+
+    @Action
+    fun planFromUserInput(userInput: UserInput, context: OperationContext): MZ? {
+        val journeyTravelBrief = context.promptRunner()
+            .createObjectIfPossible<JourneyTravelBrief>(
+                """
+                Given the following user input, extract a travel brief for a journey.
+            """.trimIndent(),
+            )
+        val travelers = context.promptRunner()
+            .createObjectIfPossible<Travelers>(
+                """
+                Given the following user input, extract information about travelers.
+                It's fine to return an empty list if no travelers can be found.
+            """.trimIndent(),
+            )
+        if (journeyTravelBrief == null || travelers == null) {
+            logger.warn("Could not parse JourneyTravelBrief or Travelers from user input: {}", userInput.content)
+            return null
+        }
+        return MZ(travelers, journeyTravelBrief)
     }
 
     @Action

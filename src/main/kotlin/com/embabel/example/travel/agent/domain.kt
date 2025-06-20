@@ -71,7 +71,7 @@ data class Travelers(
     override fun contribution(): String =
         if (people.isEmpty()) "No information could be found about travelers"
         else "Travelers:\n" + people.joinToString(separator = "\n") {
-            "${it.name}: activities:${it.activities.joinToString(", ") { act -> act.name ?: "anon" }}"
+            "${it.name}: activities:${it.activities.joinToString(", ") { act -> act.name }}"
         }
 }
 
