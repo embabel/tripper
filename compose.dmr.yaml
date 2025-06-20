@@ -13,3 +13,8 @@ services:
         model: jimclark106/qwen3:4b-F16
 
 
+  all-minilm:
+    provider:
+      type: model
+      options:
+        model: jimclark106/all-minilm:23M-F16
