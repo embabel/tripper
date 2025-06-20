@@ -28,7 +28,6 @@ import com.embabel.agent.config.models.OpenAiModels
 import com.embabel.agent.core.CoreToolGroups
 import com.embabel.agent.core.ToolGroupRequirement
 import com.embabel.agent.domain.io.UserInput
-import com.embabel.agent.domain.special.Megazord
 import com.embabel.agent.prompt.ResponseFormat
 import com.embabel.agent.prompt.element.ToolCallControl
 import com.embabel.agent.prompt.persona.Persona
@@ -87,7 +86,7 @@ class TravelPlannerAgent(
 
     @Action
     fun lookupTravelers(
-        travelBrief: TravelBrief,
+        travelBrief: JourneyTravelBrief,
         context: OperationContext,
     ): Travelers {
 //        val nlr = personRepository.naturalLanguageRepository({ it.id }, context, LlmOptions())
@@ -99,29 +98,16 @@ class TravelPlannerAgent(
         return Travelers(emptyList())
     }
 
-    data class MZ(val travelers: Travelers, val b: TravelBrief) : Megazord
-
     @Action
-    fun planFromUserInput(userInput: UserInput, context: OperationContext): MZ? {
-        val journeyTravelBrief = context.promptRunner()
-            .createObjectIfPossible<JourneyTravelBrief>(
+    fun planFromUserInput(userInput: UserInput): JourneyTravelBrief? =
+        using()
+            .createObjectIfPossible(
                 """
                 Given the following user input, extract a travel brief for a journey.
+                <user-input>${userInput.content}</user-input>
             """.trimIndent(),
             )
-        val travelers = context.promptRunner()
-            .createObjectIfPossible<Travelers>(
-                """
-                Given the following user input, extract information about travelers.
-                It's fine to return an empty list if no travelers can be found.
-            """.trimIndent(),
-            )
-        if (journeyTravelBrief == null || travelers == null) {
-            logger.warn("Could not parse JourneyTravelBrief or Travelers from user input: {}", userInput.content)
-            return null
-        }
-        return MZ(travelers, journeyTravelBrief)
-    }
+
 
     @Action
     fun findPointsOfInterest(
@@ -129,7 +115,7 @@ class TravelPlannerAgent(
         travelers: Travelers,
     ): ItineraryIdeas {
         return using(
-            llm = config.thinkerLlm.withMaxTokens(5000),
+            llm = config.thinkerLlm,
             promptContributors = listOf(
                 config.travelPlannerPersona,
                 travelers,
@@ -160,7 +146,7 @@ class TravelPlannerAgent(
             itineraryIdeas.pointsOfInterest.sortedBy { it.name }.joinToString { it.name },
         )
         val promptRunner = context.promptRunner(
-            llm = config.researcherLlm.withMaxTokens(5000),
+            llm = config.researcherLlm,
             promptContributors = listOf(config.researcher, travelers, config.toolCallControl),
             toolGroups = setOf(
                 ToolGroupRequirement(CoreToolGroups.WEB),
