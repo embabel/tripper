@@ -6,6 +6,8 @@ embabel-agent-api/src/main/resources/mcp/**
 */*/target/**
 */*/*/target/**
 
+.mcp.env
+
 .idea/workspace.xml
 
 **/*.log
