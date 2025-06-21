@@ -1,28 +1,55 @@
-<div>Debug: processId = [[${processId}]]</div>
-<div th:text="'Polling URL: /travel/journey/plan/status/' + ${processId}"></div>
-<div th:text="'SSE URL: /events/process/' + ${processId}"></div>
+<!-- Only SSE, no polling -->
+<div id="journey-container">
+    <div id="journey-status">
+        <div class="working">
+            <p>Planning your journey...</p>
+            <div class="spinner"></div>
+        </div>
+    </div>
 
-<!-- Polling for completion -->
-<div th:attr="hx-get='/travel/journey/status/' + ${processId}"
-     hx-trigger="every 2s"
-     hx-swap="outerHTML"
-     hx-select-oob="#notifications:afterbegin">
-
-    <div class="working">
-        <p>Planning your journey...</p>
-        <div class="spinner"></div>
+    <div id="sse-updates">
+        <p>Initializing...</p>
     </div>
 </div>
 
-<div th:if="${processId != null and processId != ''}"
-     hx-ext="sse"
-     th:attr="sse-connect='/events/process/' + ${processId}">
+<script>
+    const processId = '[[${processId}]]';
+    const eventSource = new EventSource(`/events/process/${processId}`);
 
-    <div id="notifications"
-         sse-swap="update"
-         hx-swap="afterbegin"
-         hx-swap-oob="true">
-        <!-- SSE updates will appear here -->
-        <!-- Consider adding a max-height and overflow-y: auto for scrolling -->
-    </div>
-</div>
+    eventSource.addEventListener('agent-process-event', function (event) {
+        const data = JSON.parse(event.data);
+
+        // Handle completion events
+        switch (data.type) {
+            case "GoalAchievedEvent":
+                eventSource.close();
+                window.location.href = `/travel/journey/status/${processId}`;
+                return;
+
+        }
+
+        const target = document.getElementById('sse-updates');
+        if (target) {
+            let userMessage;
+            switch (data.type) {
+                case 'ActionExecutionStartEvent':
+                    userMessage = `Executing action ${data.action?.name}...`;
+                    break;
+                case 'ToolCallRequestEvent':
+                    userMessage = `Calling tool ${data.tool}...`;
+                    break;
+                case 'ChatModelCallEvent':
+                    userMessage = `Calling chat model ${data.llm?.name}`;
+                    break;
+                default:
+                    userMessage = `Processing event ${data.type}...`;
+            }
+
+            target.innerHTML = `
+                <div class="process-update">
+                    <div class="message">${userMessage}</div>
+                </div>
+            `;
+        }
+    });
+</script>
