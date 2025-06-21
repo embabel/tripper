@@ -23,8 +23,13 @@
     <label>Brief:<br/>
         <textarea name="brief" rows="4" cols="40" th:field="*{brief}" required></textarea>
     </label><br/>
-    <label>Start Date: <input type="date" name="startDate" th:field="*{departureDate}" required></label><br/>
-    <label>End Date: <input type="date" name="endDate" th:field="*{returnDate}" required></label><br/>
+    <label>Start Date: <input type="date" name="startDate"
+                              th:value="*{departureDate != null ? #temporals.format(departureDate, 'yyyy-MM-dd') : ''}"
+                              required></label><br/>
+    <label>End Date:
+        <input type="date" name="endDate"
+               th:value="*{returnDate != null ? #temporals.format(returnDate, 'yyyy-MM-dd') : ''}"
+               required></label><br/>
     <button type="submit">Plan Journey</button>
 </form>
 <div id="planResult"></div>

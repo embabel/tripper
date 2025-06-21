@@ -1,6 +1,6 @@
-<!--<div>Debug: processId = [[${processId}]]</div>-->
-<!--<div th:text="'Polling URL: /travel/journey/plan/status/' + ${processId}"></div>-->
-<!--<div th:text="'SSE URL: /events/process/' + ${processId}"></div>-->
+<div>Debug: processId = [[${processId}]]</div>
+<div th:text="'Polling URL: /travel/journey/plan/status/' + ${processId}"></div>
+<div th:text="'SSE URL: /events/process/' + ${processId}"></div>
 
 <!-- Polling for completion -->
 <div th:attr="hx-get='/travel/journey/status/' + ${processId}"

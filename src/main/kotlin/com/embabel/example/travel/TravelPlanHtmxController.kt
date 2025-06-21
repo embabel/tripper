@@ -15,24 +15,17 @@
  */
 package com.embabel.example.travel
 
-import com.embabel.agent.core.AgentPlatform
-import com.embabel.agent.core.AgentProcessStatusCode
-import com.embabel.agent.core.IoBinding
-import com.embabel.agent.core.ProcessOptions
-import com.embabel.agent.core.Verbosity
+import com.embabel.agent.core.*
 import com.embabel.example.travel.agent.JourneyTravelBrief
 import com.embabel.example.travel.agent.TravelPlan
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 import java.time.LocalDate
+import java.time.Period
 
 @Controller
 @RequestMapping(value = [""])
@@ -68,7 +61,7 @@ class TravelPlanHtmxController(
 
         val defaultReturnDate = returnDate?.let {
             LocalDate.parse(it)
-        } ?: LocalDate.now()
+        } ?: LocalDate.now().plus(Period.ofDays(7))
 
         model.addAttribute(
             "travelBrief",
