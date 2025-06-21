@@ -32,23 +32,6 @@ sealed interface TravelBrief : PromptContributor {
     val returnDate: LocalDate
 }
 
-data class ExplorationTravelBrief(
-    val areaToExplore: String,
-    val stayingAt: String,
-    override val brief: String,
-    override val departureDate: LocalDate,
-    override val returnDate: LocalDate,
-) : TravelBrief {
-
-    override fun contribution(): String =
-        """
-        Area to explore: $areaToExplore
-        Staying at: $stayingAt
-        Brief: $brief
-        Dates: $departureDate to $returnDate
-    """.trimIndent()
-}
-
 data class JourneyTravelBrief(
     val from: String,
     val to: String,

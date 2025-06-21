@@ -8,6 +8,9 @@
         </ul>
     </div>
     <h4>Map</h4>
+    <a th:href="${travelPlan.journeyMap}">
+        Interactive map
+    </a>
     <img th:src="${travelPlan.journeyMapImage(600,400)}" alt="Map of the journey" width="600" height="400"/>
     <div th:if="${travelPlan.pageLinks != null && !#lists.isEmpty(travelPlan.pageLinks)}">
         <h4>References</h4>
