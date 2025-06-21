@@ -1,3 +1,12 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Embabel Journey Planner</title>
+    <script src="https://unpkg.com/htmx.org@2.0.5"></script>
+    <link href="/css/dark.css"
+          rel="stylesheet">
+</head>
+<body>
 <div th:if="${travelPlan != null}">
     <h3 th:text="${travelPlan.title}"></h3>
     <div th:text="${travelPlan.plan}"></div>
@@ -31,3 +40,5 @@
         </ul>
     </div>
 </div>
+</body>
+</html>
