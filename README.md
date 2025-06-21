@@ -20,6 +20,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;
 
 # Embabel Travel Planner Agent
+
 **WARNING - THIS IS WORK IN PROGRESS**
 
 Start by populating the data by running the `cypher/populate.cypher` script against your Neo4j database. This script
@@ -31,10 +32,19 @@ Start up background services, local model runners, and MCP gateway by running:
 docker compose --file compose.yaml --file compose.dmr.yaml up
 ```
 
-Run the shell script to start Embabel under Spring Shell:
+Run under your IDE (e.g. a IntelliJ Spring Boot Run Configuration) or run the shell script to start Embabel:
 
 ```bash
-./shell.sh
+./run.sh
+```
+
+The travel planner will be available at `http://localhost:8080/travel/journey`.
+Go to `http://localhost:8080` for a directory.
+
+Starting as follows will run under Spring shell:
+
+```bash
+./run.sh --shell
 ```
 
 When the Embabel shell comes up, use the `plan-travel` command.
