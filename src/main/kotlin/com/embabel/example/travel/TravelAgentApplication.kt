@@ -15,35 +15,20 @@
  */
 package com.embabel.example.travel
 
-import com.embabel.common.util.WinUtils
+import com.embabel.agent.config.annotation.*
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan
 import org.springframework.boot.runApplication
 
-@SpringBootApplication(
-    scanBasePackages = [
-        "com.embabel.agent",
-        "com.embabel.example.travel",
-    ]
+@SpringBootApplication
+@ConfigurationPropertiesScan
+@EnableAgents(
+    loggingTheme = LoggingThemes.SEVERANCE,
+    localModels = [LocalModels.DOCKER],
+    mcpServers = [McpServers.DOCKER, McpServers.DOCKER_DESKTOP],
 )
-@ConfigurationPropertiesScan(
-    basePackages = [
-        "com.embabel.agent",
-        "com.embabel.example.travel",
-    ]
-)
-class TravelAgentApplication {
-
-    companion object {
-        init {
-            if (WinUtils.IS_OS_WINDOWS()) {
-                // Set console to UTF-8 on Windows
-                // This is necessary to display non-ASCII characters correctly
-                WinUtils.CHCP_TO_UTF8()
-            }
-        }
-    }
-}
+@EnableAgentShell
+class TravelAgentApplication
 
 fun main(args: Array<String>) {
     runApplication<TravelAgentApplication>(*args)
