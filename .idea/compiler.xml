@@ -13,4 +13,9 @@
       <module name="example-kotlin-parent" target="21" />
     </bytecodeTargetLevel>
   </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="travel-planner-agent" options="-parameters" />
+    </option>
+  </component>
 </project>

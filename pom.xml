@@ -3,9 +3,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.embabel.build</groupId>
-        <artifactId>embabel-build-parent</artifactId>
-        <version>0.1.0-SNAPSHOT</version>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.5.3</version>
+        <relativePath/> <!-- Lookup parent from repository -->
     </parent>
     <groupId>com.embabel.hub</groupId>
     <artifactId>travel-planner-agent</artifactId>
@@ -15,79 +16,36 @@
     <description>Travel planner</description>
 
     <properties>
-        <embabel-common.version>0.1.0-SNAPSHOT</embabel-common.version>
-        <embabel-agent-api.version>0.1.0-SNAPSHOT</embabel-agent-api.version>
-        <examples-common.version>0.1.0-SNAPSHOT</examples-common.version>
-
+        <embabel-agent.version>0.1.0-SNAPSHOT</embabel-agent.version>
+        <spring-ai.version>1.0.0-M8</spring-ai.version>
+        <kotlin.version>2.1.10</kotlin.version>
+        <kotlin.compiler.apiVersion>2.1</kotlin.compiler.apiVersion>
+        <java.version>21</java.version>
     </properties>
-
-    <!-- Embabel BOM(s) -->
-    <dependencyManagement>
-        <dependencies>
-            <!-- Embabel Agent BOM -->
-            <dependency>
-                <groupId>com.embabel.agent</groupId>
-                <artifactId>embabel-agent-dependencies</artifactId>
-                <version>${embabel-agent-api.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <!-- Embabel Common BOM -->
-            <dependency>
-                <groupId>com.embabel.common</groupId>
-                <artifactId>embabel-common-dependencies</artifactId>
-                <version>${embabel-common.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
-            <!-- Embabel Common BOM For Unit Tests-->
-            <dependency>
-                <groupId>com.embabel.common</groupId>
-                <artifactId>embabel-common-test-dependencies</artifactId>
-                <version>${embabel-common.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 
     <dependencies>
 
         <dependency>
             <groupId>com.embabel.agent</groupId>
-            <artifactId>embabel-agent-api</artifactId>
+            <artifactId>embabel-agent-starter</artifactId>
+            <version>${embabel-agent.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.ai</groupId>
             <artifactId>spring-ai-starter-vector-store-neo4j</artifactId>
+            <version>${spring-ai.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.embabel.agent</groupId>
             <artifactId>embabel-agent-test</artifactId>
+            <version>${embabel-agent.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.neo4j</groupId>
             <artifactId>neo4j-ogm-spring-boot-starter</artifactId>
             <version>1.2.5</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.embabel.common</groupId>
-            <artifactId>embabel-common-core</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.embabel.common</groupId>
-            <artifactId>embabel-common-util</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.embabel.common</groupId>
-            <artifactId>embabel-common-ai</artifactId>
         </dependency>
 
         <dependency>
@@ -124,30 +82,32 @@
     </dependencies>
 
     <build>
+        <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
+        <testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>
         <plugins>
-            <!-- Production Build Plugins -->
-            <plugin>
-                <groupId>org.jetbrains.kotlin</groupId>
-                <artifactId>kotlin-maven-plugin</artifactId>
-            </plugin>
-
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${spring-boot.version}</version>
             </plugin>
-
-            <!-- Testing and Quality Build Plugins -->
             <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-maven-plugin</artifactId>
+                <configuration>
+                    <args>
+                        <arg>-Xjsr305=strict</arg>
+                    </args>
+                    <compilerPlugins>
+                        <plugin>spring</plugin>
+                    </compilerPlugins>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.jetbrains.kotlin</groupId>
+                        <artifactId>kotlin-maven-allopen</artifactId>
+                        <version>${kotlin.version}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-            </plugin>
-
         </plugins>
     </build>
 
