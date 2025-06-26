@@ -4,5 +4,6 @@ https://github.com/neo4j/neo4j-graphrag-python/blob/main/examples/build_graph/fr
 
 docker build -t neo4j-graphrag .
 
-docker run -e OPENAI_API_KEY=$OPENAI_API_KEY -e NEO4J_URI="bolt://host.docker.internal:7687" -v ./test.txt:
-/app/data/input.txt neo4j-graphrag /app/data/input.txt
+docker run -e OPENAI_API_KEY=$OPENAI_API_KEY \
+-v ./test.txt:/app/data/input.txt \
+neo4j-graphrag /app/simple_kg_pipeline_config.yml /app/data/input.txt

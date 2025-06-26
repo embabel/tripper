@@ -28,16 +28,17 @@ os.environ["NEO4J_PASSWORD"] = os.getenv("NEO4J_PASSWORD", "brahmsian")
 # os.environ["OPENAI_API_KEY"] = "sk-..."
 
 root_dir = Path(__file__).parent
-config_file_path = root_dir / "simple_kg_pipeline_config.yml"
 
 
 async def main() -> PipelineResult:
-    if len(sys.argv) < 2:
-        print("Usage: python build_graph.py <text_file_path>")
-        print("Example: python build_graph.py /app/data/input.txt")
+    if len(sys.argv) < 3:
+        print("Usage: python build_graph.py <config_file_path> <text_file_path>")
+        print("Example: python build_graph.py /app/data/config.yml /app/data/input.txt")
         sys.exit(1)
 
-    text_file_path = sys.argv[1]
+    config_file_path = sys.argv[1]
+
+    text_file_path = sys.argv[2]
 
     try:
         with open(text_file_path, 'r', encoding='utf-8') as f:
