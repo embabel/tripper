@@ -17,7 +17,11 @@ package com.embabel.example.travel.config
 
 import com.embabel.agent.rag.RagService
 import com.embabel.agent.rag.support.SpringVectorStoreRagService
+import com.embabel.common.ai.model.ModelProvider
+import com.embabel.common.ai.model.ModelSelectionCriteria
+import org.neo4j.driver.Driver
 import org.springframework.ai.vectorstore.VectorStore
+import org.springframework.ai.vectorstore.neo4j.Neo4jVectorStore
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
@@ -30,5 +34,15 @@ class RagConfiguration {
             vectorStore = vectorStore,
             description = "Travel Example Rag Service"
         )
+    }
+
+    @Bean
+    fun vectorStore(driver: Driver, modelProvider: ModelProvider): VectorStore {
+        val embeddingService = modelProvider.getEmbeddingService(ModelSelectionCriteria.Auto).model
+        
+        return Neo4jVectorStore.builder(
+            driver,
+            embeddingService,
+        ).build()
     }
 }
