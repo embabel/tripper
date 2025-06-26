@@ -15,6 +15,7 @@
  */
 package com.embabel.example.travel
 
+import com.embabel.agent.api.common.Asyncer
 import com.embabel.agent.core.*
 import com.embabel.example.travel.agent.JourneyTravelBrief
 import com.embabel.example.travel.agent.TravelPlan
