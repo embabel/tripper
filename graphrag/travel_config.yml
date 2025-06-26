@@ -1,0 +1,70 @@
+version_: "1"
+template_: SimpleKGPipeline
+neo4j_config:
+  params_:
+    uri:
+      resolver_: ENV
+      var_: NEO4J_URI
+    user:
+      resolver_: ENV
+      var_: NEO4J_USER
+    password:
+      resolver_: ENV
+      var_: NEO4J_PASSWORD
+llm_config:
+  class_: OpenAILLM
+  params_:
+    api_key:
+      resolver_: ENV
+      var_: OPENAI_API_KEY
+    model_name: gpt-4o
+    model_params:
+      temperature: 0
+      max_tokens: 2000
+      response_format:
+        type: json_object
+embedder_config:
+  class_: OpenAIEmbeddings
+  params_:
+    api_key:
+      resolver_: ENV
+      var_: OPENAI_API_KEY
+from_pdf: false
+schema:
+  node_types:
+    - label: Person
+      properties:
+        - name: name
+          type: STRING
+    - label: Activity
+      description: Activity a person engages
+      properties:
+        - name: name
+          type: STRING
+    - label: Visit
+      properties:
+        - name: name
+          type: STRING
+        - name: comment
+          type: STRING
+        - name: year
+          type: INTEGER
+    - label: Place
+      properties:
+        - name: name
+          type: STRING
+  relationship_types:
+    - label: ENJOYS
+    - label: MADE_VISIT
+      description: Person visited a place
+    - label: TO
+  patterns:
+    - [ "Person", "ENJOYS", "Activity" ]
+    - [ "Person", "MADE_VISIT", "Visit" ]
+    - [ "Visit", "TO", "Place" ]
+text_splitter:
+  class_: text_splitters.fixed_size_splitter.FixedSizeSplitter
+  params_:
+    chunk_size: 100
+    chunk_overlap: 10
+perform_entity_resolution: true
