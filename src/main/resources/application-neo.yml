@@ -1,15 +1,14 @@
-
 spring:
   neo4j:
     uri: ${NEO4J_URI:bolt://localhost:7687}
     authentication:
       username: ${NEO4J_USERNAME:neo4j}
       password: ${NEO4J_PASSWORD:brahmsian}
-  ai:
-    vectorstore:
-      neo4j:
-        initialize-schema: false
-#        database-name: neo4j
-        index-name: vector
-        embedding-dimension: 384
-        distance-type: cosine
+#  ai:
+#    vectorstore:
+#      neo4j:
+#        initialize-schema: false
+#        #        database-name: neo4j
+#        index-name: vector
+#        embedding-dimension: 384
+#        distance-type: cosine

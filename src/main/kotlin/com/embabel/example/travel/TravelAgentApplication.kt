@@ -24,7 +24,7 @@ import org.springframework.boot.runApplication
 @ConfigurationPropertiesScan
 @EnableAgents(
     loggingTheme = LoggingThemes.SEVERANCE,
-    localModels = [LocalModels.DOCKER],
+    localModels = [LocalModels.DOCKER, LocalModels.OLLAMA],
     mcpServers = [McpServers.DOCKER, McpServers.DOCKER_DESKTOP],
 )
 @EnableAgentShell
