@@ -41,28 +41,7 @@ data class ScoredResult<RESULT, FEEDBACK>(
 object Workflows {
 
     private val logger = LoggerFactory.getLogger(Workflows::class.java)
-
-    @JvmStatic
-    fun <RESULT : Any, FEEDBACK : Feedback> runEvaluatorOptimizer(
-        context: ActionContext,
-        generator: (TransformationActionContext<FEEDBACK?, RESULT>) -> RESULT,
-        evaluator: (TransformationActionContext<RESULT, FEEDBACK>) -> FEEDBACK,
-        acceptanceCriteria: (FEEDBACK) -> Boolean,
-        maxIterations: Int,
-        resultClass: Class<RESULT>,
-        feedbackClass: Class<FEEDBACK>,
-    ): ScoredResult<RESULT, FEEDBACK> {
-        val agentScope = evaluatorOptimizer(
-            generator = generator,
-            evaluator = evaluator,
-            acceptanceCriteria = acceptanceCriteria,
-            maxIterations = maxIterations,
-            resultClass = resultClass,
-            feedbackClass = feedbackClass,
-        )
-        return runInAction(context, ScoredResult::class.java as Class<ScoredResult<RESULT, FEEDBACK>>, agentScope)
-    }
-
+    
     inline fun <reified RESULT : Any, reified FEEDBACK : Feedback> evaluatorOptimizer(
         noinline generator: (TransformationActionContext<FEEDBACK?, RESULT>) -> RESULT,
         noinline evaluator: (TransformationActionContext<RESULT, FEEDBACK>) -> FEEDBACK,
