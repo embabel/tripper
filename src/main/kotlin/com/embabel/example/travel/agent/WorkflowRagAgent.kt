@@ -6,14 +6,16 @@ import com.embabel.agent.api.annotation.Agent
 import com.embabel.agent.api.annotation.usingDefaultLlm
 import com.embabel.agent.api.common.ActionContext
 import com.embabel.agent.api.common.create
+import com.embabel.agent.api.workflow.ScoredResult
 import com.embabel.agent.api.workflow.SimpleFeedback
 import com.embabel.agent.api.workflow.Workflows
 import com.embabel.agent.api.workflow.runInAction
-import com.embabel.agent.core.count
 import com.embabel.agent.domain.io.UserInput
 import com.embabel.agent.rag.RagService
 
-// TODO consider prompt contributor
+data class Report(
+    val report: String,
+)
 
 @Agent(description = "report on a given topic")
 class WorkflowRagAgent(
@@ -38,14 +40,11 @@ class WorkflowRagAgent(
     fun report(
         reportRequest: ReportRequest,
         context: ActionContext,
-    ): Report {
-        data class InterimReport(
-            val report: String,
-        )
+    ): ScoredResult<Report, SimpleFeedback> {
 
         val evaluator = Workflows.evaluatorOptimizer(
             generator = {
-                context.promptRunner().create<InterimReport>(
+                context.promptRunner().create<Report>(
                     """
             Given the topic, generate a detailed report in ${reportRequest.words} words.
             
@@ -73,21 +72,14 @@ class WorkflowRagAgent(
             """.trimIndent()
                 )
             },
-            resultClass = InterimReport::class.java,
+            resultClass = Report::class.java,
             feedbackClass = SimpleFeedback::class.java,
-            acceptanceCriteria = { it.score > .9 },
+            acceptanceCriteria = { it.score > .96 },
             maxIterations = 5,
         )
-        val internalReport = evaluator.runInAction(
+        return evaluator.runInAction(
             context,
-            outputClass = InterimReport::class.java,
-        )
-        return Report(
-            request = reportRequest,
-            content = internalReport.report,
-            // TODO fix this
-            feedback = null,
-            iterations = context.count<InterimReport>(),
+            outputClass = ScoredResult::class.java as Class<ScoredResult<Report, SimpleFeedback>>,
         )
     }
 }

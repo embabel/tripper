@@ -11,8 +11,10 @@ import com.embabel.agent.core.ComputedBooleanCondition
 import com.embabel.agent.core.Goal
 import com.embabel.agent.core.last
 import com.embabel.common.core.MobyNameGenerator
+import com.embabel.common.core.types.Timestamped
 import com.embabel.common.core.types.ZeroToOne
 import org.slf4j.LoggerFactory
+import java.time.Instant
 
 interface Feedback {
     val score: ZeroToOne
@@ -22,6 +24,16 @@ data class SimpleFeedback(
     override val score: ZeroToOne,
     val feedback: String,
 ) : Feedback
+
+data class ScoredResult<RESULT, FEEDBACK>(
+    val result: RESULT,
+    val feedback: FEEDBACK,
+    val iterations: Int,
+) : Timestamped {
+
+    override val timestamp: Instant = Instant.now()
+
+}
 
 /**
  * See https://www.anthropic.com/engineering/building-effective-agents
@@ -39,14 +51,12 @@ object Workflows {
         resultClass: Class<RESULT>,
         feedbackClass: Class<FEEDBACK>,
         maxIterations: Int,
-    ): AgentScopeBuilder<RESULT> {
+    ): AgentScopeBuilder<ScoredResult<RESULT, FEEDBACK>> {
 
         val ACCEPTABLE = "acceptable"
         val REPORT_WAS_LAST_ACTION = "reportWasLastAction"
         val BEST_FEEDBACK = "bestFeedback"
         val BEST_RESULT = "bestResult"
-
-        val actions = mutableListOf<Action>()
 
         val generationAction = SupplierAction(
             name = "=>${resultClass.name}",
@@ -63,7 +73,6 @@ object Workflows {
             report
         }
 
-        actions += generationAction
         val evaluationAction = TransformationAction(
             name = "${resultClass.name}=>${feedbackClass.name}",
             description = "Evaluate $resultClass to $feedbackClass",
@@ -79,13 +88,17 @@ object Workflows {
             val feedback = evaluator(context)
             val bestSoFar = context[BEST_FEEDBACK] as FEEDBACK?
             if (bestSoFar == null || feedback.score > bestSoFar.score) {
+                logger.info(
+                    "New best feedback found: {} (was {})",
+                    feedback,
+                    bestSoFar ?: "none",
+                )
                 context[BEST_RESULT] = context.input
                 context[BEST_FEEDBACK] = feedback
             }
             logger.info("Feedback is {}", feedback)
             feedback
         }
-        actions += evaluationAction
         val reportWasLastActionCondition = ComputedBooleanCondition(
             name = REPORT_WAS_LAST_ACTION,
             evaluator = { context, _ ->
@@ -107,7 +120,6 @@ object Workflows {
                     context += context[BEST_RESULT] ?: throw IllegalStateException(
                         "No result found in context after $maxIterations iterations"
                     )
-                    // TODO should take best
                     true
                 } else {
                     val feedback = context.last(feedbackClass)
@@ -126,15 +138,38 @@ object Workflows {
                 }
             }
         )
+        val consolidateAction: Action = SupplierAction(
+            name = "consolidate-${resultClass.name}-${feedbackClass.name}",
+            description = "Consolidate results and feedback",
+            pre = listOf(ACCEPTABLE),
+            cost = 0.0,
+            value = 0.0,
+            toolGroups = emptySet(),
+            outputClass = ScoredResult::class.java,
+        ) {
+            val bestFeedback = it[BEST_FEEDBACK] as FEEDBACK
+            val bestResult = it[BEST_RESULT] as RESULT
+            ScoredResult(
+                result = bestResult,
+                feedback = bestFeedback,
+                // Remove the last result which is best
+                iterations = it.objects.filterIsInstance(resultClass).count() - 2,
+            )
+        }
+
         val resultGoal = Goal(
             "final-${resultClass.name}",
             "Satisfied with the final ${resultClass.name}",
-            pre = setOf(ACCEPTABLE)
+            satisfiedBy = ScoredResult::class.java,
         )
 
         return AgentScopeBuilder(
             name = MobyNameGenerator.generateName(),
-            actions = actions,
+            actions = listOf(
+                generationAction,
+                evaluationAction,
+                consolidateAction,
+            ),
             conditions = setOf(acceptableCondition, reportWasLastActionCondition),
             goals = setOf(resultGoal)
         )
