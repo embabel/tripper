@@ -5,11 +5,11 @@ import com.embabel.agent.api.annotation.Action
 import com.embabel.agent.api.annotation.Agent
 import com.embabel.agent.api.annotation.usingDefaultLlm
 import com.embabel.agent.api.common.ActionContext
+import com.embabel.agent.api.common.TransformationActionContext
 import com.embabel.agent.api.common.create
 import com.embabel.agent.api.workflow.ScoredResult
 import com.embabel.agent.api.workflow.SimpleFeedback
 import com.embabel.agent.api.workflow.Workflows
-import com.embabel.agent.api.workflow.runInAction
 import com.embabel.agent.domain.io.UserInput
 import com.embabel.agent.rag.RagService
 
@@ -33,6 +33,7 @@ class WorkflowRagAgent(
         """.trimIndent()
     )
 
+
     @AchievesGoal(
         description = "Topic report was created",
     )
@@ -42,22 +43,25 @@ class WorkflowRagAgent(
         context: ActionContext,
     ): ScoredResult<Report, SimpleFeedback> {
 
-        val evaluator = Workflows.evaluatorOptimizer(
-            generator = {
-                context.promptRunner().create<Report>(
-                    """
+        fun generator(tac: TransformationActionContext<SimpleFeedback?, Report>): Report =
+            tac.promptRunner().create(
+                """
             Given the topic, generate a detailed report in ${reportRequest.words} words.
             
             # Topic
             ${reportRequest.topic}
             
             # Feedback
-            ${it?.feedback ?: "No feedback provided"}
+            ${tac.input ?: "No feedback provided"}
                     """.trimIndent()
-                )
-            },
+            )
+
+        return Workflows.runEvaluatorOptimizer(
+            context = context,
+            generator = ::generator,
+            acceptanceCriteria = { it.score >= .98 },
             evaluator = {
-                context.promptRunner().create<SimpleFeedback>(
+                it.promptRunner().create(
                     """
             Given the topic and word count, evaluate the report and provide feedback
             Feedback must be a score between 0 and 1, where 1 is perfect.
@@ -72,14 +76,6 @@ class WorkflowRagAgent(
             """.trimIndent()
                 )
             },
-            resultClass = Report::class.java,
-            feedbackClass = SimpleFeedback::class.java,
-            acceptanceCriteria = { it.score > .96 },
-            maxIterations = 5,
-        )
-        return evaluator.runInAction(
-            context,
-            outputClass = ScoredResult::class.java as Class<ScoredResult<Report, SimpleFeedback>>,
         )
     }
 }

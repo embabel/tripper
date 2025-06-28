@@ -42,15 +42,52 @@ object Workflows {
 
     private val logger = LoggerFactory.getLogger(Workflows::class.java)
 
+    inline fun <reified RESULT : Any, reified FEEDBACK : Feedback> runEvaluatorOptimizer(
+        context: ActionContext,
+        noinline generator: (TransformationActionContext<FEEDBACK?, RESULT>) -> RESULT,
+        noinline evaluator: (TransformationActionContext<RESULT, FEEDBACK>) -> FEEDBACK,
+        noinline acceptanceCriteria: (FEEDBACK) -> Boolean = { it.score >= .98 },
+        maxIterations: Int = 5,
+    ): ScoredResult<RESULT, FEEDBACK> =
+        runEvaluatorOptimizer(
+            context = context,
+            generator = generator,
+            evaluator = evaluator,
+            acceptanceCriteria = acceptanceCriteria,
+            maxIterations = maxIterations,
+            resultClass = RESULT::class.java,
+            feedbackClass = FEEDBACK::class.java,
+        )
+
     @JvmStatic
-    fun <RESULT : Any, FEEDBACK : Feedback> evaluatorOptimizer(
-        // TODO is this right or need context
-        generator: (FEEDBACK?) -> RESULT,
+    fun <RESULT : Any, FEEDBACK : Feedback> runEvaluatorOptimizer(
+        context: ActionContext,
+        generator: (TransformationActionContext<FEEDBACK?, RESULT>) -> RESULT,
         evaluator: (TransformationActionContext<RESULT, FEEDBACK>) -> FEEDBACK,
         acceptanceCriteria: (FEEDBACK) -> Boolean,
+        maxIterations: Int,
         resultClass: Class<RESULT>,
         feedbackClass: Class<FEEDBACK>,
+    ): ScoredResult<RESULT, FEEDBACK> {
+        val agentScope = evaluatorOptimizer(
+            generator = generator,
+            evaluator = evaluator,
+            acceptanceCriteria = acceptanceCriteria,
+            maxIterations = maxIterations,
+            resultClass = resultClass,
+            feedbackClass = feedbackClass,
+        )
+        return agentScope.runInAction(context, ScoredResult::class.java as Class<ScoredResult<RESULT, FEEDBACK>>)
+    }
+
+    @JvmStatic
+    fun <RESULT : Any, FEEDBACK : Feedback> evaluatorOptimizer(
+        generator: (TransformationActionContext<FEEDBACK?, RESULT>) -> RESULT,
+        evaluator: (TransformationActionContext<RESULT, FEEDBACK>) -> FEEDBACK,
+        acceptanceCriteria: (FEEDBACK) -> Boolean,
         maxIterations: Int,
+        resultClass: Class<RESULT>,
+        feedbackClass: Class<FEEDBACK>,
     ): AgentScopeBuilder<ScoredResult<RESULT, FEEDBACK>> {
 
         val ACCEPTABLE = "acceptable"
@@ -68,7 +105,10 @@ object Workflows {
             outputClass = resultClass,
             toolGroups = emptySet(),
         ) {
-            val report = generator.invoke(it.last(feedbackClass))
+            val tac = (it as TransformationActionContext<FEEDBACK?, RESULT>).copy(
+                input = it.last(feedbackClass)
+            )
+            val report = generator.invoke(tac)
             logger.info("Generated report: {}", report)
             report
         }
