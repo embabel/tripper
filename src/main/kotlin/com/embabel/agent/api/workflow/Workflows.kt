@@ -42,23 +42,6 @@ object Workflows {
 
     private val logger = LoggerFactory.getLogger(Workflows::class.java)
 
-    inline fun <reified RESULT : Any, reified FEEDBACK : Feedback> runEvaluatorOptimizer(
-        context: ActionContext,
-        noinline generator: (TransformationActionContext<FEEDBACK?, RESULT>) -> RESULT,
-        noinline evaluator: (TransformationActionContext<RESULT, FEEDBACK>) -> FEEDBACK,
-        noinline acceptanceCriteria: (FEEDBACK) -> Boolean = { it.score >= .98 },
-        maxIterations: Int = 5,
-    ): ScoredResult<RESULT, FEEDBACK> =
-        runEvaluatorOptimizer(
-            context = context,
-            generator = generator,
-            evaluator = evaluator,
-            acceptanceCriteria = acceptanceCriteria,
-            maxIterations = maxIterations,
-            resultClass = RESULT::class.java,
-            feedbackClass = FEEDBACK::class.java,
-        )
-
     @JvmStatic
     fun <RESULT : Any, FEEDBACK : Feedback> runEvaluatorOptimizer(
         context: ActionContext,
@@ -77,8 +60,23 @@ object Workflows {
             resultClass = resultClass,
             feedbackClass = feedbackClass,
         )
-        return agentScope.runInAction(context, ScoredResult::class.java as Class<ScoredResult<RESULT, FEEDBACK>>)
+        return runInAction(context, ScoredResult::class.java as Class<ScoredResult<RESULT, FEEDBACK>>, agentScope)
     }
+
+    inline fun <reified RESULT : Any, reified FEEDBACK : Feedback> evaluatorOptimizer(
+        noinline generator: (TransformationActionContext<FEEDBACK?, RESULT>) -> RESULT,
+        noinline evaluator: (TransformationActionContext<RESULT, FEEDBACK>) -> FEEDBACK,
+        maxIterations: Int,
+        noinline acceptanceCriteria: (FEEDBACK) -> Boolean = { it.score >= 0.98 },
+    ): AgentScopeBuilder<ScoredResult<RESULT, FEEDBACK>> =
+        evaluatorOptimizer(
+            generator = generator,
+            evaluator = evaluator,
+            acceptanceCriteria = acceptanceCriteria,
+            maxIterations = maxIterations,
+            resultClass = RESULT::class.java,
+            feedbackClass = FEEDBACK::class.java,
+        )
 
     @JvmStatic
     fun <RESULT : Any, FEEDBACK : Feedback> evaluatorOptimizer(
@@ -214,28 +212,30 @@ object Workflows {
             goals = setOf(resultGoal)
         )
     }
+
+    fun <O : Any> runInAction(
+        context: ActionContext,
+        outputClass: Class<O>,
+        agentScopeBuilder: AgentScopeBuilder<O>,
+    ): O {
+        val agent = agentScopeBuilder.build().createAgent(
+            name = agentScopeBuilder.name,
+            provider = agentScopeBuilder.provider,
+            description = agentScopeBuilder.name,
+        )
+        val singleAction = agentTransformer(
+            agent = agent,
+            inputClass = Unit::class.java,
+            outputClass = outputClass,
+        )
+
+        singleAction.execute(
+            processContext = context.processContext,
+            action = context.action!!,
+        )
+        return context.last(outputClass) ?: throw IllegalStateException(
+            "No output of type ${outputClass.name} found in context"
+        )
+    }
 }
 
-fun <O : Any> AgentScopeBuilder<O>.runInAction(
-    context: ActionContext,
-    outputClass: Class<O>,
-): O {
-    val agent = build().createAgent(
-        name = name,
-        provider = provider,
-        description = name,
-    )
-    val singleAction = agentTransformer(
-        agent = agent,
-        inputClass = Unit::class.java,
-        outputClass = outputClass,
-    )
-
-    singleAction.execute(
-        processContext = context.processContext,
-        action = context.action!!,
-    )
-    return context.last(outputClass) ?: throw IllegalStateException(
-        "No output of type ${outputClass.name} found in context"
-    )
-}

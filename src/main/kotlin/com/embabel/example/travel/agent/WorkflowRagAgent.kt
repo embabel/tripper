@@ -7,6 +7,7 @@ import com.embabel.agent.api.annotation.usingDefaultLlm
 import com.embabel.agent.api.common.ActionContext
 import com.embabel.agent.api.common.TransformationActionContext
 import com.embabel.agent.api.common.create
+import com.embabel.agent.api.dsl.AgentScopeBuilder
 import com.embabel.agent.api.workflow.ScoredResult
 import com.embabel.agent.api.workflow.SimpleFeedback
 import com.embabel.agent.api.workflow.Workflows
@@ -56,13 +57,13 @@ class WorkflowRagAgent(
                     """.trimIndent()
             )
 
-        return Workflows.runEvaluatorOptimizer(
-            context = context,
-            generator = ::generator,
-            acceptanceCriteria = { it.score >= .98 },
-            evaluator = {
-                it.promptRunner().create(
-                    """
+        return context.runAgent(
+            Workflows.evaluatorOptimizer(
+                maxIterations = 5,
+                generator = ::generator,
+                evaluator = {
+                    it.promptRunner().create(
+                        """
             Given the topic and word count, evaluate the report and provide feedback
             Feedback must be a score between 0 and 1, where 1 is perfect.
             
@@ -74,8 +75,28 @@ class WorkflowRagAgent(
             ${reportRequest.topic}
             Word count: ${reportRequest.words}
             """.trimIndent()
-                )
-            },
+                    )
+                },
+            )
         )
     }
 }
+
+fun <O : Any> ActionContext.runAgent(
+    outputClass: Class<O>,
+    agentScopeBuilder: AgentScopeBuilder<O>,
+) =
+    Workflows.runInAction(
+        context = this,
+        outputClass = outputClass,
+        agentScopeBuilder,
+    )
+
+inline fun <reified O : Any> ActionContext.runAgent(
+    agentScopeBuilder: AgentScopeBuilder<O>,
+) =
+    Workflows.runInAction(
+        context = this,
+        outputClass = O::class.java,
+        agentScopeBuilder,
+    )
