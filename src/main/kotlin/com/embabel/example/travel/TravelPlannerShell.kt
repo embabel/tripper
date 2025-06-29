@@ -22,7 +22,7 @@ import com.embabel.agent.rag.RagRequest
 import com.embabel.agent.rag.RagService
 import com.embabel.agent.shell.markdownToConsole
 import com.embabel.example.travel.agent.JourneyTravelBrief
-import com.embabel.example.travel.agent.TravelPlan
+import com.embabel.example.travel.agent.ProposedTravelPlan
 import com.embabel.example.travel.service.PersonRepository
 import com.embabel.example.travel.service.PersonService
 import org.apache.commons.text.WordUtils
@@ -88,7 +88,7 @@ internal class TravelPlannerShell(
                 ),
             )
         )
-        val travelPlan = ap.lastResult() as TravelPlan
+        val travelPlan = ap.lastResult() as ProposedTravelPlan
 
         println("Travel Plan: ${WordUtils.wrap(markdownToConsole(travelPlan.plan), 100)}")
 

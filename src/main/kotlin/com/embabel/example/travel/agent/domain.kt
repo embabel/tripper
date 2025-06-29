@@ -86,7 +86,7 @@ data class Day(
     val stayingAt: String,
 )
 
-data class TravelPlan(
+data class ProposedTravelPlan(
     @JsonPropertyDescription("Catchy title appropriate to the travelers and travel brief")
     val title: String,
     @JsonPropertyDescription("Detailed travel plan")
@@ -97,15 +97,20 @@ data class TravelPlan(
     val imageLinks: List<InternetResource>,
     @JsonPropertyDescription("Links to pages with more information about the travel plan")
     val pageLinks: List<InternetResource>,
+)
+
+data class TravelPlan(
+    val brief: JourneyTravelBrief,
+    val plan: ProposedTravelPlan
 ) : HasContent {
 
     /**
      * Google Maps link for the whole journey. Computed from days.
      * Even good LLMs seem to get map links wrong, so we compute it here.
      */
-    val journeyMap: String
+    val journeyMapUrl: String
         get() {
-            val encodedLocations = days.distinctBy { it.stayingAt }.map { day ->
+            val encodedLocations = plan.days.distinctBy { it.stayingAt }.map { day ->
                 URLEncoder.encode(day.stayingAt, Charsets.UTF_8.name())
             }
 
@@ -116,11 +121,11 @@ data class TravelPlan(
             }
         }
 
-    fun journeyMapImage(
+    fun journeyMapImageUrl(
         width: Int = 600,
         height: Int = 400,
     ): String {
-        val encodedLocations = days.distinctBy { it.stayingAt }.map { day ->
+        val encodedLocations = plan.days.distinctBy { it.stayingAt }.map { day ->
             URLEncoder.encode(day.stayingAt, "UTF-8")
         }
 
@@ -145,14 +150,14 @@ data class TravelPlan(
 
     override val content: String
         get() = """
-            $title
-            $plan
-            Days: ${days.joinToString(separator = "\n") { "${it.date} - ${it.stayingAt}" }}
+            ${plan.title}
+            ${plan.plan}
+            Days: ${plan.days.joinToString(separator = "\n") { "${it.date} - ${it.stayingAt}" }}
             Map:
-            $journeyMap
+            $journeyMapUrl
             Pages:
-            ${pageLinks.joinToString("\n") { "${it.url} - ${it.summary}" }}
+            ${plan.pageLinks.joinToString("\n") { "${it.url} - ${it.summary}" }}
             Images:
-            ${imageLinks.joinToString("\n") { "${it.url} - ${it.summary}" }}
+            ${this@TravelPlan.plan.imageLinks.joinToString("\n") { "${it.url} - ${it.summary}" }}
         """.trimIndent()
 }

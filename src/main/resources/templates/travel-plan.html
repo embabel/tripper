@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Embabel Journey Planner</title>
+    <script src="https://unpkg.com/htmx.org@2.0.5"></script>
+    <link href="/css/dark.css"
+          rel="stylesheet">
+</head>
+<body>
+<div th:if="${travelPlan != null}">
+    <h2 th:text="${travelPlan.plan.title}"></h2>
+
+    <div th:if="${travelPlan.brief != null}">
+        <h3>Brief</h3>
+        <p>From [[${travelPlan.brief.from}]] to [[${travelPlan.brief.to}]]
+            from [[${#temporals.format(travelPlan.brief.departureDate, 'dd MMM yyyy')}]] to [[${#temporals.format(travelPlan.brief.returnDate, 'dd MMM yyyy')}]]</p>
+        <i>[[${travelPlan.brief.brief}]]</i>
+        </p>
+
+        <h3>Plan</h3>
+    <div th:utext="${travelPlan.plan.plan}"></div>
+    <div th:if="${travelPlan.plan.days != null}">
+        <h3>Days</h3>
+        <ul>
+            <li th:each="day : ${travelPlan.plan.days}" th:text="${day.date + ' - ' + day.stayingAt}"></li>
+        </ul>
+    </div>
+    <h3>Map</h3>
+    <a th:href="${travelPlan.journeyMapUrl}">
+        Interactive map
+    </a>
+    <img th:src="${travelPlan.journeyMapImageUrl(600,400)}" alt="Map of the journey" width="600" height="400"/>
+    <div th:if="${travelPlan.plan.pageLinks != null && !#lists.isEmpty(travelPlan.plan.pageLinks)}">
+        <h3>References</h3>
+        <ul>
+            <li th:each="page : ${travelPlan.plan.pageLinks}">
+                <a th:href="${page.url}">
+                    <span th:text="${page.url}"></span>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div th:if="${travelPlan.plan.imageLinks != null && !#lists.isEmpty(travelPlan.plan.imageLinks)}">
+        <h3>Images</h3>
+        <ul>
+            <li th:each="img : ${travelPlan.plan.imageLinks}">
+                <img th:src="${img.url}" th:alt="${img.summary}" width="120"/>
+            </li>
+        </ul>
+    </div>
+</div>
+</div>
+</body>
+</html>

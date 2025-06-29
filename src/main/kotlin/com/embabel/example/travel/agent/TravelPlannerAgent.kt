@@ -22,7 +22,6 @@ import com.embabel.agent.api.annotation.using
 import com.embabel.agent.api.common.OperationContext
 import com.embabel.agent.api.common.create
 import com.embabel.agent.api.common.createObjectIfPossible
-import com.embabel.agent.api.dsl.parallelMap
 import com.embabel.agent.config.models.AnthropicModels
 import com.embabel.agent.config.models.OpenAiModels
 import com.embabel.agent.core.CoreToolGroups
@@ -153,9 +152,9 @@ class TravelPlannerAgent(
                 ToolGroupRequirement(CoreToolGroups.BROWSER_AUTOMATION)
             ),
         )
-        val poiFindings = itineraryIdeas.pointsOfInterest.parallelMap(
-            context = context,
-            concurrencyLevel = 6,
+        val poiFindings = context.parallelMap(
+            itineraryIdeas.pointsOfInterest,
+            maxConcurrency = 6,
         ) { poi ->
             promptRunner.create<ResearchedPointOfInterest>(
                 prompt = """
@@ -179,16 +178,16 @@ class TravelPlannerAgent(
     }
 
     @Action
-    fun createMarkdownTravelPlan(
+    fun createTravelPlan(
         travelBrief: JourneyTravelBrief,
         travelers: Travelers,
         poiFindings: PointOfInterestFindings,
-    ): TravelPlan {
-        return using(config.thinkerLlm.withMaxTokens(5000))
+    ): ProposedTravelPlan {
+        return using(config.thinkerLlm)
             .withToolGroups(setOf(CoreToolGroups.WEB, CoreToolGroups.MAPS, CoreToolGroups.MATH))
             .withPromptContributors(
                 listOf(
-                    config.travelPlannerPersona, travelers, ResponseFormat.MARKDOWN,
+                    config.travelPlannerPersona, travelers, ResponseFormat.HTML,
                 )
             )
             .create(
@@ -212,6 +211,10 @@ class TravelPlannerAgent(
 
                 Recount at least one interesting story about a famous person
                 associated with an area.
+                
+                Include natural headings and paragraphs in HTML format.
+                Use unordered lists as appropriate.
+                Start any headings at <h4>
 
                 Consider the following points of interest:
                 ${
@@ -232,9 +235,10 @@ class TravelPlannerAgent(
     )
     @Action
     fun outputArtifact(
-        travelPlan: TravelPlan,
+        brief: JourneyTravelBrief,
+        plan: ProposedTravelPlan,
     ): TravelPlan {
-        // Sanitize the markdown content to ensure it is safe for display
-        return travelPlan
+        // Sanitize the content to ensure it is safe for display
+        return TravelPlan(brief = brief, plan = plan)
     }
 }

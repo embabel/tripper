@@ -126,9 +126,9 @@ class TravelPlanHtmxController(
         return when (agentProcess.status) {
             AgentProcessStatusCode.COMPLETED -> {
                 logger.info("Process {} completed successfully", processId)
-                val travelPlan = agentProcess.lastResult() as TravelPlan
+                val travelPlan = agentProcess.resultOfType<TravelPlan>()
                 model.addAttribute("travelPlan", travelPlan)
-                "display-travel-plan"
+                "travel-plan"
             }
 
             AgentProcessStatusCode.FAILED -> {

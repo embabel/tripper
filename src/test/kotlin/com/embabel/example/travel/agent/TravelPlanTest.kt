@@ -26,7 +26,7 @@ class TravelPlanTest {
 
         @Test
         fun `one day only`() {
-            val travelPlan = TravelPlan(
+            val travelPlan = ProposedTravelPlan(
                 title = "One day trip",
                 plan = "Have a good time",
                 days = listOf(
@@ -38,8 +38,8 @@ class TravelPlanTest {
                 imageLinks = emptyList(),
                 pageLinks = emptyList(),
             )
-            println(travelPlan.journeyMap)
-            println(travelPlan.journeyMapImage())
+//            println(travelPlan.plan.journeyMapUrl)
+//            println(travelPlan.plan.journeyMapImageUrl())
         }
     }
 
