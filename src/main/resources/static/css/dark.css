@@ -6,14 +6,18 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    background-image: url('https://substackcdn.com/image/fetch/$s_!We-x!,f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2Fd3fc28b3-239d-4ae4-bddb-6f8953035910_6561x3242.jpeg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
     color: #f1f5f9;
     min-height: 100vh;
     padding: 20px;
 }
 
 .container {
-    max-width: 600px;
+    max-width: 1000px;
     margin: 0 auto;
     background: rgba(30, 41, 59, 0.8);
     backdrop-filter: blur(10px);
@@ -176,6 +180,7 @@ a {
     transition: color 0.2s, box-shadow 0.2s;
     box-shadow: 0 1px 0 #38bdf8;
 }
+
 a:hover, a:focus {
     color: #fbbf24;
     text-decoration: underline;
