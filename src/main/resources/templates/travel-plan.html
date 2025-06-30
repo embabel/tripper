@@ -3,62 +3,56 @@
 <head>
     <title>Embabel Journey Planner</title>
     <script src="https://unpkg.com/htmx.org@2.0.5"></script>
-    <link href="/css/dark.css"
-          rel="stylesheet">
+    <link href="/css/dark.css" rel="stylesheet">
 </head>
 <body>
-<div th:if="${travelPlan != null}">
-    <h2 th:text="${travelPlan.plan.title}"></h2>
+<div class="container">
+    <div th:if="${travelPlan != null}">
+        <h2 th:text="${travelPlan.plan.title}"></h2>
 
-    <div th:if="${travelPlan.brief != null}">
-        <h3>Brief</h3>
-        <p>From [[${travelPlan.brief.from}]] to [[${travelPlan.brief.to}]]
-            from [[${#temporals.format(travelPlan.brief.departureDate, 'dd MMM yyyy')}]] to [[${#temporals.format(travelPlan.brief.returnDate, 'dd MMM yyyy')}]]</p>
-        <i>[[${travelPlan.brief.brief}]]</i>
-        </p>
+        <div th:if="${travelPlan.brief != null}">
+            <h3>Brief</h3>
+            <p style="margin-bottom: 0.75rem;">From [[${travelPlan.brief.from}]] to [[${travelPlan.brief.to}]]
+                from [[${#temporals.format(travelPlan.brief.departureDate, 'dd MMM yyyy')}]] to [[${#temporals.format(travelPlan.brief.returnDate, 'dd MMM yyyy')}]]</p>
+            <i style="margin-bottom: 1rem; display:block;">[[${travelPlan.brief.brief}]]</i>
 
-        <h3>Plan</h3>
-    <div th:utext="${travelPlan.plan.plan}"></div>
-    <div th:if="${travelPlan.plan.days != null}">
-        <h3>Days</h3>
-        <ul>
-            <li th:each="day : ${travelPlan.plan.days}" th:text="${day.date + ' - ' + day.stayingAt}"></li>
-        </ul>
+            <h3>Plan</h3>
+            <div th:utext="${travelPlan.plan.plan}" style="margin-bottom: 1rem;"></div>
+            <div th:if="${travelPlan.plan.days != null}">
+                <h3>Days</h3>
+                <ul style="margin-bottom: 1rem;">
+                    <li th:each="day : ${travelPlan.plan.days}" th:text="${day.date + ' - ' + day.stayingAt}" style="margin-bottom: 0.5rem;"></li>
+                </ul>
+            </div>
+            <h3>Map</h3>
+            <a th:href="${travelPlan.journeyMapUrl}">Interactive map</a>
+            <img th:src="${travelPlan.journeyMapImageUrl(600,400)}" alt="Map of the journey" width="600" height="400" style="display:block; margin: 1rem 0;"/>
+
+            <h3>Stays</h3>
+            <ul style="margin-bottom: 1rem;">
+                <li th:each="stay : ${travelPlan.stays}" style="margin-bottom: 0.5rem;">
+                    <a th:href="${stay.airbnbUrl}"><span th:text="${stay.airbnbUrl}"></span></a>
+                </li>
+            </ul>
+
+            <div th:if="${travelPlan.plan.pageLinks != null && !#lists.isEmpty(travelPlan.plan.pageLinks)}">
+                <h3>References</h3>
+                <ul style="margin-bottom: 1rem;">
+                    <li th:each="page : ${travelPlan.plan.pageLinks}" style="margin-bottom: 0.5rem;">
+                        <a th:href="${page.url}"><span th:text="${page.url}"></span></a>
+                    </li>
+                </ul>
+            </div>
+            <div th:if="${travelPlan.plan.imageLinks != null && !#lists.isEmpty(travelPlan.plan.imageLinks)}">
+                <h3>Images</h3>
+                <ul style="margin-bottom: 1rem;">
+                    <li th:each="img : ${travelPlan.plan.imageLinks}" style="display:inline-block; margin:0 8px 8px 0;">
+                        <img th:src="${img.url}" th:alt="${img.summary}" width="120" style="border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);"/>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </div>
-    <h3>Map</h3>
-    <a th:href="${travelPlan.journeyMapUrl}">
-        Interactive map
-    </a>
-    <img th:src="${travelPlan.journeyMapImageUrl(600,400)}" alt="Map of the journey" width="600" height="400"/>
-
-        <h3>Stays</h3>
-        <ul>
-            <li th:each="stay : ${travelPlan.stays}">
-                <a th:href="${stay.airbnbUrl}">
-                    <span th:text="${stay.airbnbUrl}"></span>
-                </a>
-            </li>
-        </ul>
-
-    <div th:if="${travelPlan.plan.pageLinks != null && !#lists.isEmpty(travelPlan.plan.pageLinks)}">
-        <h3>References</h3>
-        <ul>
-            <li th:each="page : ${travelPlan.plan.pageLinks}">
-                <a th:href="${page.url}">
-                    <span th:text="${page.url}"></span>
-                </a>
-            </li>
-        </ul>
-    </div>
-    <div th:if="${travelPlan.plan.imageLinks != null && !#lists.isEmpty(travelPlan.plan.imageLinks)}">
-        <h3>Images</h3>
-        <ul>
-            <li th:each="img : ${travelPlan.plan.imageLinks}">
-                <img th:src="${img.url}" th:alt="${img.summary}" width="120"/>
-            </li>
-        </ul>
-    </div>
-</div>
 </div>
 </body>
 </html>

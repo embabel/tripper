@@ -3,35 +3,47 @@
 <head>
     <title>Embabel Journey Planner</title>
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
-    <link href="/css/dark.css"
-          rel="stylesheet">
+    <link href="/css/dark.css" rel="stylesheet">
 </head>
 <body>
-<h2>Embabel Journey Planner</h2>
-<form hx-post="/travel/journey/plan" hx-target="#planResult" hx-swap="innerHTML" th:object="${travelBrief}">
-    <label>From: <input type="text" name="from" th:field="*{from}" required></label><br/>
-    <label>To: <input type="text" name="to" th:field="*{to}" required></label><br/>
-    <label>Transport Preference:
-        <select name="transportPreference" th:field="*{transportPreference}" required>
-            <option value="">Select transport method</option>
-            <option value="driving">Driving</option>
-            <option value="train">Train</option>
-            <option value="cycling">Cycling</option>
-            <option value="flying">Flying</option>
-        </select>
-    </label><br/>
-    <label>Brief:<br/>
-        <textarea name="brief" rows="4" cols="40" th:field="*{brief}" required></textarea>
-    </label><br/>
-    <label>Start Date: <input type="date" name="departureDate"
-                              th:value="*{departureDate != null ? #temporals.format(departureDate, 'yyyy-MM-dd') : ''}"
-                              required></label><br/>
-    <label>End Date:
-        <input type="date" name="returnDate"
-               th:value="*{returnDate != null ? #temporals.format(returnDate, 'yyyy-MM-dd') : ''}"
-               required></label><br/>
-    <button type="submit">Plan Journey</button>
-</form>
-<div id="planResult"></div>
+<div class="container">
+    <h2>Embabel Journey Planner</h2>
+    <form hx-post="/travel/journey/plan" hx-target="#planResult" hx-swap="innerHTML" th:object="${travelBrief}">
+        <div class="form-group">
+            <label for="from">From:</label>
+            <input type="text" id="from" name="from" th:field="*{from}" required>
+        </div>
+        <div class="form-group">
+            <label for="to">To:</label>
+            <input type="text" id="to" name="to" th:field="*{to}" required>
+        </div>
+        <div class="form-group">
+            <label for="transportPreference">Transport Preference:</label>
+            <select id="transportPreference" name="transportPreference" th:field="*{transportPreference}" required>
+                <option value="">Select transport method</option>
+                <option value="driving">Driving</option>
+                <option value="train">Train</option>
+                <option value="cycling">Cycling</option>
+                <option value="flying">Flying</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="brief">Brief:</label>
+            <textarea id="brief" name="brief" rows="3" cols="40" th:field="*{brief}" required></textarea>
+        </div>
+        <div class="form-row date-group">
+            <div class="form-group">
+                <label for="departureDate">Start Date:</label>
+                <input type="date" id="departureDate" name="departureDate" th:value="*{departureDate != null ? #temporals.format(departureDate, 'yyyy-MM-dd') : ''}" required>
+            </div>
+            <div class="form-group">
+                <label for="returnDate">End Date:</label>
+                <input type="date" id="returnDate" name="returnDate" th:value="*{returnDate != null ? #temporals.format(returnDate, 'yyyy-MM-dd') : ''}" required>
+            </div>
+        </div>
+        <button class="submit-btn" type="submit">Plan Journey</button>
+    </form>
+    <div id="planResult"></div>
+</div>
 </body>
 </html>
