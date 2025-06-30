@@ -7,19 +7,17 @@ services:
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
       - "/run/host-services/backend.sock:/run/host-services/backend.sock"
-      - "./docker-mcp.yaml:/app/docker-mcp.yaml"
-      - "./config.yaml:/app/config.yaml"
     command:
       - --verbose
       - --transport=sse
-      - --catalog=/app/docker-mcp.yaml
-      - --config=/app/config.yaml
       - --secrets=/run/secrets/mcp_secret
       - --servers=brave
       - --servers=wikipedia-mcp
       - --servers=puppeteer
       - --servers=github
+      - --servers=openbnb-airbnb
       - --servers=google-maps
+      - --tools=openbnb-airbnb:*
       - --tools=brave_web_search
       - --tools=wikipedia-mcp:*
       - --tools=github:add_issue_comment
