@@ -25,13 +25,13 @@
                 </ul>
             </div>
             <h3>Map</h3>
-            <a th:href="${travelPlan.journeyMapUrl}">Interactive map</a>
+            <a th:href="${travelPlan.journeyMapUrl}" target="_blank" rel="noopener noreferrer">Interactive map</a>
             <img th:src="${travelPlan.journeyMapImageUrl(600,400)}" alt="Map of the journey" width="600" height="400" style="display:block; margin: 1rem 0;"/>
 
             <h3>Stays</h3>
             <ul style="margin-bottom: 1rem;">
                 <li th:each="stay : ${travelPlan.stays}" style="margin-bottom: 0.5rem;">
-                    <a th:href="${stay.airbnbUrl}"><span th:text="${stay.airbnbUrl}"></span></a>
+                    <a th:href="${stay.airbnbUrl}" target="_blank" rel="noopener noreferrer"><span th:text="${stay.airbnbUrl}"></span></a>
                 </li>
             </ul>
 
@@ -39,7 +39,7 @@
                 <h3>References</h3>
                 <ul style="margin-bottom: 1rem;">
                     <li th:each="page : ${travelPlan.plan.pageLinks}" style="margin-bottom: 0.5rem;">
-                        <a th:href="${page.url}"><span th:text="${page.url}"></span></a>
+                        <a th:href="${page.url}" target="_blank" rel="noopener noreferrer"><span th:text="${page.url}"></span></a>
                     </li>
                 </ul>
             </div>
