@@ -10,15 +10,15 @@
     <h2>Embabel Journey Planner</h2>
     <form hx-post="/travel/journey/plan" hx-target="#planResult" hx-swap="innerHTML" th:object="${travelBrief}">
         <div class="form-group">
-            <label for="from">From:</label>
+            <label for="from">From</label>
             <input type="text" id="from" name="from" th:field="*{from}" required>
         </div>
         <div class="form-group">
-            <label for="to">To:</label>
+            <label for="to">To</label>
             <input type="text" id="to" name="to" th:field="*{to}" required>
         </div>
         <div class="form-group">
-            <label for="transportPreference">Transport Preference:</label>
+            <label for="transportPreference">Transport Preference</label>
             <select id="transportPreference" name="transportPreference" th:field="*{transportPreference}" required>
                 <option value="">Select transport method</option>
                 <option value="driving">Driving</option>
@@ -33,12 +33,15 @@
         </div>
         <div class="form-row date-group">
             <div class="form-group">
-                <label for="departureDate">Start Date:</label>
-                <input type="date" id="departureDate" name="departureDate" th:value="*{departureDate != null ? #temporals.format(departureDate, 'yyyy-MM-dd') : ''}" required>
+                <label for="departureDate">Start Date</label>
+                <input type="date" id="departureDate" name="departureDate"
+                       th:value="*{departureDate != null ? #temporals.format(departureDate, 'yyyy-MM-dd') : ''}"
+                       required>
             </div>
             <div class="form-group">
-                <label for="returnDate">End Date:</label>
-                <input type="date" id="returnDate" name="returnDate" th:value="*{returnDate != null ? #temporals.format(returnDate, 'yyyy-MM-dd') : ''}" required>
+                <label for="returnDate">End Date</label>
+                <input type="date" id="returnDate" name="returnDate"
+                       th:value="*{returnDate != null ? #temporals.format(returnDate, 'yyyy-MM-dd') : ''}" required>
             </div>
         </div>
         <button class="submit-btn" type="submit">Plan Journey</button>
