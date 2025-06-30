@@ -24,13 +24,12 @@ class ToolsConfig(
             ),
             clients = mcpSyncClients,
             filter = {
-                println(it.toolDefinition.name())
                 it.toolDefinition.name().contains("airbnb")
             },
         )
     }
 
     companion object {
-        private const val AIRBNB = "airbnb"
+        const val AIRBNB = "airbnb"
     }
 }

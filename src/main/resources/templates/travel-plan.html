@@ -30,6 +30,16 @@
         Interactive map
     </a>
     <img th:src="${travelPlan.journeyMapImageUrl(600,400)}" alt="Map of the journey" width="600" height="400"/>
+
+        <h3>Stays</h3>
+        <ul>
+            <li th:each="stay : ${travelPlan.stays}">
+                <a th:href="${stay.airbnbUrl}">
+                    <span th:text="${stay.airbnbUrl}"></span>
+                </a>
+            </li>
+        </ul>
+
     <div th:if="${travelPlan.plan.pageLinks != null && !#lists.isEmpty(travelPlan.plan.pageLinks)}">
         <h3>References</h3>
         <ul>

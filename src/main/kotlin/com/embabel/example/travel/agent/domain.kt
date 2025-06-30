@@ -99,9 +99,20 @@ data class ProposedTravelPlan(
     val pageLinks: List<InternetResource>,
 )
 
+data class Stay(
+    val days: List<Day>,
+    val airbnbUrl: String? = null,
+) {
+
+    fun stayingAt(): String {
+        return days.firstOrNull()?.stayingAt ?: "Unknown location"
+    }
+}
+
 data class TravelPlan(
     val brief: JourneyTravelBrief,
-    val plan: ProposedTravelPlan
+    val plan: ProposedTravelPlan,
+    val stays: List<Stay>,
 ) : HasContent {
 
     /**

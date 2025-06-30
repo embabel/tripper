@@ -33,6 +33,7 @@ import com.embabel.agent.prompt.persona.Persona
 import com.embabel.agent.prompt.persona.RoleGoalBackstory
 import com.embabel.common.ai.model.LlmOptions
 import com.embabel.common.ai.model.ModelSelectionCriteria.Companion.byName
+import com.embabel.example.travel.config.ToolsConfig
 import com.embabel.example.travel.service.PersonRepository
 import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.ConfigurationProperties
@@ -234,11 +235,45 @@ class TravelPlannerAgent(
         description = "Create a detailed travel plan based on a given travel brief",
     )
     @Action
-    fun outputArtifact(
+    fun findPlacesToSleep(
         brief: JourneyTravelBrief,
         plan: ProposedTravelPlan,
+        context: OperationContext,
     ): TravelPlan {
         // Sanitize the content to ensure it is safe for display
-        return TravelPlan(brief = brief, plan = plan)
+        val stays = plan.days.groupBy { it.stayingAt }.map { (stayingAt, days) ->
+            Stay(
+                days = days,
+            )
+        }.sortedBy { it.days.first().date }
+
+
+        val foundStays = context.parallelMap(stays, maxConcurrency = 5) { stay ->
+            logger.info("Finding Airbnb options for stay at: {}", stay.stayingAt())
+            val airbnbResults = context.promptRunner(
+            ).withToolGroup(ToolsConfig.AIRBNB)
+                .create<AirbnbResults>(
+                    prompt = """
+                Find the Airbnb search URL for the following stay using the available tools.
+                Staying at: ${stay.stayingAt()}
+                Dates: ${stay.days.joinToString { it.date.toString() }}
+                You MUST set the 'ignoreRobotsText' parameter value to true for all calls to the airbnb API
+            """.trimIndent(),
+                )
+            stay.copy(
+                airbnbUrl = airbnbResults.searchUrl,
+            )
+        }
+
+        return TravelPlan(
+            brief = brief,
+            plan = plan,
+            stays = foundStays,
+        )
     }
 }
+
+
+data class AirbnbResults(
+    val searchUrl: String,
+)
