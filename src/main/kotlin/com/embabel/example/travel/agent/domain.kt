@@ -75,6 +75,8 @@ data class ResearchedPointOfInterest(
     val pointOfInterest: PointOfInterest,
     val research: String,
     override val links: List<InternetResource>,
+    @JsonPropertyDescription("Links to images")
+    val imageLinks: List<InternetResource>,
 ) : InternetResources
 
 data class PointOfInterestFindings(
@@ -83,8 +85,11 @@ data class PointOfInterestFindings(
 
 data class Day(
     val date: LocalDate,
-    val stayingAt: String,
-)
+    @JsonPropertyDescription("Location where the traveler will stay on this day in Google Maps friendly format 'City,+Country'")
+    val locationAndCountry: String,
+) {
+    val stayingAt: String = locationAndCountry.split(",").firstOrNull()?.trim() ?: "Unknown location"
+}
 
 data class ProposedTravelPlan(
     @JsonPropertyDescription("Catchy title appropriate to the travelers and travel brief")
@@ -121,8 +126,8 @@ data class TravelPlan(
      */
     val journeyMapUrl: String
         get() {
-            val encodedLocations = plan.days.distinctBy { it.stayingAt }.map { day ->
-                URLEncoder.encode(day.stayingAt, Charsets.UTF_8.name())
+            val encodedLocations = plan.days.distinctBy { it.locationAndCountry }.map { day ->
+                URLEncoder.encode(day.locationAndCountry, Charsets.UTF_8.name())
             }
 
             return if (encodedLocations.size == 1) {
@@ -169,6 +174,6 @@ data class TravelPlan(
             Pages:
             ${plan.pageLinks.joinToString("\n") { "${it.url} - ${it.summary}" }}
             Images:
-            ${this@TravelPlan.plan.imageLinks.joinToString("\n") { "${it.url} - ${it.summary}" }}
+            ${plan.imageLinks.joinToString("\n") { "${it.url} - ${it.summary}" }}
         """.trimIndent()
 }

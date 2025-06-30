@@ -54,7 +54,7 @@ class TravelPlanHtmxController(
         @RequestParam(defaultValue = "Antwerp") from: String,
         @RequestParam(defaultValue = "Bordeaux") to: String,
         @RequestParam(defaultValue = "driving") transport: String,
-        @RequestParam(defaultValue = "Relaxed journey with historical sightseeing for Rod and Lynda") brief: String,
+        @RequestParam(defaultValue = "Relaxed journey with historical sightseeing for Rod and Lynda who love food, wine, cycling and history") brief: String,
         @RequestParam(required = false) departureDate: String?,
         @RequestParam(required = false) returnDate: String?,
         model: Model

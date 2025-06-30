@@ -13,25 +13,42 @@
         <div th:if="${travelPlan.brief != null}">
             <h3>Brief</h3>
             <p style="margin-bottom: 0.75rem;">From [[${travelPlan.brief.from}]] to [[${travelPlan.brief.to}]]
-                from [[${#temporals.format(travelPlan.brief.departureDate, 'dd MMM yyyy')}]] to [[${#temporals.format(travelPlan.brief.returnDate, 'dd MMM yyyy')}]]</p>
+                from [[${#temporals.format(travelPlan.brief.departureDate, 'dd MMM yyyy')}]] to
+                [[${#temporals.format(travelPlan.brief.returnDate, 'dd MMM yyyy')}]]</p>
             <i style="margin-bottom: 1rem; display:block;">[[${travelPlan.brief.brief}]]</i>
 
             <h3>Plan</h3>
-            <div th:utext="${travelPlan.plan.plan}" style="margin-bottom: 1rem;"></div>
-            <div th:if="${travelPlan.plan.days != null}">
-                <h3>Days</h3>
-                <ul style="margin-bottom: 1rem;">
-                    <li th:each="day : ${travelPlan.plan.days}" th:text="${day.date + ' - ' + day.stayingAt}" style="margin-bottom: 0.5rem;"></li>
-                </ul>
+            <div style="margin-bottom: 20px;">
+                <a th:href="${travelPlan.journeyMapUrl}" target="_blank" rel="noopener noreferrer"
+                   style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 15px;
+              background-color: #f0f8ff; border: 1px solid #007bff; border-radius: 5px;
+              text-decoration: none; color: #274463; font-weight: 500;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                    </svg>
+                    Interactive Map
+                </a>
             </div>
-            <h3>Map</h3>
-            <a th:href="${travelPlan.journeyMapUrl}" target="_blank" rel="noopener noreferrer">Interactive map</a>
-            <img th:src="${travelPlan.journeyMapImageUrl(600,400)}" alt="Map of the journey" width="600" height="400" style="display:block; margin: 1rem 0;"/>
 
+            <div th:utext="${travelPlan.plan.plan}" style="margin-bottom: 1rem;"></div>
+            <!--            <div th:if="${travelPlan.plan.days != null}">-->
+            <!--                <h3>Days</h3>-->
+            <!--                <ul style="margin-bottom: 1rem;">-->
+            <!--                    <li th:each="day : ${travelPlan.plan.days}" th:text="${day.date + ' - ' + day.stayingAt}"-->
+            <!--                        style="margin-bottom: 0.5rem;"></li>-->
+            <!--                </ul>-->
+            <!--            </div>-->
+            <!--            <h3>Map</h3>-->
+
+            <!--            <p>-->
+            <!--                <a th:href="${travelPlan.journeyMapUrl}" target="_blank" rel="noopener noreferrer">Interactive map</a>-->
+            <!--                &lt;!&ndash;            <img th:src="${travelPlan.journeyMapImageUrl(600,400)}" alt="Map of the journey" width="600" height="400" style="display:block; margin: 1rem 0;"/>&ndash;&gt;-->
+            <!--            </p>-->
             <h3>Stays</h3>
             <ul style="margin-bottom: 1rem;">
                 <li th:each="stay : ${travelPlan.stays}" style="margin-bottom: 0.5rem;">
-                    <a th:href="${stay.airbnbUrl}" target="_blank" rel="noopener noreferrer"><span th:text="${stay.airbnbUrl}"></span></a>
+                    <a th:href="${stay.airbnbUrl}" target="_blank" rel="noopener noreferrer"><span
+                            th:text="${stay.stayingAt() + ' on Airbnb for ' + stay.days.size() + ' nights'}"></span></a>
                 </li>
             </ul>
 
@@ -39,7 +56,8 @@
                 <h3>References</h3>
                 <ul style="margin-bottom: 1rem;">
                     <li th:each="page : ${travelPlan.plan.pageLinks}" style="margin-bottom: 0.5rem;">
-                        <a th:href="${page.url}" target="_blank" rel="noopener noreferrer"><span th:text="${page.url}"></span></a>
+                        <a th:href="${page.url}" target="_blank" rel="noopener noreferrer"><span
+                                th:text="${page.url}"></span></a>
                     </li>
                 </ul>
             </div>
@@ -47,7 +65,8 @@
                 <h3>Images</h3>
                 <ul style="margin-bottom: 1rem;">
                     <li th:each="img : ${travelPlan.plan.imageLinks}" style="display:inline-block; margin:0 8px 8px 0;">
-                        <img th:src="${img.url}" th:alt="${img.summary}" width="120" style="border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);"/>
+                        <img th:src="${img.url}" th:alt="${img.summary}" width="120"
+                             style="border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);"/>
                     </li>
                 </ul>
             </div>

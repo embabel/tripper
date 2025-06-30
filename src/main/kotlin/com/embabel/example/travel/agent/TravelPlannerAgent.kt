@@ -170,6 +170,7 @@ class TravelPlannerAgent(
                 ${poi.description}
                 ${poi.location}
                 </point-of-interest-to-research>
+                You can only include images from Wikipedia, not from general knowledge or other web sites.
             """.trimIndent(),
             )
         }
@@ -205,6 +206,9 @@ class TravelPlannerAgent(
 
                 Write up in ${config.wordCount} words or less.
                 Include links in text where appropriate and in the links field.
+                
+                The Day field locationAndCountry field should be in the format <location,+Country> e.g.
+                Ghent,+Belgium
 
                 Put image links where appropriate in text and also in the links field.
                 IMPORTANT: Image links must come from the web pages you found, not from
@@ -224,6 +228,8 @@ class TravelPlannerAgent(
                     ${it.pointOfInterest.name}
                     ${it.research}
                     ${it.links.joinToString { link -> "${link.url}: ${link.summary}" }}
+                    Images: ${it.imageLinks.joinToString { link -> "${link.url}: ${link.summary}" }}
+
                 """.trimIndent()
                     }
                 }
@@ -255,6 +261,7 @@ class TravelPlannerAgent(
                 .create<AirbnbResults>(
                     prompt = """
                 Find the Airbnb search URL for the following stay using the available tools.
+                There are 2 travelers
                 Staying at: ${stay.stayingAt()}
                 Dates: ${stay.days.joinToString { it.date.toString() }}
                 You MUST set the 'ignoreRobotsText' parameter value to true for all calls to the airbnb API

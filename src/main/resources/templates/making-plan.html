@@ -1,7 +1,8 @@
 <div id="journey-container">
     <div id="journey-status">
         <div class="working">
-            <p>Planning your journey...</p>
+            <h3>Planning your journey...</h3>
+            <p>Process <code>[[${processId}]]</code></p>
             <div class="spinner"></div>
         </div>
     </div>
@@ -30,23 +31,23 @@
         const target = document.getElementById('sse-updates');
         if (target) {
             let userMessage;
-            // Has coarse grained events
-            let actionMessage;
+            let actionMessage = "Finding points of interest...";
             let everyEvent = data.type;
 
             switch (data.type) {
                 case 'ActionExecutionStartEvent':
-                    actionMessage = `Executing action ${data.action?.name}...`;
+                    actionMessage = `🚀 Executing ${data.action?.name.replace('_', ' ')}`;
                     break;
                 case 'ToolCallRequestEvent':
-                    userMessage = `Calling tool ${data.tool}...`;
+                    userMessage = `🔧 Connecting to ${data.tool}`;
                     break;
                 case 'ChatModelCallEvent':
-                    userMessage = `Calling chat model ${data.llm?.name}`;
+                    userMessage = `🤖 Processing with ${data.llm?.name}`;
                     break;
                 default:
-                    userMessage = `Processing event ${data.type}...`;
+                    userMessage = `⚡ Processing ${data.type.replace('Event', '')}`;
             }
+
 
             target.innerHTML = `
                 <div class="process-update">
