@@ -30,9 +30,13 @@
         const target = document.getElementById('sse-updates');
         if (target) {
             let userMessage;
+            // Has coarse grained events
+            let actionMessage;
+            let everyEvent = data.type;
+
             switch (data.type) {
                 case 'ActionExecutionStartEvent':
-                    userMessage = `Executing action ${data.action?.name}...`;
+                    actionMessage = `Executing action ${data.action?.name}...`;
                     break;
                 case 'ToolCallRequestEvent':
                     userMessage = `Calling tool ${data.tool}...`;
@@ -46,7 +50,9 @@
 
             target.innerHTML = `
                 <div class="process-update">
+                    <div class="message">${actionMessage}</div>
                     <div class="message">${userMessage}</div>
+                     <div class="message">${everyEvent}</div>
                 </div>
             `;
         }
