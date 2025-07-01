@@ -88,6 +88,9 @@ data class Day(
     @JsonPropertyDescription("Location where the traveler will stay on this day in Google Maps friendly format 'City,+Country'")
     val locationAndCountry: String,
 ) {
+    /**
+     * More readable location name, e.g. "Paris" rather than "Paris,+FR".
+     */
     val stayingAt: String = locationAndCountry.split(",").firstOrNull()?.trim() ?: "Unknown location"
 }
 

@@ -14,6 +14,7 @@ body {
     color: #f1f5f9;
     min-height: 100vh;
     padding: 20px;
+    line-height: 1.6; /* Added better line height */
 }
 
 .container {
@@ -29,62 +30,75 @@ body {
 
 h2 {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 30px; /* Increased from 20px */
     font-size: 2.0rem;
     background: #5d90dc;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
     font-weight: 700;
+    line-height: 1.2; /* Added line height */
 }
 
 h3 {
-    margin-bottom: 1.2rem;
+    margin-bottom: 1.5rem; /* Increased from 1.2rem */
+    margin-top: 2rem; /* Added top margin for better spacing */
     font-size: 1.25rem;
     color: #fbbf24;
     letter-spacing: 1px;
+    line-height: 1.3; /* Added line height */
+}
+
+/* Better paragraph spacing */
+p {
+    margin-bottom: 1.2rem;
+    line-height: 1.7;
 }
 
 ul {
-    margin-bottom: 1.5rem;
-    padding-left: 25px; /* Add left padding to ul */
-    list-style-type: disc; /* Restore bullet points */
-    list-style-position: outside; /* Position bullets outside the content area */
+    margin-bottom: 2rem; /* Increased from 1.5rem */
+    margin-top: 1rem; /* Added top margin */
+    padding-left: 25px;
+    list-style-type: disc;
+    list-style-position: outside;
 }
 
 li {
-    margin-bottom: 0.75rem;
-    display: list-item; /* Ensure li displays as list item */
+    margin-bottom: 0.8rem; /* Slightly increased */
+    display: list-item;
+    line-height: 1.6; /* Added line height */
 }
 
 .travel-icon {
     display: flex;
     justify-content: center;
-    margin-bottom: 12px;
+    margin-bottom: 20px; /* Increased from 12px */
+    margin-top: 10px; /* Added top margin */
     font-size: 2.5rem;
 }
 
 form {
     display: grid;
-    gap: 15px;
+    gap: 20px; /* Increased from 15px */
+    margin-top: 2rem; /* Added top margin */
 }
 
 .form-group {
     display: flex;
     flex-direction: column;
-    margin-bottom: 3px;
-    padding: 0 0 2px 0;
+    margin-bottom: 8px; /* Increased from 3px */
+    padding: 0 0 5px 0; /* Increased bottom padding */
 }
 
 .form-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 12px;
+    gap: 15px; /* Increased from 12px */
 }
 
 label {
     font-weight: 600;
-    margin-bottom: 3px;
+    margin-bottom: 8px; /* Increased from 3px */
     color: #cbd5e1;
     font-size: 0.88rem;
     text-transform: uppercase;
@@ -92,7 +106,7 @@ label {
 }
 
 input, textarea, select {
-    padding: 10px 12px;
+    padding: 12px 15px; /* Increased padding */
     border: 2px solid rgba(148, 163, 184, 0.2);
     border-radius: 12px;
     background: rgba(15, 23, 42, 0.6);
@@ -100,6 +114,7 @@ input, textarea, select {
     font-size: 1rem;
     transition: all 0.3s ease;
     backdrop-filter: blur(5px);
+    line-height: 1.5; /* Added line height */
 }
 
 input:focus, textarea:focus, select:focus {
@@ -115,25 +130,27 @@ input::placeholder, textarea::placeholder {
 
 textarea {
     resize: vertical;
-    min-height: 100px;
+    min-height: 120px; /* Increased from 100px */
     font-family: inherit;
+    line-height: 1.6; /* Added line height */
 }
 
 .submit-btn {
     background: #486346;
     color: white;
     border: none;
-    padding: 10px 18px;
+    padding: 12px 20px; /* Increased padding */
     border-radius: 10px;
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    margin-top: 10px;
+    margin-top: 20px; /* Increased from 10px */
     text-transform: uppercase;
     letter-spacing: 0.8px;
     position: relative;
     overflow: hidden;
+    line-height: 1.2; /* Added line height */
 }
 
 .submit-btn:hover {
@@ -161,19 +178,20 @@ textarea {
 }
 
 #planResult {
-    margin-top: 12px;
-    padding: 10px;
+    margin-top: 20px; /* Increased from 12px */
+    padding: 15px; /* Increased from 10px */
     background: rgba(15, 23, 42, 0.4);
     border-radius: 10px;
     border: 1px solid rgba(148, 163, 184, 0.1);
-    min-height: 40px;
+    min-height: 50px; /* Increased from 40px */
     backdrop-filter: blur(5px);
+    line-height: 1.6; /* Added line height */
 }
 
 .date-group {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 12px;
+    gap: 15px; /* Increased from 12px */
 }
 
 /* --- Improved Link Styling for Visibility --- */
@@ -183,6 +201,7 @@ a {
     font-weight: 600;
     transition: color 0.2s, box-shadow 0.2s;
     box-shadow: 0 1px 0 #38bdf8;
+    line-height: 1.6; /* Added line height */
 }
 
 a:hover, a:focus {
@@ -206,6 +225,7 @@ a:hover, a:focus {
     box-shadow: 0 4px 12px rgba(74, 222, 128, 0.3);
     text-decoration: none;
     transition: all 0.3s ease;
+    margin: 10px 0; /* Added vertical margin */
 }
 
 .friendly-map-btn:hover {
@@ -245,6 +265,7 @@ a:hover, a:focus {
     transition: all 0.2s ease;
     position: relative;
     overflow: hidden;
+    margin: 10px 0; /* Added vertical margin */
 }
 
 .scary-delete-btn:before {
@@ -288,22 +309,7 @@ a:hover, a:focus {
     }
 }
 
-@media (max-width: 768px) {
-    .container {
-        padding: 10px;
-        margin: 4px;
-    }
-
-    .form-row, .date-group {
-        grid-template-columns: 1fr;
-        gap: 7px;
-    }
-
-    h2 {
-        font-size: 1.5rem;
-    }
-}
-
+/* Image spacing improvements */
 .styled-image-thick {
     border: 15px solid rgba(30, 41, 59, 0.9);
     border-radius: 20px;
@@ -315,4 +321,51 @@ a:hover, a:focus {
     max-width: 100%;
     height: auto;
     display: block;
+    margin: 2rem 0; /* Added significant top and bottom margins */
+}
+
+/* General image spacing */
+img {
+    margin: 1.5rem 0; /* Add spacing around all images */
+    display: block;
+}
+
+/* Content after images */
+.styled-image-thick + * {
+    margin-top: 2rem; /* Extra space after styled images */
+}
+
+img + * {
+    margin-top: 1.5rem; /* Extra space after regular images */
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 15px; /* Increased from 10px */
+        margin: 8px; /* Increased from 4px */
+    }
+
+    .form-row, .date-group {
+        grid-template-columns: 1fr;
+        gap: 12px; /* Increased from 7px */
+    }
+
+    h2 {
+        font-size: 1.5rem;
+        margin-bottom: 25px; /* Added bottom margin */
+    }
+
+    h3 {
+        margin-top: 1.5rem; /* Reduced for mobile */
+        margin-bottom: 1.2rem;
+    }
+
+    ul {
+        margin-bottom: 1.5rem;
+        margin-top: 0.8rem;
+    }
+
+    .styled-image-thick {
+        margin: 1.5rem 0; /* Reduced for mobile */
+    }
 }
