@@ -33,22 +33,16 @@ Start up background services, local model runners, and MCP gateway by running:
 docker compose --file compose.yaml --file compose.dmr.yaml up
 ```
 
-Run under your IDE (e.g. a IntelliJ Spring Boot Run Configuration) or run the shell script to start Embabel:
+Run under your IDE (e.g., an IntelliJ Spring Boot Run Configuration) or run the shell script to start Embabel:
 
 ```bash
 ./run.sh
 ```
 
+> If running under your IDE, ensure that the `neo` Spring profile is active.
+
 The travel planner will be available at `http://localhost:8080/travel/journey`.
 Go to `http://localhost:8080` for a directory.
-
-Starting as follows will run under Spring shell:
-
-```bash
-./run.sh --shell
-```
-
-When the Embabel shell comes up, use the `plan-travel` command.
 
 ## Architecture
 
