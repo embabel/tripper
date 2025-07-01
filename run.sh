@@ -6,4 +6,4 @@
 echo "Running web profile: go to http://localhost:8080"
 
 export SPRING_PROFILES_ACTIVE=neo
-mvn -P agent-examples-kotlin -Dmaven.test.skip=true spring-boot:run
+mvn -Dmaven.test.skip=true spring-boot:run
