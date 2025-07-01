@@ -259,14 +259,14 @@ class TravelPlannerAgent(
         }.sortedBy { it.days.first().date }
 
         val foundStays = context.parallelMap(stays, maxConcurrency = 5) { stay ->
-            logger.info("Finding Airbnb options for stay at: {}", stay.stayingAt())
+            logger.info("Finding Airbnb options for stay at: {}", stay.locationAndCountry())
             val airbnbResults = context.promptRunner(
             ).withToolGroups(setOf(ToolsConfig.AIRBNB, CoreToolGroups.MATH))
                 .create<AirbnbResults>(
                     prompt = """
                 Find the Airbnb search URL for the following stay using the available tools.
                 There are 2 travelers
-                Staying at: ${stay.stayingAt()}
+                Staying at location: ${stay.stayingAt()}
                 Dates: ${stay.days.joinToString { it.date.toString() }}
                 You MUST set the 'ignoreRobotsText' parameter value to true for all calls to the airbnb API
             """.trimIndent(),

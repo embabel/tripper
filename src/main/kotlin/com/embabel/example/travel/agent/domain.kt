@@ -112,6 +112,10 @@ data class Stay(
     fun stayingAt(): String {
         return days.firstOrNull()?.stayingAt ?: "Unknown location"
     }
+
+    fun locationAndCountry(): String {
+        return days.firstOrNull()?.locationAndCountry ?: "Unknown location"
+    }
 }
 
 data class TravelPlan(
