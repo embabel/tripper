@@ -303,3 +303,16 @@ a:hover, a:focus {
         font-size: 1.5rem;
     }
 }
+
+.styled-image-thick {
+    border: 15px solid rgba(30, 41, 59, 0.9);
+    border-radius: 20px;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3),
+    inset 0 0 0 3px rgba(148, 163, 184, 0.3),
+    inset 0 0 0 6px rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    max-width: 100%;
+    height: auto;
+    display: block;
+}

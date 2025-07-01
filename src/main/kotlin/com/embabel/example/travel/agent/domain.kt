@@ -75,7 +75,7 @@ data class ResearchedPointOfInterest(
     val pointOfInterest: PointOfInterest,
     val research: String,
     override val links: List<InternetResource>,
-    @JsonPropertyDescription("Links to images")
+    @JsonPropertyDescription("Links to images. Links must be the images themselves, not just links to them.")
     val imageLinks: List<InternetResource>,
 ) : InternetResources
 

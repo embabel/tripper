@@ -15,6 +15,7 @@
  */
 package com.embabel.example.travel.agent
 
+import com.embabel.agent.BraveImageSearchService
 import com.embabel.agent.api.annotation.AchievesGoal
 import com.embabel.agent.api.annotation.Action
 import com.embabel.agent.api.annotation.Agent
@@ -51,9 +52,10 @@ val Researcher = RoleGoalBackstory(
     backstory = "You are an expert researcher who can find interesting stories about art, culture, and famous people associated with places.",
 )
 
-@ConfigurationProperties("embabel.travel.planner")
+@ConfigurationProperties("embabel.tripper")
 data class TravelPlannerProperties(
     val wordCount: Int = 700,
+    val imageWidth: Int = 800,
     val travelPlannerPersona: Persona = HermesPersona,
     val researcher: RoleGoalBackstory = Researcher,
     val toolCallControl: ToolCallControl = ToolCallControl(),
@@ -80,6 +82,7 @@ data class TravelPlannerProperties(
 class TravelPlannerAgent(
     private val config: TravelPlannerProperties,
     private val personRepository: PersonRepository,
+    private val braveImageSearch: BraveImageSearchService,
 ) {
 
     private val logger = LoggerFactory.getLogger(TravelPlannerAgent::class.java)
@@ -150,14 +153,15 @@ class TravelPlannerAgent(
             promptContributors = listOf(config.researcher, travelers, config.toolCallControl),
             toolGroups = setOf(
                 ToolGroupRequirement(CoreToolGroups.WEB),
-                ToolGroupRequirement(CoreToolGroups.BROWSER_AUTOMATION)
+                ToolGroupRequirement(CoreToolGroups.BROWSER_AUTOMATION),
             ),
+            toolObjects = listOf(braveImageSearch)
         )
         val poiFindings = context.parallelMap(
             itineraryIdeas.pointsOfInterest,
             maxConcurrency = 6,
         ) { poi ->
-            promptRunner.create<ResearchedPointOfInterest>(
+            val rpi = promptRunner.create<ResearchedPointOfInterest>(
                 prompt = """
                 Research the following point of interest.
                 Consider in particular interesting stories about art and culture and famous people.
@@ -170,11 +174,10 @@ class TravelPlannerAgent(
                 ${poi.description}
                 ${poi.location}
                 </point-of-interest-to-research>
-                You can only include images from sites that allow linking such as
-                Wikimedia Commons and Unsplash, not from general knowledge or other web sites.
-                Use the fetch tool to test any URL before returning it.
+                Use the image search tool to find images of the point of interest.
             """.trimIndent(),
             )
+            rpi
         }
         return PointOfInterestFindings(
             pointsOfInterest = poiFindings,
@@ -213,6 +216,7 @@ class TravelPlannerAgent(
                 Ghent,+Belgium
 
                 Put image links where appropriate in text and also in the links field.
+                Links must specify opening in a new window.
                 IMPORTANT: Image links must have been provided by the researchers
                           and not be general knowledge or from other web sites.
 
@@ -222,6 +226,8 @@ class TravelPlannerAgent(
                 Include natural headings and paragraphs in HTML format.
                 Use unordered lists as appropriate.
                 Start any headings at <h4>
+                Embed images in text, with max width of ${config.imageWidth}px.
+                Be sure to include informative caption and alt text for each image.
 
                 Consider the following points of interest:
                 ${
@@ -239,9 +245,6 @@ class TravelPlannerAgent(
             )
     }
 
-    @AchievesGoal(
-        description = "Create a detailed travel plan based on a given travel brief",
-    )
     @Action
     fun findPlacesToSleep(
         brief: JourneyTravelBrief,
@@ -255,11 +258,10 @@ class TravelPlannerAgent(
             )
         }.sortedBy { it.days.first().date }
 
-
         val foundStays = context.parallelMap(stays, maxConcurrency = 5) { stay ->
             logger.info("Finding Airbnb options for stay at: {}", stay.stayingAt())
             val airbnbResults = context.promptRunner(
-            ).withToolGroup(ToolsConfig.AIRBNB)
+            ).withToolGroups(setOf(ToolsConfig.AIRBNB, CoreToolGroups.MATH))
                 .create<AirbnbResults>(
                     prompt = """
                 Find the Airbnb search URL for the following stay using the available tools.
@@ -278,6 +280,25 @@ class TravelPlannerAgent(
             brief = brief,
             plan = plan,
             stays = foundStays,
+        )
+    }
+
+    @AchievesGoal(
+        description = "Create a detailed travel plan based on a given travel brief",
+    )
+    @Action
+    fun postProcesHtml(
+        plan: TravelPlan
+    ): TravelPlan {
+        val oldPlan = plan.plan.plan
+        return plan.copy(
+            plan = plan.plan.copy(
+                plan =
+                    oldPlan.replace(
+                        "<img",
+                        "<img class=\"styled-image-thick\"",
+                    ),
+            ),
         )
     }
 }
