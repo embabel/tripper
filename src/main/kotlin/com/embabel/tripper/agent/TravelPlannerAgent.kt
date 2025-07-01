@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.embabel.example.travel.agent
+package com.embabel.tripper.agent
 
 import com.embabel.agent.BraveImageSearchService
 import com.embabel.agent.api.annotation.AchievesGoal
@@ -34,8 +34,8 @@ import com.embabel.agent.prompt.persona.Persona
 import com.embabel.agent.prompt.persona.RoleGoalBackstory
 import com.embabel.common.ai.model.LlmOptions
 import com.embabel.common.ai.model.ModelSelectionCriteria.Companion.byName
-import com.embabel.example.travel.config.ToolsConfig
-import com.embabel.example.travel.service.PersonRepository
+import com.embabel.tripper.config.ToolsConfig
+import com.embabel.tripper.service.PersonRepository
 import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.ConfigurationProperties
 

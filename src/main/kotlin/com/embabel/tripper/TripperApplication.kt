@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.embabel.example.travel
+package com.embabel.tripper
 
 import com.embabel.agent.config.annotation.EnableAgents
 import com.embabel.agent.config.annotation.LocalModels
@@ -30,9 +30,8 @@ import org.springframework.boot.runApplication
     localModels = [LocalModels.DOCKER, LocalModels.OLLAMA],
     mcpServers = [McpServers.DOCKER, McpServers.DOCKER_DESKTOP],
 )
-//@EnableAgentShell
-class TravelAgentApplication
+class TripperApplication
 
 fun main(args: Array<String>) {
-    runApplication<TravelAgentApplication>(*args)
+    runApplication<TripperApplication>(*args)
 }

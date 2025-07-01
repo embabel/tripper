@@ -1,4 +1,4 @@
-package com.embabel.example.travel.config
+package com.embabel.tripper.config
 
 import com.embabel.agent.core.ToolGroup
 import com.embabel.agent.core.ToolGroupDescription

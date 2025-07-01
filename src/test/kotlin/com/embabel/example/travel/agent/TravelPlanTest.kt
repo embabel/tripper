@@ -15,6 +15,8 @@
  */
 package com.embabel.example.travel.agent
 
+import com.embabel.tripper.agent.Day
+import com.embabel.tripper.agent.ProposedTravelPlan
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import java.time.LocalDate

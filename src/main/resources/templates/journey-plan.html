@@ -16,15 +16,6 @@
                 Plan Another Journey
             </a>
         </div>
-        <h3>Usage</h3>
-        <p>Cost: $<span th:text="${#numbers.formatDecimal(agentProcess.cost(), 1, 2)}"></span> &nbsp;&nbsp;</p>
-        <p>LLMs used:
-            <span th:each="llm, iterStat : ${agentProcess.modelsUsed()}">
-        <i th:text="${llm.name}"></i><span th:if="${!iterStat.last}">, </span>
-    </span>
-            &nbsp;&nbsp;
-        </p>
-
 
         <div th:if="${travelPlan.brief != null}">
             <h3>Brief</h3>
@@ -74,6 +65,14 @@
             </div>
         </div>
     </div>
+    <h3>Usage</h3>
+    <p>Cost: $<span th:text="${#numbers.formatDecimal(agentProcess.cost(), 1, 2)}"></span> &nbsp;&nbsp;</p>
+    <p>LLMs used:
+        <span th:each="llm, iterStat : ${agentProcess.modelsUsed()}">
+        <i th:text="${llm.name}"></i><span th:if="${!iterStat.last}">, </span>
+    </span>
+        &nbsp;&nbsp;
+    </p>
 </div>
 </body>
 </html>

@@ -1,4 +1,4 @@
-package com.embabel.example.travel
+package com.embabel.tripper
 
 import org.neo4j.ogm.session.SessionFactory
 import org.slf4j.LoggerFactory

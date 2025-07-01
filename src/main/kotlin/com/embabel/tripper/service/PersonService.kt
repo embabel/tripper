@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.embabel.example.travel.service
+package com.embabel.tripper.service
 
 import org.springframework.data.neo4j.annotation.Depth
 import org.springframework.data.neo4j.repository.Neo4jRepository

@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.embabel.example.travel
+package com.embabel.tripper.web
 
 import com.embabel.agent.api.common.Asyncer
 import com.embabel.agent.core.*
-import com.embabel.example.travel.agent.JourneyTravelBrief
-import com.embabel.example.travel.agent.TravelPlan
+import com.embabel.tripper.agent.JourneyTravelBrief
+import com.embabel.tripper.agent.TravelPlan
 import org.slf4j.LoggerFactory
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.HttpStatus

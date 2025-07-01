@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.embabel.example.travel.agent
+package com.embabel.tripper.agent
 
 import com.embabel.agent.domain.library.HasContent
 import com.embabel.agent.domain.library.InternetResource
 import com.embabel.agent.domain.library.InternetResources
 import com.embabel.common.ai.prompt.PromptContributor
-import com.embabel.example.travel.service.Person
+import com.embabel.tripper.service.Person
 import com.fasterxml.jackson.annotation.JsonPropertyDescription
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import java.net.URLEncoder
