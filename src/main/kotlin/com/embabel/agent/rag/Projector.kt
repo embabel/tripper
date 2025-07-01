@@ -9,7 +9,7 @@ interface Projector {
     /**
      * Project somewhere
      */
-    fun project(
-        knowledgeGraphUpdate: KnowledgeGraphUpdate,
+    fun applyDelta(
+        knowledgeGraphDelta: KnowledgeGraphDelta,
     )
 }

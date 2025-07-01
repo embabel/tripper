@@ -34,12 +34,12 @@ class LlmChunkAnalyzer(
             llmRequestEvent = null,
         )
         return SuggestedEntities(
-            chunk = chunk,
+            basis = chunk,
             suggestedEntities = entities.entities,
         )
     }
 
-    override fun analyzeRelationships(entityResolution: EntityResolution): KnowledgeGraphUpdate {
+    override fun analyzeRelationships(entityResolution: EntityResolution): KnowledgeGraphDelta {
         val prompt = """
             Given the following text, identify and summarize all relationships.
             Relationships must only come from the following list:
@@ -51,12 +51,12 @@ class LlmChunkAnalyzer(
             
             Use entity IDs from the following list:
             ${
-            entityResolution.resolvedEntities.mapNotNull { it.entityData }
+            entityResolution.resolvedEntities.map { it.entityData }
                 .joinToString("\n") { "- (:${it.labels.joinToString(":")} {id='${it.id}', description='${it.description}'})" }
         }
             
             # TEXT
-            ${entityResolution.chunk.text}
+            ${entityResolution.basis.infoString()}
         """.trimIndent()
         logger.info("Identifying relationships with prompt:\n$prompt")
         val relationships = llmOperations.doTransform(
@@ -66,7 +66,7 @@ class LlmChunkAnalyzer(
             llmRequestEvent = null,
         )
         // TODO filter out relationships that don't match the schema
-        return KnowledgeGraphUpdate(
+        return KnowledgeGraphDelta(
             entityResolution = entityResolution,
             relationships = relationships.relationships,
         )

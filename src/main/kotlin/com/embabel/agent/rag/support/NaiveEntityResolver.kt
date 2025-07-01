@@ -20,7 +20,7 @@ class NaiveEntityResolver : EntityResolver {
             )
         }
         return EntityResolution(
-            chunk = suggestedEntities.chunk,
+            basis = suggestedEntities.basis,
             resolvedEntities = resolvedEntities,
         )
     }

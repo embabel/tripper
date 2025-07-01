@@ -12,14 +12,14 @@ class KnowledgeGraphBuilder(
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    fun analyze(resource: String, schema: Schema): KnowledgeGraphUpdate {
+    fun analyze(resource: String, schema: Schema): KnowledgeGraphDelta {
         val ingestionResult = ingester.ingest(resource)
         // We now have a document
         println(ingestionResult)
         TODO()
     }
 
-    fun computeUpdate(chunk: Chunk, schema: Schema): KnowledgeGraphUpdate {
+    fun computeUpdate(chunk: Chunk, schema: Schema): KnowledgeGraphDelta {
         val suggestedEntities = chunkAnalyzer.identifyEntities(chunk, schema)
         logger.info("Suggested entities: {}", suggestedEntities)
         val entityResolution = entityResolver.resolve(suggestedEntities)

@@ -102,7 +102,7 @@ internal class IngestionShell(
         println("Knowledge Graph Update:")
 //        println(kgUpdate)
         println(kgUpdate.infoString(verbose = true))
-        projector.project(kgUpdate)
+        projector.applyDelta(kgUpdate)
         return "Ingestion complete"
     }
 

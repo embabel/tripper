@@ -15,12 +15,12 @@ class NeoOgmProjector(
     private val logger = LoggerFactory.getLogger(javaClass)
 
     @Transactional
-    override fun project(knowledgeGraphUpdate: KnowledgeGraphUpdate) {
+    override fun applyDelta(knowledgeGraphDelta: KnowledgeGraphDelta) {
         val session = sessionFactory.openSession()
-        knowledgeGraphUpdate.entityResolution.resolvedEntities.filterIsInstance<NewEntity>().forEach { ne ->
+        knowledgeGraphDelta.entityResolution.resolvedEntities.filterIsInstance<NewEntity>().forEach { ne ->
             createEntity(session, ne.entityData)
         }
-        knowledgeGraphUpdate.relationships.forEach { relationship ->
+        knowledgeGraphDelta.relationships.forEach { relationship ->
             createRelationship(session, relationship)
         }
     }
