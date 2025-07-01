@@ -15,7 +15,6 @@
  */
 package com.embabel.tripper.web
 
-import com.embabel.agent.api.common.Asyncer
 import com.embabel.agent.core.*
 import com.embabel.tripper.agent.JourneyTravelBrief
 import com.embabel.tripper.agent.TravelPlan
@@ -44,7 +43,6 @@ class HomeController(
 @RequestMapping(value = ["/travel/journey"])
 class TravelPlanHtmxController(
     private val agentPlatform: AgentPlatform,
-    private val asyncer: Asyncer,
 ) {
 
     private val logger = LoggerFactory.getLogger(TravelPlanHtmxController::class.java)
@@ -118,7 +116,7 @@ class TravelPlanHtmxController(
             )
         )
         model.addAttribute("processId", agentProcess.id)
-        asyncer.async { agentProcess.run() }
+        agentPlatform.start(agentProcess)
         return "planning"
     }
 
