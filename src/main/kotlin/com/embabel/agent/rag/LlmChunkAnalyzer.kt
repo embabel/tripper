@@ -3,6 +3,7 @@ package com.embabel.agent.rag
 import com.embabel.agent.spi.InteractionId
 import com.embabel.agent.spi.LlmInteraction
 import com.embabel.agent.spi.LlmOperations
+import com.embabel.schema
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
@@ -44,7 +45,7 @@ class LlmChunkAnalyzer(
             Relationships must only come from the following list:
             
             ${
-            schema.possibleRelationshipsBetween(entityResolution.resolvedEntities.mapNotNull { it.entityData })
+            schema.possibleRelationshipsBetween(entityResolution.resolvedEntities.map { it.entityData })
                 .joinToString("\n") { "(:${it.sourceEntity})-[:${it.type}]->(:${it.targetEntity}): ${it.description}" }
         }
             

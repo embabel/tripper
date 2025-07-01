@@ -1,7 +1,9 @@
-package com.embabel.agent.rag
+package com.embabel.agent.rag.neo
 
+import com.embabel.agent.rag.*
 import org.neo4j.ogm.session.Session
 import org.neo4j.ogm.session.SessionFactory
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -10,11 +12,13 @@ class NeoOgmProjector(
     private val sessionFactory: SessionFactory,
 ) : Projector {
 
+    private val logger = LoggerFactory.getLogger(javaClass)
+
     @Transactional
     override fun project(knowledgeGraphUpdate: KnowledgeGraphUpdate) {
         val session = sessionFactory.openSession()
-        knowledgeGraphUpdate.newEntities().forEach { entity ->
-            createEntity(session, entity)
+        knowledgeGraphUpdate.entityResolution.resolvedEntities.filterIsInstance<NewEntity>().forEach { ne ->
+            createEntity(session, ne.entityData)
         }
         knowledgeGraphUpdate.relationships.forEach { relationship ->
             createRelationship(session, relationship)
@@ -23,8 +27,10 @@ class NeoOgmProjector(
 
 
     private fun createEntity(session: Session, entity: EntityData) {
+        val cypher = "CREATE (n:${entity.labels.joinToString(":")} {id: \$id, description: \$description })"
+        logger.info("Executing create entity cypher: {}", cypher)
         session.query(
-            "CREATE (n:${entity.labels.joinToString(":")} {id: \$id, description: \$description })",
+            cypher,
             mapOf("id" to entity.id, "description" to entity.description)
         )
     }
@@ -33,11 +39,13 @@ class NeoOgmProjector(
         session: Session,
         relationship: SuggestedRelationship
     ) {
-        session.query(
-            """
+        val cypher = """
                 MATCH (n {id: ${'$'}sourceId}), (p {id: ${'$'}targetId}) 
                 MERGE (n)-[:${relationship.type}]->(p)
-               """.trimIndent(),
+               """.trimIndent()
+        logger.info("Executing create relationship cypher: {}", cypher)
+        session.query(
+            cypher,
             mapOf(
                 "sourceId" to relationship.sourceId,
                 "targetId" to relationship.targetId

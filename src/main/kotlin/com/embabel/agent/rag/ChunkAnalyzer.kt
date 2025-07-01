@@ -2,34 +2,38 @@ package com.embabel.agent.rag
 
 import com.embabel.common.core.types.HasInfoString
 import com.fasterxml.jackson.annotation.JsonPropertyDescription
-import org.slf4j.LoggerFactory
-import org.springframework.stereotype.Service
-import java.util.*
 
 data class SuggestedEntity(
     val type: String,
     val summary: String,
     @JsonPropertyDescription("Will be a UUID. Include only if provided")
     val id: String? = null,
-) {
+)
 
-    fun resolve(
-        entityData: EntityData?,
-    ): ResolvedEntity {
-        return ResolvedEntity(
-            suggestedEntity = this,
-            entityData = entityData,
-        )
+sealed interface Resolution : HasInfoString {
+    val suggestedEntity: SuggestedEntity
+    val entityData: EntityData
+}
+
+data class NewEntity(
+    override val suggestedEntity: SuggestedEntity,
+    override val entityData: EntityData,
+) : Resolution {
+
+    override fun infoString(verbose: Boolean?): String {
+        return "NewEntity(type=${suggestedEntity.type}, ${entityData.infoString(verbose)})"
     }
 }
 
 data class ResolvedEntity(
-    val suggestedEntity: SuggestedEntity,
-    val entityData: EntityData?,
-) {
+    override val suggestedEntity: SuggestedEntity,
+    override val entityData: EntityData,
+    val conflicts: Boolean,
+) : Resolution {
 
-    fun isNew(): Boolean = entityData == null
-
+    override fun infoString(verbose: Boolean?): String {
+        return "ResolvedEntity(type=${suggestedEntity.type}, ${entityData.infoString(verbose)})"
+    }
 }
 
 data class SuggestedEntities(
@@ -37,9 +41,11 @@ data class SuggestedEntities(
     val suggestedEntities: List<SuggestedEntity>,
 )
 
+// TODO should be able to have problems where there's a conflict
 data class EntityResolution(
     val chunk: Chunk,
-    val resolvedEntities: List<ResolvedEntity>,
+    val resolvedEntities: List<Resolution>,
+    // TODO conflicts
 )
 
 interface EntityResolver {
@@ -60,15 +66,9 @@ data class KnowledgeGraphUpdate(
     val relationships: List<SuggestedRelationship>,
 ) : HasInfoString {
 
-
-    fun newEntities(): List<EntityData> {
-        return entityResolution.resolvedEntities.mapNotNull { it.entityData }
-    }
-
     override fun infoString(verbose: Boolean?): String {
         return "KnowledgeGraphUpdate(entities=${entityResolution.resolvedEntities.size}, relationships=${relationships.size}, entityLabels=${
-            entityResolution.resolvedEntities.mapNotNull { it.entityData?.labels }.flatten().distinct()
-                .joinToString(", ")
+            entityResolution.resolvedEntities.joinToString(", ") { it.infoString(verbose) }
         }, relationshipTypes=${relationships.map { it.type }.distinct().joinToString(", ")})"
     }
 }
@@ -94,61 +94,5 @@ data class SimpleEntityData(
     override val description: String,
     override val labels: Set<String>,
     override val properties: Map<String, Any>,
-) : EntityData {
-    override fun persistent(): Boolean {
-        return false
-    }
-}
-
-// Trust in all entities
-class NaiveEntityResolver : EntityResolver {
-
-    override fun resolve(suggestedEntities: SuggestedEntities): EntityResolution {
-        // For simplicity, let's assume we resolve entities by their name
-        val resolvedEntities = suggestedEntities.suggestedEntities.map {
-            it.resolve(
-                SimpleEntityData(
-                    id = it.id ?: UUID.randomUUID().toString(),
-                    description = it.summary,
-                    labels = setOf(it.type),
-                    properties = emptyMap(),
-                )
-            )
-        }
-        return EntityResolution(
-            chunk = suggestedEntities.chunk,
-            resolvedEntities = resolvedEntities,
-        )
-    }
-
-}
-
-@Service
-class ChunkIngester(
-    private val chunkAnalyzer: ChunkAnalyzer,
-    private val entityResolver: EntityResolver = NaiveEntityResolver(),
-) {
-    private val logger = LoggerFactory.getLogger(javaClass)
-
-    fun computeUpdate(chunk: Chunk, schema: Schema): KnowledgeGraphUpdate {
-        val suggestedEntities = chunkAnalyzer.identifyEntities(chunk, schema)
-        logger.info("Suggested entities: {}", suggestedEntities)
-        val entityResolution = entityResolver.resolve(suggestedEntities)
-        logger.info("Entity resolution: {}", entityResolution)
-
-        val knowledgeGraphUpdate = chunkAnalyzer.analyzeRelationships(entityResolution)
-        return knowledgeGraphUpdate
-    }
-}
-
-
-interface Projector {
-
-    /**
-     * Project somewhere
-     */
-    fun project(
-        knowledgeGraphUpdate: KnowledgeGraphUpdate,
-    )
-}
+) : EntityData
 

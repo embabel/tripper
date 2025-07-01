@@ -13,14 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.embabel.agent.rag
+package com.embabel
 
 import com.embabel.agent.config.annotation.*
+import com.embabel.agent.rag.*
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan
 import org.springframework.boot.runApplication
 import org.springframework.shell.standard.ShellComponent
 import org.springframework.shell.standard.ShellMethod
+import org.springframework.shell.standard.ShellOption
 
 @SpringBootApplication
 @ConfigurationPropertiesScan
@@ -63,28 +65,41 @@ val schema = Schema(
             type = "has_pet",
             description = "Indicates that a person owns the specified animal as a pet",
         ),
+        RelationshipDefinition(
+            sourceEntity = "Person",
+            targetEntity = "Person",
+            type = "loves",
+            description = "Indicates that a person loves the other person",
+        ),
     ),
 )
 
 
 @ShellComponent("Ingestion commands")
 internal class IngestionShell(
-    private val chunkIngester: ChunkIngester,
+    private val knowledgeGraphBuilder: KnowledgeGraphBuilder,
     private val projector: Projector,
 ) {
     @ShellMethod
     fun input(
-    ): String {
-        val kgUpdate = chunkIngester.computeUpdate(
-            Chunk(
-                text = """
-                    Rod owns a golden retriever named Duke.
-                    Rod works at Embabel, where he is CEO.
-                    Rod's girlfriend is Lynda.
-                    Rod and Lynda live in Annandale.
-                """.trimIndent(),
-            ), schema
+        @ShellOption(
+            value = ["-r", "--resource"],
+            defaultValue = "file:/Users/rjohnson/dev/embabel.com/travel-planner-agent/src/main/resources/data/rod.txt",
+            help = "Path to the resource file to ingest",
         )
+        resource: String,
+    ): String {
+//        val kgUpdate = knowledgeGraphBuilder.analyze(
+//            resource, schema
+//        )
+        val kgUpdate = knowledgeGraphBuilder.computeUpdate(
+            Chunk(
+                id = "chunk-1",
+                text = "Rod Johnson lives in Annandale with his girlfriend Lynda, and golden retriever Duke. Rod is CEO of Embabel.",
+            ),
+            schema,
+        )
+        println("Knowledge Graph Update:")
 //        println(kgUpdate)
         println(kgUpdate.infoString(verbose = true))
         projector.project(kgUpdate)
