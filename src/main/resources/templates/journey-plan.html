@@ -10,6 +10,22 @@
     <div th:if="${travelPlan != null}">
         <h2 th:text="${travelPlan.plan.title}"></h2>
 
+        <div style="margin-bottom: 20px;">
+            <a href="/travel/journey" target="_blank" rel="noopener noreferrer"
+               class="friendly-map-btn">
+                Plan Another Journey
+            </a>
+        </div>
+        <h3>Usage</h3>
+        <p>Cost: $<span th:text="${#numbers.formatDecimal(agentProcess.cost(), 1, 2)}"></span> &nbsp;&nbsp;</p>
+        <p>LLMs used:
+            <span th:each="llm, iterStat : ${agentProcess.modelsUsed()}">
+        <i th:text="${llm.name}"></i><span th:if="${!iterStat.last}">, </span>
+    </span>
+            &nbsp;&nbsp;
+        </p>
+
+
         <div th:if="${travelPlan.brief != null}">
             <h3>Brief</h3>
             <p style="margin-bottom: 0.75rem;">From [[${travelPlan.brief.from}]] to [[${travelPlan.brief.to}]]
@@ -20,12 +36,7 @@
             <h3>Plan</h3>
             <div style="margin-bottom: 20px;">
                 <a th:href="${travelPlan.journeyMapUrl}" target="_blank" rel="noopener noreferrer"
-                   style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 15px;
-              background-color: #f0f8ff; border: 1px solid #007bff; border-radius: 5px;
-              text-decoration: none; color: #274463; font-weight: 500;">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-                    </svg>
+                   class="friendly-map-btn">
                     Interactive Map
                 </a>
             </div>
@@ -53,11 +64,11 @@
             </ul>
 
             <div th:if="${travelPlan.plan.pageLinks != null && !#lists.isEmpty(travelPlan.plan.pageLinks)}">
-                <h3>References</h3>
+                <h3>Useful Links</h3>
                 <ul style="margin-bottom: 1rem;">
                     <li th:each="page : ${travelPlan.plan.pageLinks}" style="margin-bottom: 0.5rem;">
                         <a th:href="${page.url}" target="_blank" rel="noopener noreferrer"><span
-                                th:text="${page.url}"></span></a>
+                                th:text="${page.summary}"></span></a>
                     </li>
                 </ul>
             </div>

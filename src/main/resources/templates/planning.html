@@ -2,10 +2,24 @@
     <div id="journey-status">
         <div class="working">
             <h3>Planning your journey...</h3>
-            <p>Process <code>[[${processId}]]</code></p>
+            <p>Process <code th:text="${processId}"></code></p>
+            <div class="process-controls">
+                <a th:href="@{/api/v1/process/{id}(id=${processId})}"
+                   target="_blank"
+                   class="btn btn-primary">
+                    Open Process
+                </a>
+                <button type="button"
+                        th:hx-delete="@{/api/v1/process/{id}(id=${processId})}"
+                        hx-confirm="Are you sure you want to kill this process?"
+                        hx-target="this"
+                        hx-swap="outerHTML"
+                        class="scary-delete-btn">
+                    Kill Process
+                </button>
+            </div>
             <div class="spinner"></div>
         </div>
-    </div>
 
     <div id="sse-updates">
         <p>Initializing...</p>

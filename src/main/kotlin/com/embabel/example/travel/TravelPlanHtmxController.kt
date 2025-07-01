@@ -54,11 +54,15 @@ class TravelPlanHtmxController(
         @RequestParam(defaultValue = "Antwerp") from: String,
         @RequestParam(defaultValue = "Bordeaux") to: String,
         @RequestParam(defaultValue = "driving") transport: String,
-        @RequestParam(defaultValue = "Relaxed journey with historical sightseeing for Rod and Lynda who love food, wine, cycling and history") brief: String,
+        @RequestParam(defaultValue = "") brief: String,
         @RequestParam(required = false) departureDate: String?,
         @RequestParam(required = false) returnDate: String?,
         model: Model
     ): String {
+        val defaultBrief = """
+            Relaxed journey with historical sightseeing for Rod and Lynda 
+            who love food, wine, cycling and history
+        """.trimIndent()
         val defaultDepartureDate = departureDate?.let {
             LocalDate.parse(it)
         } ?: LocalDate.now()
@@ -73,12 +77,12 @@ class TravelPlanHtmxController(
                 from = from,
                 to = to,
                 transportPreference = transport,
-                brief = brief,
+                brief = brief.ifBlank { defaultBrief },
                 departureDate = defaultDepartureDate,
                 returnDate = defaultReturnDate,
             )
         )
-        return "travel-form"
+        return "journey-form"
     }
 
     @PostMapping("/plan")
@@ -115,7 +119,7 @@ class TravelPlanHtmxController(
         )
         model.addAttribute("processId", agentProcess.id)
         asyncer.async { agentProcess.run() }
-        return "making-plan"
+        return "planning"
     }
 
     @GetMapping("/status/{processId}")
@@ -128,7 +132,8 @@ class TravelPlanHtmxController(
                 logger.info("Process {} completed successfully", processId)
                 val travelPlan = agentProcess.resultOfType<TravelPlan>()
                 model.addAttribute("travelPlan", travelPlan)
-                "travel-plan"
+                model.addAttribute("agentProcess", agentProcess)
+                "journey-plan"
             }
 
             AgentProcessStatusCode.FAILED -> {

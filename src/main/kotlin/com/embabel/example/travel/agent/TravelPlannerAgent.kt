@@ -170,7 +170,9 @@ class TravelPlannerAgent(
                 ${poi.description}
                 ${poi.location}
                 </point-of-interest-to-research>
-                You can only include images from Wikipedia, not from general knowledge or other web sites.
+                You can only include images from sites that allow linking such as
+                Wikimedia Commons and Unsplash, not from general knowledge or other web sites.
+                Use the fetch tool to test any URL before returning it.
             """.trimIndent(),
             )
         }
@@ -180,7 +182,7 @@ class TravelPlannerAgent(
     }
 
     @Action
-    fun createTravelPlan(
+    fun proposeTravelPlan(
         travelBrief: JourneyTravelBrief,
         travelers: Travelers,
         poiFindings: PointOfInterestFindings,
@@ -211,8 +213,8 @@ class TravelPlannerAgent(
                 Ghent,+Belgium
 
                 Put image links where appropriate in text and also in the links field.
-                IMPORTANT: Image links must come from the web pages you found, not from
-                general knowledge.
+                IMPORTANT: Image links must have been provided by the researchers
+                          and not be general knowledge or from other web sites.
 
                 Recount at least one interesting story about a famous person
                 associated with an area.
