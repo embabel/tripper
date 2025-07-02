@@ -12,39 +12,16 @@ object ImageChecker {
 
     private val logger = LoggerFactory.getLogger(ImageChecker::class.java)
 
-    fun findInvalidImageLinks(html: String): Set<String> {
-        val imgRegex = "<img[^>]*>".toRegex()
-        val srcRegex = "src=[\"']([^\"']*)[\"']".toRegex()
-
-        return runBlocking {
-            val imgTags = imgRegex.findAll(html).toList()
-            imgTags.map { matchResult ->
-                async(Dispatchers.IO) {
-                    val imgTag = matchResult.value
-                    val srcMatch = srcRegex.find(imgTag)
-                    val src = srcMatch?.groupValues?.get(1)
-
-                    if (src != null && !isImageUrlValid(src)) {
-                        logger.info("Found invalid image link: {}", src)
-                        src
-                    } else {
-                        null
-                    }
-                }
-            }.awaitAll().filterNotNull().toSet()
-        }
-    }
+    private val IMG_REX = "<img[^>]*>".toRegex()
+    private val SRC_REX = "src=[\"']([^\"']*)[\"']".toRegex()
 
     fun removeInvalidImageLinks(html: String): String {
-        val imgRegex = "<img[^>]*>".toRegex()
-        val srcRegex = "src=[\"']([^\"']*)[\"']".toRegex()
-
         return runBlocking {
-            val imgTags = imgRegex.findAll(html).toList()
+            val imgTags = IMG_REX.findAll(html).toList()
             val validationResults = imgTags.map { matchResult ->
                 async(Dispatchers.IO) {
                     val imgTag = matchResult.value
-                    val srcMatch = srcRegex.find(imgTag)
+                    val srcMatch = SRC_REX.find(imgTag)
                     val src = srcMatch?.groupValues?.get(1)
 
                     val isValid = src?.let { isImageUrlValid(it) } ?: false

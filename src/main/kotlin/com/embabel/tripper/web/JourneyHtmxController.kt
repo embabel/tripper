@@ -41,11 +41,11 @@ class HomeController(
 
 @Controller
 @RequestMapping(value = ["/travel/journey"])
-class TravelPlanHtmxController(
+class JourneyHtmxController(
     private val agentPlatform: AgentPlatform,
 ) {
 
-    private val logger = LoggerFactory.getLogger(TravelPlanHtmxController::class.java)
+    private val logger = LoggerFactory.getLogger(JourneyHtmxController::class.java)
 
     @GetMapping
     fun showForm(
