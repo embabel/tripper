@@ -1,6 +1,21 @@
 package com.embabel.agent.rag
 
-data class EntityDefinition(val type: String, val description: String)
+import com.embabel.agent.core.PropertyDefinition
+
+data class EntityDefinition(
+    val description: String,
+    val labels: Set<String>,
+    val properties: List<PropertyDefinition>,
+) {
+
+    constructor (
+        type: String,
+        description: String,
+        properties: List<PropertyDefinition> = emptyList(),
+    ) : this(description, setOf(type), properties)
+
+    val type get() = labels.firstOrNull() ?: "Unknown"
+}
 
 data class RelationshipDefinition(
     val sourceEntity: String,

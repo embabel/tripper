@@ -72,4 +72,5 @@ data class SimpleEntityData(
     override val description: String,
     override val labels: Set<String>,
     override val properties: Map<String, Any>,
+    override val metadata: Map<String, Any?> = emptyMap(),
 ) : EntityData

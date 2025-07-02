@@ -39,7 +39,7 @@ fun main(args: Array<String>) {
 }
 
 
-val schema = Schema(
+val PERSON_SCHEMA = Schema(
     entities = listOf(
         EntityDefinition("Person", "A human being"),
         EntityDefinition("Organization", "A group of people working together"),
@@ -79,6 +79,7 @@ val schema = Schema(
 internal class IngestionShell(
     private val knowledgeGraphBuilder: KnowledgeGraphBuilder,
     private val projector: Projector,
+    private val schemaSource: SchemaSource,
 ) {
     @ShellMethod
     fun input(
@@ -89,6 +90,9 @@ internal class IngestionShell(
         )
         resource: String,
     ): String {
+        val schema = schemaSource.inferSchema()
+        println(schema)
+
 //        val kgUpdate = knowledgeGraphBuilder.analyze(
 //            resource, schema
 //        )

@@ -13,3 +13,11 @@ interface Projector {
         knowledgeGraphDelta: KnowledgeGraphDelta,
     )
 }
+
+interface SchemaSource {
+
+    /**
+     * Infer the schema of the knowledge graph.
+     */
+    fun inferSchema(): Schema
+}

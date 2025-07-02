@@ -3,7 +3,6 @@ package com.embabel.agent.rag
 import com.embabel.agent.spi.InteractionId
 import com.embabel.agent.spi.LlmInteraction
 import com.embabel.agent.spi.LlmOperations
-import com.embabel.schema
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
@@ -39,7 +38,10 @@ class LlmChunkAnalyzer(
         )
     }
 
-    override fun analyzeRelationships(entityResolution: EntityResolution): KnowledgeGraphDelta {
+    override fun analyzeRelationships(
+        entityResolution: EntityResolution,
+        schema: Schema
+    ): KnowledgeGraphDelta {
         val prompt = """
             Given the following text, identify and summarize all relationships.
             Relationships must only come from the following list:

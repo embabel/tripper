@@ -19,6 +19,7 @@ interface ChunkAnalyzer {
 
     fun analyzeRelationships(
         entityResolution: EntityResolution,
+        schema: Schema,
     ): KnowledgeGraphDelta
 }
 

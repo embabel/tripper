@@ -10,9 +10,39 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class NeoOgmProjector(
     private val sessionFactory: SessionFactory,
-) : Projector {
+) : Projector, SchemaSource {
 
     private val logger = LoggerFactory.getLogger(javaClass)
+
+    override fun inferSchema(): Schema {
+        val metadata = sessionFactory.metaData()
+        val relationships = mutableListOf<RelationshipDefinition>()
+        val entityDefinitions = metadata.persistentEntities()
+            .map { entity ->
+                val entityDefinition = EntityDefinition(
+                    description = entity.neo4jName(),
+                    labels = entity.staticLabels().toSet(),
+                    properties = emptyList(),
+                )
+                entity.relationshipFields().forEach { relationshipField ->
+                    // TODO this is wrong, look up labels
+                    val targetEntity = relationshipField.field.type.simpleName
+                    relationships.add(
+                        RelationshipDefinition(
+                            sourceEntity = entityDefinition.type,
+                            targetEntity = targetEntity,
+                            type = relationshipField.relationship(),
+                            description = relationshipField.name,
+                        )
+                    )
+                }
+                entityDefinition
+            }
+        return Schema(
+            entities = entityDefinitions,
+            relationships = relationships,
+        )
+    }
 
     @Transactional
     override fun applyDelta(knowledgeGraphDelta: KnowledgeGraphDelta) {
