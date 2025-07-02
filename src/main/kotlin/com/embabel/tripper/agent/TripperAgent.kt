@@ -36,6 +36,7 @@ import com.embabel.common.ai.model.LlmOptions
 import com.embabel.common.ai.model.ModelSelectionCriteria.Companion.byName
 import com.embabel.tripper.config.ToolsConfig
 import com.embabel.tripper.service.PersonRepository
+import com.embabel.tripper.util.ImageChecker
 import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.ConfigurationProperties
 
@@ -79,13 +80,13 @@ data class TravelPlannerProperties(
  * 3. Research each point of interest to gather detailed information.
  */
 @Agent(description = "Make a detailed travel plan")
-class TravelPlannerAgent(
+class TripperAgent(
     private val config: TravelPlannerProperties,
     private val personRepository: PersonRepository,
     private val braveImageSearch: BraveImageSearchService,
 ) {
 
-    private val logger = LoggerFactory.getLogger(TravelPlannerAgent::class.java)
+    private val logger = LoggerFactory.getLogger(TripperAgent::class.java)
 
     @Action
     fun lookupTravelers(
@@ -131,7 +132,8 @@ class TravelPlannerAgent(
                 Consider the following travel brief for a journey from ${travelBrief.from} to ${travelBrief.to}.
                 ${travelBrief.contribution()}
                 Find points of interest that are relevant to the travel brief and travelers.
-                Use mapping tools to consider appropriate order
+                Use mapping tools to consider appropriate order and put a rough date
+                range for each point of interest.
             """.trimIndent(),
             )
     }
@@ -164,7 +166,7 @@ class TravelPlannerAgent(
             val rpi = promptRunner.create<ResearchedPointOfInterest>(
                 prompt = """
                 Research the following point of interest.
-                Consider in particular interesting stories about art and culture and famous people.
+                Consider interesting stories about art and culture and famous people.
                 Your audience: ${travelBrief.brief}
                 Dates to consider: ${travelBrief.departureDate} to ${travelBrief.returnDate}
                 If any particularly important events are happening here during this time, mention them
@@ -173,6 +175,7 @@ class TravelPlannerAgent(
                 ${poi.name}
                 ${poi.description}
                 ${poi.location}
+                Date: from ${poi.fromDate} to: ${poi.toDate}
                 </point-of-interest-to-research>
                 Use the image search tool to find images of the point of interest.
             """.trimIndent(),
@@ -200,6 +203,7 @@ class TravelPlannerAgent(
             .create(
                 prompt = """
                 Given the following travel brief, create a detailed plan.
+                Give it a brief, catchy title that doesn't include dates (but may consider season, mood etc.)
 
                 Plan the journey to minimize travel time.
                 However, consider any important events or places of interest along the way
@@ -293,17 +297,35 @@ class TravelPlannerAgent(
         val oldPlan = plan.plan.plan
         return plan.copy(
             plan = plan.plan.copy(
-                plan =
-                    oldPlan.replace(
-                        "<img",
-                        "<img class=\"styled-image-thick\"",
-                    ),
+                plan = applyTransforms(
+                    oldPlan, listOf(
+                        ::styleImages,
+                        ImageChecker::removeInvalidImageLinks,
+                    )
+                ),
             ),
         )
     }
+
+    private fun applyTransforms(html: String, transforms: List<(String) -> String>): String {
+        return transforms.fold(html) { acc, transform -> transform(acc) }
+    }
+
+
+    private fun styleImages(html: String): String = html.replace(
+        "<img",
+        "<img class=\"styled-image-thick\"",
+    )
+
+}
+
+private fun validateImageExists(imageUrl: String): Boolean {
+    // Placeholder for actual image validation logic
+    // This could involve checking if the image URL is reachable or if it returns a valid image format
+    return true
 }
 
 
-data class AirbnbResults(
+private data class AirbnbResults(
     val searchUrl: String,
 )

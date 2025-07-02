@@ -53,13 +53,13 @@
                     actionMessage = `🚀 Executing ${data.action?.name.replace('_', ' ')}`;
                     break;
                 case 'ToolCallRequestEvent':
-                    userMessage = `🔧 Connecting to ${data.tool}`;
+                    userMessage = `🔧 Using tool ${data.tool}`;
                     break;
                 case 'ChatModelCallEvent':
-                    userMessage = `🤖 Processing with ${data.llm?.name}`;
+                    userMessage = `🤖 Calling LLM ${data.llm?.name}`;
                     break;
                 default:
-                    userMessage = `⚡ Processing ${data.type.replace('Event', '')}`;
+                     everyEvent = `⚡ Processing ${data.type.replace('Event', '')}`;
             }
 
 

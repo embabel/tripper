@@ -65,6 +65,8 @@ data class PointOfInterest(
     val name: String,
     val description: String,
     val location: String,
+    val fromDate: LocalDate,
+    val toDate: LocalDate,
 )
 
 data class ItineraryIdeas(

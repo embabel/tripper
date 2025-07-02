@@ -101,8 +101,8 @@ class TravelPlanHtmxController(
             departureDate = departureDate,
             returnDate = returnDate,
         )
-        val agent = agentPlatform.agents().singleOrNull { it.name.lowercase().contains("travel") }
-            ?: error("No travel agent found. Please ensure the travel agent is registered.")
+        val agent = agentPlatform.agents().singleOrNull { it.name.lowercase().contains("trip") }
+            ?: error("No travel agent found. Please ensure the tripper agent is registered.")
         val agentProcess = agentPlatform.createAgentProcess(
             agent = agent,
             processOptions = ProcessOptions(
