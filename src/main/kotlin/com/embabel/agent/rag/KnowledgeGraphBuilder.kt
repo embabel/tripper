@@ -24,11 +24,15 @@ class KnowledgeGraphBuilder(
     }
 
     fun computeChunkDelta(chunk: Chunk, schema: Schema): KnowledgeGraphDelta {
-        val suggestedEntities = chunkAnalyzer.identifyEntities(chunk, schema)
+        val suggestedEntities = chunkAnalyzer.suggestEntities(chunk, schema)
         logger.info("Suggested entities: {}", suggestedEntities)
         val entityResolution = entityResolver.resolve(suggestedEntities)
         logger.info("Entity resolution: {}", entityResolution)
-        val knowledgeGraphUpdate = chunkAnalyzer.analyzeRelationships(entityResolution, schema)
-        return knowledgeGraphUpdate
+        val suggestedRelationships = chunkAnalyzer.suggestRelationships(entityResolution, schema)
+        return KnowledgeGraphDelta(
+            basis = chunk,
+            newEntities = entityResolution.resolutions.filterIsInstance<NewEntity>().map { it.entityData },
+            newRelationships = suggestedRelationships.suggestedRelationships,
+        )
     }
 }

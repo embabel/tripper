@@ -58,6 +58,11 @@ data class SuggestedEntities(
     val suggestedEntities: List<SuggestedEntity>,
 )
 
+data class SuggestedRelationships(
+    val entitiesResolution: SuggestedEntitiesResolution,
+    val suggestedRelationships: List<SuggestedRelationship>,
+)
+
 data class SuggestedEntitiesResolution(
     val basis: Retrievable,
     val resolutions: List<SuggestedEntityResolution>,
@@ -103,7 +108,7 @@ data class SuggestedRelationship(
 data class KnowledgeGraphDelta(
     val basis: Retrievable,
     val newEntities: List<EntityData>,
-    val newRelationships: List<SuggestedRelationship>,
+    val newRelationships: List<RelationshipInstance>,
 ) : HasInfoString {
 
     override fun infoString(verbose: Boolean?): String {

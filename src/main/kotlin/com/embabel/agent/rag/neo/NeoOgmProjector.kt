@@ -128,7 +128,7 @@ class NeoOgmProjector(
 
     private fun createRelationship(
         session: Session,
-        relationship: SuggestedRelationship,
+        relationship: RelationshipInstance,
         basis: Retrievable,
     ) {
         val cypher = """

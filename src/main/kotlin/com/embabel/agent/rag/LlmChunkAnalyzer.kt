@@ -26,7 +26,7 @@ class LlmChunkAnalyzer(
 
     private val logger = LoggerFactory.getLogger(LlmChunkAnalyzer::class.java)
 
-    override fun identifyEntities(chunk: Chunk, schema: Schema): SuggestedEntities {
+    override fun suggestEntities(chunk: Chunk, schema: Schema): SuggestedEntities {
         val prompt = """
             Given the following text, identify and summarize all entities mentioned.
             Include the entity id only if it's provided in the text as a UUID, not a name.
@@ -53,11 +53,12 @@ class LlmChunkAnalyzer(
         )
     }
 
-    override fun analyzeRelationships(
-        entityResolution: SuggestedEntitiesResolution,
+    override fun suggestRelationships(
+        suggestedEntitiesResolution: SuggestedEntitiesResolution,
         schema: Schema
-    ): KnowledgeGraphDelta {
-        val entitiesToUse = entityResolution.resolutions.filterIsInstance<EntityDataResolution>().map { it.entityData }
+    ): SuggestedRelationships {
+        val entitiesToUse =
+            suggestedEntitiesResolution.resolutions.filterIsInstance<EntityDataResolution>().map { it.entityData }
         val prompt =
             """
             Given the following text, identify and summarize all relationships.
@@ -75,7 +76,7 @@ class LlmChunkAnalyzer(
             }
             
             # TEXT
-            ${entityResolution.basis.infoString()}
+            ${suggestedEntitiesResolution.basis.infoString()}
         """.trimIndent()
         logger.info("Identifying relationships with prompt:\n$prompt")
         val relationships = llmOperations.doTransform(
@@ -84,10 +85,10 @@ class LlmChunkAnalyzer(
             Relationships::class.java,
             llmRequestEvent = null,
         )
-        val allEntities = entityResolution.resolutions
+        val allEntities = suggestedEntitiesResolution.resolutions
             .filterIsInstance<EntityDataResolution>()
             .map { it.entityData }
-        val newEntities = entityResolution.resolutions
+        val newEntities = suggestedEntitiesResolution.resolutions
             .filterIsInstance<NewEntity>()
             .map { it.entityData }
         val newRelationships = relationships.relationships
@@ -101,10 +102,9 @@ class LlmChunkAnalyzer(
 
                 it.isValid(schema, sourceEntity, targetEntity)
             }
-        return KnowledgeGraphDelta(
-            basis = entityResolution.basis,
-            newEntities = newEntities,
-            newRelationships = newRelationships,
+        return SuggestedRelationships(
+            entitiesResolution = suggestedEntitiesResolution,
+            suggestedRelationships = newRelationships,
         )
     }
 }
