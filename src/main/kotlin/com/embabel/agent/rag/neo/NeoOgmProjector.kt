@@ -4,35 +4,81 @@ import com.embabel.agent.rag.*
 import org.neo4j.ogm.session.Session
 import org.neo4j.ogm.session.SessionFactory
 import org.slf4j.LoggerFactory
+import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+
+@ConfigurationProperties(prefix = "application.neo")
+data class NeoOgmProjectorProperties(
+    val chunkNodeName: String = "Document",
+)
 
 @Service
 class NeoOgmProjector(
     private val sessionFactory: SessionFactory,
-) : Projector, SchemaSource {
+    private val properties: NeoOgmProjectorProperties,
+) : Projector, SchemaSource, ChunkRepository {
 
     private val logger = LoggerFactory.getLogger(javaClass)
+
+    override fun findAll(): List<Chunk> {
+        val rows = sessionFactory.openSession().query(
+            cypherChunkQuery(""),
+            emptyMap<String, Any?>(),
+            true,
+        )
+        return rows.map(::rowToChunk)
+
+    }
+
+    private fun cypherChunkQuery(whereClause: String): String =
+        "MATCH (c:${properties.chunkNodeName}) $whereClause RETURN c.id AS id, c.text AS text, c.metadata.source as metadata_source"
+
+
+    override fun findChunksById(chunkIds: List<String>): List<Chunk> {
+        val rows = sessionFactory.openSession().query(
+            cypherChunkQuery(" WHERE c.id IN \$ids "),
+            mapOf("ids" to chunkIds),
+            true,
+        )
+        return rows.map(::rowToChunk)
+    }
+
+    private fun rowToChunk(row: Map<String, Any?>): Chunk {
+        val metadata = mutableMapOf<String, Any>()
+        metadata["source"] = row["metadata_source"] ?: "unknown"
+        return Chunk(
+            id = row["id"] as String,
+            text = row["text"] as String,
+            metadata = metadata,
+        )
+    }
 
     override fun inferSchema(): Schema {
         val metadata = sessionFactory.metaData()
         val relationships = mutableListOf<RelationshipDefinition>()
         val entityDefinitions = metadata.persistentEntities()
+            .filter { it.hasPrimaryIndexField() }
             .map { entity ->
+                val labels = entity.staticLabels().toSet()
                 val entityDefinition = EntityDefinition(
-                    description = entity.neo4jName(),
-                    labels = entity.staticLabels().toSet(),
+                    labels = labels,
                     properties = emptyList(),
+                    description = labels.joinToString(","),
                 )
                 entity.relationshipFields().forEach { relationshipField ->
-                    // TODO this is wrong, look up labels
-                    val targetEntity = relationshipField.field.type.simpleName
+                    val targetEntity = relationshipField.typeDescriptor.split(".").last()
                     relationships.add(
                         RelationshipDefinition(
                             sourceEntity = entityDefinition.type,
                             targetEntity = targetEntity,
                             type = relationshipField.relationship(),
                             description = relationshipField.name,
+                            cardinality = if (relationshipField.isArray || relationshipField.isIterable) {
+                                Cardinality.MANY
+                            } else {
+                                Cardinality.ONE
+                            },
                         )
                     )
                 }
@@ -48,26 +94,38 @@ class NeoOgmProjector(
     override fun applyDelta(knowledgeGraphDelta: KnowledgeGraphDelta) {
         val session = sessionFactory.openSession()
         knowledgeGraphDelta.entityResolution.resolvedEntities.filterIsInstance<NewEntity>().forEach { ne ->
-            createEntity(session, ne.entityData)
+            createEntity(session, ne.entityData, knowledgeGraphDelta.entityResolution.basis)
         }
         knowledgeGraphDelta.relationships.forEach { relationship ->
-            createRelationship(session, relationship)
+            createRelationship(session, relationship, knowledgeGraphDelta.entityResolution.basis)
         }
     }
 
 
-    private fun createEntity(session: Session, entity: EntityData) {
-        val cypher = "CREATE (n:${entity.labels.joinToString(":")} {id: \$id, description: \$description })"
-        logger.info("Executing create entity cypher: {}", cypher)
+    private fun createEntity(
+        session: Session,
+        entity: EntityData,
+        basis: Retrievable,
+    ) {
+        val entityCreationCypher =
+            "MATCH (chunk:${properties.chunkNodeName} {id: \$basisId})\n" +
+                    "CREATE (e:${entity.labels.joinToString(":")} {id: \$id, description: \$description })" +
+                    "<-[:HAS_ENTITY]-(chunk) RETURN e"
+        logger.info("Executing create entity cypher: {}", entityCreationCypher)
         session.query(
-            cypher,
-            mapOf("id" to entity.id, "description" to entity.description)
+            entityCreationCypher,
+            mapOf(
+                "id" to entity.id,
+                "description" to entity.description,
+                "basisId" to basis.id,
+            )
         )
     }
 
     private fun createRelationship(
         session: Session,
-        relationship: SuggestedRelationship
+        relationship: SuggestedRelationship,
+        basis: Retrievable,
     ) {
         val cypher = """
                 MATCH (n {id: ${'$'}sourceId}), (p {id: ${'$'}targetId}) 

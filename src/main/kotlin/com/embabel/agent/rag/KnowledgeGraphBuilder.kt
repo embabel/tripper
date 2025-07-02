@@ -12,14 +12,18 @@ class KnowledgeGraphBuilder(
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    fun analyze(resource: String, schema: Schema): KnowledgeGraphDelta {
-        val ingestionResult = ingester.ingest(resource)
-        // We now have a document
-        println(ingestionResult)
-        TODO()
+    fun computeDelta(chunks: List<Chunk>, schema: Schema): KnowledgeGraphDelta? {
+        if (chunks.isEmpty()) {
+            logger.warn("No chunks provided for analysis")
+            return null
+        }
+        if (chunks.size > 1) {
+            TODO("Support multiple chunks")
+        }
+        return computeChunkDelta(chunks.single(), schema)
     }
 
-    fun computeUpdate(chunk: Chunk, schema: Schema): KnowledgeGraphDelta {
+    fun computeChunkDelta(chunk: Chunk, schema: Schema): KnowledgeGraphDelta {
         val suggestedEntities = chunkAnalyzer.identifyEntities(chunk, schema)
         logger.info("Suggested entities: {}", suggestedEntities)
         val entityResolution = entityResolver.resolve(suggestedEntities)

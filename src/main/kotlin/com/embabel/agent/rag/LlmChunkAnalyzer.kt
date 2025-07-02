@@ -48,7 +48,7 @@ class LlmChunkAnalyzer(
             
             ${
             schema.possibleRelationshipsBetween(entityResolution.resolvedEntities.map { it.entityData })
-                .joinToString("\n") { "(:${it.sourceEntity})-[:${it.type}]->(:${it.targetEntity}): ${it.description}" }
+                .joinToString("\n") { "(:${it.sourceEntity})-[:${it.type}]->(:${it.targetEntity}): cardinality=${it.cardinality}, ${it.description}" }
         }
             
             Use entity IDs from the following list:

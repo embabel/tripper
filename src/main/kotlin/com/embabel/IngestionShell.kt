@@ -16,13 +16,17 @@
 package com.embabel
 
 import com.embabel.agent.config.annotation.*
-import com.embabel.agent.rag.*
+import com.embabel.agent.rag.KnowledgeGraphBuilder
+import com.embabel.agent.rag.Projector
+import com.embabel.agent.rag.SchemaSource
+import com.embabel.agent.rag.neo.ChunkRepository
+import com.embabel.tripper.service.PersonService
+import org.slf4j.LoggerFactory
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan
 import org.springframework.boot.runApplication
 import org.springframework.shell.standard.ShellComponent
 import org.springframework.shell.standard.ShellMethod
-import org.springframework.shell.standard.ShellOption
 
 @SpringBootApplication
 @ConfigurationPropertiesScan
@@ -39,74 +43,61 @@ fun main(args: Array<String>) {
 }
 
 
-val PERSON_SCHEMA = Schema(
-    entities = listOf(
-        EntityDefinition("Person", "A human being"),
-        EntityDefinition("Organization", "A group of people working together"),
-        EntityDefinition("Location", "A place"),
-        EntityDefinition("Animal", "A living organism that is not a human or plant"),
-    ),
-    relationships = listOf(
-        RelationshipDefinition(
-            sourceEntity = "Person",
-            targetEntity = "Organization",
-            type = "works_at",
-            description = "Indicates that a person works at an organization",
-        ),
-        RelationshipDefinition(
-            sourceEntity = "Person",
-            targetEntity = "Location",
-            type = "lives_in",
-            description = "Indicates that a person lives in a location",
-        ),
-        RelationshipDefinition(
-            sourceEntity = "Person",
-            targetEntity = "Animal",
-            type = "has_pet",
-            description = "Indicates that a person owns the specified animal as a pet",
-        ),
-        RelationshipDefinition(
-            sourceEntity = "Person",
-            targetEntity = "Person",
-            type = "loves",
-            description = "Indicates that a person loves the other person",
-        ),
-    ),
-)
-
-
 @ShellComponent("Ingestion commands")
 internal class IngestionShell(
     private val knowledgeGraphBuilder: KnowledgeGraphBuilder,
     private val projector: Projector,
     private val schemaSource: SchemaSource,
+    private val personService: PersonService,
+    private val chunkRepository: ChunkRepository,
 ) {
-    @ShellMethod
-    fun input(
-        @ShellOption(
-            value = ["-r", "--resource"],
-            defaultValue = "file:/Users/rjohnson/dev/embabel.com/travel-planner-agent/src/main/resources/data/rod.txt",
-            help = "Path to the resource file to ingest",
-        )
-        resource: String,
-    ): String {
-        val schema = schemaSource.inferSchema()
-        println(schema)
 
-//        val kgUpdate = knowledgeGraphBuilder.analyze(
-//            resource, schema
+    private val logger = LoggerFactory.getLogger(javaClass)
+
+    val schema = run {
+        val schema = schemaSource.inferSchema()
+        logger.info("Using schema: {}", schema.infoString(verbose = true))
+        schema
+    }
+
+    @ShellMethod
+    fun list(): String {
+        val people = personService.loadPeople()
+        return people.joinToString("\n") { it.toString() }
+    }
+
+    // Use ingest first
+
+    @ShellMethod
+    fun analyze(
+//        @ShellOption(
+//            value = ["-r", "--resource"],
+//            defaultValue = "file:/Users/rjohnson/dev/embabel.com/travel-planner-agent/src/main/resources/data/rod.txt",
+//            help = "Path to the resource file to ingest",
 //        )
-        val kgUpdate = knowledgeGraphBuilder.computeUpdate(
-            Chunk(
-                id = "chunk-1",
-                text = "Rod Johnson lives in Annandale with his girlfriend Lynda, and golden retriever Duke. Rod is CEO of Embabel.",
-            ),
+//        resource: String,
+    ): String {
+
+        val chunks = chunkRepository.findAll()
+        logger.info("Analyzing chunks: {}", chunks)
+
+        val kgDelta = knowledgeGraphBuilder.computeDelta(
+            chunks,
             schema,
         )
-        println("Knowledge Graph Update:")
-//        println(kgUpdate)
-        println(kgUpdate.infoString(verbose = true))
-        projector.applyDelta(kgUpdate)
+//        val kgUpdate = knowledgeGraphBuilder.computeUpdate(
+//            Chunk(
+//                id = "chunk-1",
+//                text = "Rod Johnson lives in Annandale with his girlfriend Lynda, and golden retriever Duke. Rod is CEO of Embabel.",
+//            ),
+//            schema,
+//        )
+        if (kgDelta == null) {
+            logger.warn("No knowledge graph update computed")
+            return "No knowledge graph update computed"
+        }
+        logger.info("Knowledge graph delta:\n{}", kgDelta.infoString(verbose = true))
+        projector.applyDelta(kgDelta)
         return "Ingestion complete"
     }
 

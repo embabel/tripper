@@ -11,10 +11,6 @@ import org.springframework.data.neo4j.transaction.Neo4jTransactionManager
 import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.transaction.annotation.EnableTransactionManagement
 
-/**
- * This needs to stay here (rather than be in config package)
- * to pick up entities in sub packages
- */
 @Configuration
 @EnableNeo4jRepositories
 @EnableTransactionManagement
@@ -42,7 +38,10 @@ class NeoOgmConfig(
 
     @Bean
     fun sessionFactory(): SessionFactory {
-        return SessionFactory(configuration(), "com.embabel.example.travel")
+        return SessionFactory(
+            configuration(),
+            "com.embabel.tripper"
+        )
     }
 
     @Bean
