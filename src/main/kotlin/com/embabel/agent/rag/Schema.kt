@@ -3,10 +3,17 @@ package com.embabel.agent.rag
 import com.embabel.agent.core.PropertyDefinition
 import com.embabel.common.core.types.HasInfoString
 
+/**
+ * @param description a human-readable description of the entity type
+ * @param labels a set of labels or types that this entity belongs to
+ * @param properties a list of properties that this entity has
+ * @param creationPermitted if false new entities of this type cannot be created
+ */
 data class EntityDefinition(
     val description: String,
     val labels: Set<String>,
     val properties: List<PropertyDefinition>,
+    val creationPermitted: Boolean = true,
 ) : HasInfoString {
 
     constructor (

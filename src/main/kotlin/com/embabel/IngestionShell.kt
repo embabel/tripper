@@ -66,7 +66,7 @@ internal class IngestionShell(
         return people.joinToString("\n") { it.toString() }
     }
 
-    // Use ingest first
+    // Use generic ingest first
 
     @ShellMethod
     fun analyze(

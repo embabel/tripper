@@ -37,6 +37,8 @@ data class Person(
     val activities: List<Activity> = emptyList(),
     @Relationship(type = "VISITED", direction = Relationship.Direction.OUTGOING)
     val visit: List<Visit> = emptyList(),
+    @Relationship(type = "LIVES_IN", direction = Relationship.Direction.OUTGOING)
+    val place: Place? = null,
     @Id
     override val id: String? = null,
 ) : NameAsId

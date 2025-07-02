@@ -6,7 +6,7 @@ import java.util.*
 // Trust in all entities
 class NaiveEntityResolver : EntityResolver {
 
-    override fun resolve(suggestedEntities: SuggestedEntities): EntityResolution {
+    override fun resolve(suggestedEntities: SuggestedEntities): SuggestedEntitiesResolution {
         // For simplicity, let's assume we resolve entities by their name
         val resolvedEntities = suggestedEntities.suggestedEntities.map {
             NewEntity(
@@ -15,13 +15,15 @@ class NaiveEntityResolver : EntityResolver {
                     id = it.id ?: UUID.randomUUID().toString(),
                     description = it.summary,
                     labels = setOf(it.type),
-                    properties = emptyMap(),
+                    properties = mapOf(
+                        "name" to it.name,
+                    ),
                 )
             )
         }
-        return EntityResolution(
+        return SuggestedEntitiesResolution(
             basis = suggestedEntities.basis,
-            resolvedEntities = resolvedEntities,
+            resolutions = resolvedEntities,
         )
     }
 

@@ -28,7 +28,6 @@ class KnowledgeGraphBuilder(
         logger.info("Suggested entities: {}", suggestedEntities)
         val entityResolution = entityResolver.resolve(suggestedEntities)
         logger.info("Entity resolution: {}", entityResolution)
-
         val knowledgeGraphUpdate = chunkAnalyzer.analyzeRelationships(entityResolution, schema)
         return knowledgeGraphUpdate
     }

@@ -93,11 +93,11 @@ class NeoOgmProjector(
     @Transactional
     override fun applyDelta(knowledgeGraphDelta: KnowledgeGraphDelta) {
         val session = sessionFactory.openSession()
-        knowledgeGraphDelta.entityResolution.resolvedEntities.filterIsInstance<NewEntity>().forEach { ne ->
-            createEntity(session, ne.entityData, knowledgeGraphDelta.entityResolution.basis)
+        knowledgeGraphDelta.newEntities.forEach { ne ->
+            createEntity(session, ne, knowledgeGraphDelta.basis)
         }
-        knowledgeGraphDelta.relationships.forEach { relationship ->
-            createRelationship(session, relationship, knowledgeGraphDelta.entityResolution.basis)
+        knowledgeGraphDelta.newRelationships.forEach { relationship ->
+            createRelationship(session, relationship, knowledgeGraphDelta.basis)
         }
     }
 
@@ -107,10 +107,13 @@ class NeoOgmProjector(
         entity: EntityData,
         basis: Retrievable,
     ) {
-        val entityCreationCypher =
-            "MATCH (chunk:${properties.chunkNodeName} {id: \$basisId})\n" +
-                    "CREATE (e:${entity.labels.joinToString(":")} {id: \$id, description: \$description })" +
-                    "<-[:HAS_ENTITY]-(chunk) RETURN e"
+        val entityCreationCypher = """
+            MATCH (chunk:${properties.chunkNodeName} {id: ${'$'}basisId})
+            CREATE (e:${entity.labels.joinToString(":")} {id: ${'$'}id, description: ${'$'}description })
+                <-[:HAS_ENTITY]-(chunk) 
+            SET e += ${'$'}properties
+            RETURN e
+            """.trimIndent()
         logger.info("Executing create entity cypher: {}", entityCreationCypher)
         session.query(
             entityCreationCypher,
@@ -118,6 +121,7 @@ class NeoOgmProjector(
                 "id" to entity.id,
                 "description" to entity.description,
                 "basisId" to basis.id,
+                "properties" to entity.properties,
             )
         )
     }

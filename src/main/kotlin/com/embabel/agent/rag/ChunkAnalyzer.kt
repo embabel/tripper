@@ -2,7 +2,7 @@ package com.embabel.agent.rag
 
 interface EntityResolver {
 
-    fun resolve(suggestedEntities: SuggestedEntities): EntityResolution
+    fun resolve(suggestedEntities: SuggestedEntities): SuggestedEntitiesResolution
 
 }
 
@@ -12,13 +12,16 @@ interface EntityResolver {
  */
 interface ChunkAnalyzer {
 
+    /**
+     * Identify entities in a chunk based on the provided schema.
+     */
     fun identifyEntities(
         chunk: Chunk,
         schema: Schema,
     ): SuggestedEntities
 
     fun analyzeRelationships(
-        entityResolution: EntityResolution,
+        entityResolution: SuggestedEntitiesResolution,
         schema: Schema,
     ): KnowledgeGraphDelta
 }
