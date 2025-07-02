@@ -1,75 +1,146 @@
-<div id="journey-container">
-    <div id="journey-status">
-        <div class="working">
-            <h3>Planning your journey...</h3>
-            <p>Process <code th:text="${processId}"></code></p>
-            <div class="process-controls">
-                <a th:href="@{/api/v1/process/{id}(id=${processId})}"
-                   target="_blank"
-                   class="btn btn-primary">
-                    Open Process
-                </a>
-                <button type="button"
-                        th:hx-delete="@{/api/v1/process/{id}(id=${processId})}"
-                        hx-confirm="Are you sure you want to kill this process?"
-                        hx-target="this"
-                        hx-swap="outerHTML"
-                        class="scary-delete-btn">
-                    Kill Process
-                </button>
-            </div>
-            <div class="spinner"></div>
-        </div>
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Planning your Journey &ndash; Embabel Travel Planner</title>
+    <script src="https://unpkg.com/htmx.org@2.0.5"></script>
+    <script src="https://unpkg.com/htmx.org@2.2.2/dist/ext/sse.js"></script>
+    <link href="/css/dark.css" rel="stylesheet">
 
-    <div id="sse-updates">
-        <p>Initializing...</p>
+</head>
+<body>
+<div class="container">
+    <h2>Embabel Journey Planner</h2>
+    <div id="journey-container">
+        <div id="journey-status">
+            <div class="working">
+                <h3>Planning your journey...</h3>
+                <p th:text="${travelBrief.brief}"></p>
+
+                <div class="process-controls">
+                    <a th:href="@{/api/v1/process/{id}(id=${processId})}"
+                       target="_blank"
+                       class="btn btn-primary">
+                        Open Process <span th:text="${processId}"></span>
+                    </a>
+                    <button type="button"
+                            th:hx-delete="@{/api/v1/process/{id}(id=${processId})}"
+                            hx-confirm="Are you sure you want to kill this process?"
+                            hx-target="this"
+                            hx-swap="outerHTML"
+                            class="scary-delete-btn">
+                        Kill Process
+                    </button>
+                </div>
+                <div class="spinner"></div>
+            </div>
+        </div>
+        <div id="sse-updates">
+            <p id="init-message">Initializing...</p>
+        </div>
     </div>
+
+    <!-- Template for process updates -->
+    <template id="update-template">
+        <div class="process-update">
+            <div class="update-header" data-field="header"></div>
+            <div class="update-details" data-field="details"></div>
+            <div class="update-details" data-field="event-type"></div>
+            <pre class="json-content hidden" data-field="json"></pre>
+        </div>
+    </template>
 </div>
 
 <script>
     const processId = '[[${processId}]]';
     const eventSource = new EventSource(`/events/process/${processId}`);
+    const updatesContainer = document.getElementById('sse-updates');
+    const initMessage = document.getElementById('init-message');
+    const updateTemplate = document.getElementById('update-template');
+
+    function createUpdateElement(data) {
+        // Clone the template
+        const clone = updateTemplate.content.cloneNode(true);
+        const updateDiv = clone.querySelector('.process-update');
+
+        // Get all the field elements
+        const headerEl = updateDiv.querySelector('[data-field="header"]');
+        const detailsEl = updateDiv.querySelector('[data-field="details"]');
+        const eventTypeEl = updateDiv.querySelector('[data-field="event-type"]');
+        const jsonEl = updateDiv.querySelector('[data-field="json"]');
+
+        // Set content based on event type
+        let headerText = "";
+        let detailsText = "";
+        let showJson = false;
+
+        switch (data.type) {
+            case 'ActionExecutionStartEvent':
+                headerText = `🚀 Executing Action`;
+                detailsText = data.action?.name?.replace('_', ' ') || 'Unknown action';
+                break;
+            case 'ToolCallRequestEvent':
+                headerText = `🔧 Tool Call`;
+                detailsText = `${data.tool || 'Unknown tool'}`;
+                break;
+            case 'LlmRequestEvent':
+                headerText = `🤖 LLM Call`;
+                detailsText = `Model: ${data.llm?.name || 'Unknown model'}\n` + data.prompt;
+                break;
+            case 'LlmResponseEvent':
+                headerText = `💬 LLM Response`;
+                // detailsText = 'Response received';
+                showJson = true;
+                jsonEl.textContent = JSON.stringify(data.response, null, 2);
+                break;
+            default:
+                headerText = `⚡ ${data.type.replace('Event', '')}`;
+                detailsText = 'Processing...';
+        }
+
+        // Update element content
+        headerEl.textContent = headerText;
+        detailsEl.textContent = detailsText;
+        // eventTypeEl.textContent = `Event: ${data.type}`;
+
+        // Show/hide JSON based on event type
+        if (showJson) {
+            jsonEl.classList.remove('hidden');
+        }
+
+        return updateDiv;
+    }
 
     eventSource.addEventListener('agent-process-event', function (event) {
         const data = JSON.parse(event.data);
 
         // Handle completion events
-        switch (data.type) {
-            case "GoalAchievedEvent":
-                eventSource.close();
-                window.location.href = `/travel/journey/status/${processId}`;
-                return;
-
+        if (data.type === "GoalAchievedEvent") {
+            eventSource.close();
+            window.location.href = `/travel/journey/status/${processId}`;
+            return;
         }
 
-        const target = document.getElementById('sse-updates');
-        if (target) {
-            let userMessage;
-            let actionMessage = "Finding points of interest...";
-            let everyEvent = data.type;
-
-            switch (data.type) {
-                case 'ActionExecutionStartEvent':
-                    actionMessage = `🚀 Executing ${data.action?.name.replace('_', ' ')}`;
-                    break;
-                case 'ToolCallRequestEvent':
-                    userMessage = `🔧 Using tool ${data.tool}`;
-                    break;
-                case 'ChatModelCallEvent':
-                    userMessage = `🤖 Calling LLM ${data.llm?.name}`;
-                    break;
-                default:
-                     everyEvent = `⚡ Processing ${data.type.replace('Event', '')}`;
-            }
-
-
-            target.innerHTML = `
-                <div class="process-update">
-                    <div class="message">${actionMessage}</div>
-                    <div class="message">${userMessage}</div>
-                     <div class="message">${everyEvent}</div>
-                </div>
-            `;
+        // Remove initialization message on first real update
+        if (initMessage && !initMessage.classList.contains('hidden')) {
+            initMessage.classList.add('hidden');
         }
+
+        // Create and append new update element
+        const updateElement = createUpdateElement(data);
+        updatesContainer.appendChild(updateElement);
+
+        // Auto-scroll to latest update
+        updateElement.scrollIntoView({behavior: 'smooth'});
+    });
+
+    eventSource.addEventListener('error', function (event) {
+        console.error('EventSource error:', event);
+        const errorUpdate = createUpdateElement({
+            type: 'ConnectionError',
+            message: 'Connection to server lost'
+        });
+        updatesContainer.appendChild(errorUpdate);
     });
 </script>
+</body>
+</html>

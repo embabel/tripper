@@ -395,3 +395,193 @@ img + * {
         margin: 1.5rem 0; /* Reduced for mobile */
     }
 }
+
+/* Process update styles consistent with theme */
+.process-update {
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    margin: 15px 0;
+    padding: 20px;
+    border-radius: 12px;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(5px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    line-height: 1.6;
+}
+
+.process-update:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    border-color: rgba(96, 165, 250, 0.3);
+}
+
+.update-header {
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: #60a5fa;
+    font-size: 1.1rem;
+    letter-spacing: 0.5px;
+    line-height: 1.3;
+}
+
+.update-details {
+    font-size: 0.95rem;
+    color: #cbd5e1;
+    margin-bottom: 8px;
+    line-height: 1.5;
+}
+
+.json-content {
+    background: rgba(30, 41, 59, 0.8);
+    border: 1px solid rgba(148, 163, 184, 0.1);
+    padding: 15px;
+    border-radius: 8px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+    max-height: 250px;
+    overflow-y: auto;
+    margin-top: 12px;
+    color: #e2e8f0;
+    line-height: 1.4;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.json-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.json-content::-webkit-scrollbar-track {
+    background: rgba(15, 23, 42, 0.3);
+    border-radius: 3px;
+}
+
+.json-content::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.3);
+    border-radius: 3px;
+}
+
+.json-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(148, 163, 184, 0.5);
+}
+
+.hidden {
+    display: none;
+}
+
+/* Working status styles */
+.working {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.working h3 {
+    margin-bottom: 15px;
+    color: #fbbf24;
+    font-size: 1.25rem;
+    letter-spacing: 1px;
+}
+
+.working p {
+    margin-bottom: 20px;
+    color: #cbd5e1;
+    line-height: 1.7;
+}
+
+/* Process controls styling */
+.process-controls {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin: 20px 0;
+    flex-wrap: wrap;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 18px;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    line-height: 1.2;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #3b82f6, #1e40af);
+    color: white;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+    color: white;
+    text-decoration: none;
+}
+
+/* Spinner styling consistent with theme */
+.spinner {
+    margin: 20px auto;
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(148, 163, 184, 0.2);
+    border-top: 4px solid #60a5fa;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Updates container */
+#sse-updates {
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+#init-message {
+    text-align: center;
+    color: #64748b;
+    font-style: italic;
+    padding: 20px;
+    margin: 0;
+}
+
+/* Mobile responsiveness for process updates */
+@media (max-width: 768px) {
+    .process-update {
+        margin: 12px 0;
+        padding: 15px;
+    }
+
+    .process-controls {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .btn {
+        width: 100%;
+        justify-content: center;
+        max-width: 280px;
+    }
+
+    .json-content {
+        font-size: 0.8rem;
+        max-height: 200px;
+    }
+}

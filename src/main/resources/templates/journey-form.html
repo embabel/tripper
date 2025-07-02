@@ -8,7 +8,7 @@
 <body>
 <div class="container">
     <h2>Embabel Journey Planner</h2>
-    <form hx-post="/travel/journey/plan" hx-target="#planResult" hx-swap="innerHTML" th:object="${travelBrief}">
+    <form action="/travel/journey/plan" method="post" th:object="${travelBrief}">
         <div class="form-row" style="grid-template-columns: 1fr 1fr 1fr;">
             <div class="form-group">
                 <label for="from">From</label>

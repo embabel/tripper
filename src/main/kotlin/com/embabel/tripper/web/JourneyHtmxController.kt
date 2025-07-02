@@ -115,6 +115,7 @@ class JourneyHtmxController(
                 IoBinding.DEFAULT_BINDING to travelBrief,
             )
         )
+        model.addAttribute("travelBrief", travelBrief)
         model.addAttribute("processId", agentProcess.id)
         agentPlatform.start(agentProcess)
         return "planning"
