@@ -29,7 +29,7 @@ import java.time.LocalDate
 import java.time.Period
 
 @Controller
-@RequestMapping(value = [""])
+@RequestMapping
 class HomeController(
 ) {
 
@@ -120,6 +120,9 @@ class JourneyHtmxController(
         return "planning"
     }
 
+    /**
+     * The HTML page that shows the status of the plan generation.
+     */
     @GetMapping("/status/{processId}")
     fun checkPlanStatus(@PathVariable processId: String, model: Model): String {
         val agentProcess = agentPlatform.getAgentProcess(processId)
