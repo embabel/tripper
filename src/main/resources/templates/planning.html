@@ -98,11 +98,11 @@
                     }
 
                     // Create a more visually appealing representation of actions
-                    const actionNames =
-                        // data.agentProcess.history.map(ai => ai.actionName) +
-                        data.plan.actions.map(action => action.name);
-                    const actionsList = actionNames.map(action => {
-                        const icon = getActionIcon(action + "use default");
+                    const history =
+                        data.history.map(ai => ai.actionName)
+                    const planned = data.plan.actions.map(action => action.name);
+                    const actionsList = history.concat(planned).map(action => {
+                        const icon = history.includes(action) ? "✅" : "☐";//getActionIcon(action + "use default");
                         return `<li class="plan-action-item">
                             <div class="action-icon">${icon}</div>
                             <div class="action-name">${action}</div>
