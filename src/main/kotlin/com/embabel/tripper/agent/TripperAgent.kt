@@ -35,7 +35,6 @@ import com.embabel.agent.prompt.persona.RoleGoalBackstory
 import com.embabel.common.ai.model.LlmOptions
 import com.embabel.common.ai.model.ModelSelectionCriteria.Companion.byName
 import com.embabel.tripper.config.ToolsConfig
-import com.embabel.tripper.service.PersonRepository
 import com.embabel.tripper.util.ImageChecker
 import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.ConfigurationProperties
@@ -82,7 +81,6 @@ data class TravelPlannerProperties(
 @Agent(description = "Make a detailed travel plan")
 class TripperAgent(
     private val config: TravelPlannerProperties,
-    private val personRepository: PersonRepository,
     private val braveImageSearch: BraveImageSearchService,
 ) {
 

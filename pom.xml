@@ -9,10 +9,10 @@
         <relativePath/> <!-- Lookup parent from repository -->
     </parent>
     <groupId>com.embabel.hub</groupId>
-    <artifactId>travel-planner-agent</artifactId>
+    <artifactId>tripper</artifactId>
     <version>0.1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <name>Travel planner</name>
+    <name>Tripper</name>
     <description>Travel planner</description>
 
     <properties>
@@ -30,11 +30,6 @@
             <artifactId>embabel-agent-starter</artifactId>
             <version>${embabel-agent.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.ai</groupId>
-            <artifactId>spring-ai-neo4j-store</artifactId>
-            <version>${spring-ai.version}</version>
-        </dependency>
 
         <dependency>
             <groupId>com.embabel.agent</groupId>
@@ -42,11 +37,6 @@
             <version>${embabel-agent.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.neo4j</groupId>
-            <artifactId>neo4j-ogm-spring-boot-starter</artifactId>
-            <version>1.2.5</version>
-        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>

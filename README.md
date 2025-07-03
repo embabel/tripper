@@ -1,9 +1,8 @@
-# Travel Planner Agent
+# Tripper: Embabel Travel Planner Agent
 
 ![Build](https://github.com/embabel/embabel-agent/actions/workflows/maven.yml/badge.svg)
 
 ![Kotlin](https://img.shields.io/badge/kotlin-%237F52FF.svg?style=for-the-badge&logo=kotlin&logoColor=white)
-![Java](https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=openjdk&logoColor=white)
 ![Spring](https://img.shields.io/badge/spring-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white)
 ![Apache Tomcat](https://img.shields.io/badge/apache%20tomcat-%23F8DC75.svg?style=for-the-badge&logo=apache-tomcat&logoColor=black)
 ![Apache Maven](https://img.shields.io/badge/Apache%20Maven-C71A36?style=for-the-badge&logo=Apache%20Maven&logoColor=white)
@@ -22,9 +21,6 @@
 
 # Embabel Travel Planner Agent
 
-Start by populating the data by running the `cypher/populate.cypher` script against your Neo4j database. This script
-creates a list of travelers.
-
 Set your `BRAVE_API_KEY` in the Embabel server's environment for image search.
 
 Start up background services, local model runners, and MCP gateway by running:
@@ -38,8 +34,6 @@ Run under your IDE (e.g., an IntelliJ Spring Boot Run Configuration) or run the 
 ```bash
 ./run.sh
 ```
-
-> If running under your IDE, ensure that the `neo` Spring profile is active.
 
 The travel planner will be available at `http://localhost:8080/travel/journey`.
 Go to `http://localhost:8080` for a directory.

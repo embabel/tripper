@@ -19,7 +19,6 @@ import com.embabel.agent.domain.library.HasContent
 import com.embabel.agent.domain.library.InternetResource
 import com.embabel.agent.domain.library.InternetResources
 import com.embabel.common.ai.prompt.PromptContributor
-import com.embabel.tripper.service.Person
 import com.fasterxml.jackson.annotation.JsonPropertyDescription
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import java.net.URLEncoder
@@ -50,14 +49,19 @@ data class JourneyTravelBrief(
     """.trimIndent()
 }
 
+data class Traveler(
+    val name: String,
+    val about: String,
+)
+
 data class Travelers(
-    val people: List<Person>,
+    val travelers: List<Traveler>,
 ) : PromptContributor {
 
     override fun contribution(): String =
-        if (people.isEmpty()) "No information could be found about travelers"
-        else "Travelers:\n" + people.joinToString(separator = "\n") {
-            "${it.name}: activities:${it.activities.joinToString(", ") { act -> act.name }}"
+        if (travelers.isEmpty()) "No information could be found about travelers"
+        else "Travelers:\n" + travelers.joinToString(separator = "\n") {
+            "${it.name}: ${it.about}"
         }
 }
 
@@ -145,33 +149,6 @@ data class TravelPlan(
                 "https://www.google.com/maps/dir/${encodedLocations.joinToString("/")}"
             }
         }
-
-    fun journeyMapImageUrl(
-        width: Int = 600,
-        height: Int = 400,
-    ): String {
-        val encodedLocations = plan.days.distinctBy { it.stayingAt }.map { day ->
-            URLEncoder.encode(day.stayingAt, "UTF-8")
-        }
-
-        val baseUrl = "http://localhost:8080/api/v1/maps/image"
-        val params = mutableListOf(
-            "size=${width}x$height",// Width x Height in pixels
-            "maptype=roadmap", // roadmap, satellite, terrain, hybrid
-        )
-
-        // Add markers for each location
-        encodedLocations.forEachIndexed { index, location ->
-            params.add("markers=color:red%7Clabel:${index + 1}%7C$location")
-        }
-
-        // If multiple locations, add path between them
-        if (encodedLocations.size > 1) {
-            params.add("locations=${encodedLocations.joinToString("%7C")}")
-        }
-
-        return "$baseUrl?${params.joinToString("&")}"
-    }
 
     override val content: String
         get() = """

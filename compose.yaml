@@ -37,22 +37,8 @@ services:
     ports:
       - "9411:9411"
 
-  neo4j:
-    image: neo4j:5.26
-    ports:
-      - "7474:7474"
-      - "7687:7687"
-      - "7473:7473"
-    volumes:
-      - neo4j_data:/data
-    environment:
-      - NEO4J_AUTH=${NEO4J_USERNAME:-neo4j}/${NEO4J_PASSWORD:-brahmsian}
-      - NEO4J_PLUGINS=["apoc"]
 
 secrets:
   mcp_secret:
     file: ./.mcp.env
-
-volumes:
-  neo4j_data:
 
