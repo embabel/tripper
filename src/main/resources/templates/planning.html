@@ -114,6 +114,7 @@
 
                     // Update the sticky plan area with styled HTML elements
                     planContentElement.innerHTML = `
+                    <span class="plan-action-item">🎯&nbsp;&nbsp;Goal: ${data.plan?.goal?.description} (${data.plan?.goal?.name})</span>
                         <ul class="plan-actions-list">
                             ${actionsList}
                         </ul>
