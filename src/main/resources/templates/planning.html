@@ -5,7 +5,22 @@
     <script src="https://unpkg.com/htmx.org@2.0.5"></script>
     <script src="https://unpkg.com/htmx.org@2.2.2/dist/ext/sse.js"></script>
     <link href="/css/dark.css" rel="stylesheet">
+    <style>
+        #current-plan {
+            position: sticky;
+            top: 0;
+            background-color: #1a1a1a;
+            padding: 15px;
+            border-bottom: 1px solid #333;
+            margin-bottom: 20px;
+            z-index: 100;
+            display: none;
+        }
 
+        #current-plan.visible {
+            display: block;
+        }
+    </style>
 </head>
 <body>
 <div class="container">
@@ -34,6 +49,10 @@
                 <div class="spinner"></div>
             </div>
         </div>
+        <div id="current-plan">
+            <h3>Current Plan</h3>
+            <div id="plan-content"></div>
+        </div>
         <div id="sse-updates">
             <p id="init-message">Initializing...</p>
         </div>
@@ -56,6 +75,11 @@
     const updatesContainer = document.getElementById('sse-updates');
     const initMessage = document.getElementById('init-message');
     const updateTemplate = document.getElementById('update-template');
+    const currentPlanElement = document.getElementById('current-plan');
+    const planContentElement = document.getElementById('plan-content');
+
+    // Store tool call elements by their ID for later updates
+    const toolCallElements = new Map();
 
     function createUpdateElement(data) {
         // Clone the template
@@ -74,6 +98,21 @@
         let showJson = false;
 
         switch (data.type) {
+            case 'AgentProcessPlanFormulatedEvent':
+                headerText = `📋 Plan Formulated`;
+                if (data.plan && data.plan.actions) {
+                    const planText = data.plan.actions.map(action => action.name).join('\n• ');
+                    detailsText = `• ${planText}`;
+
+                    // Update the sticky plan area without causing focus/scroll
+                    planContentElement.innerHTML = `<p>• ${planText}</p>`;
+                    // currentPlanElement.classList.add('visible');
+                    // Prevent automatic scrolling to this element
+                } else {
+                    detailsText = 'Plan details not available';
+                }
+                break;
+
             case 'ActionExecutionStartEvent':
                 headerText = `🚀 Executing Action`;
                 detailsText = data.action?.name?.replace('_', ' ') || 'Unknown action';
@@ -81,20 +120,36 @@
             case 'ToolCallRequestEvent':
                 headerText = `🔧 Tool Call`;
                 detailsText = `${data.tool || 'Unknown tool'}`;
+                // Store the element reference with the tool call ID
+                if (data.id) {
+                    updateDiv.setAttribute('data-tool-call-id', data.correlationId);
+                    toolCallElements.set(data.id, updateDiv);
+                }
                 break;
+            // case 'ToolCallResponseEvent':
+            //     // Instead of creating a new element, find the corresponding request element
+            //     if (data.request?.correlationId && toolCallElements.has(data.request?.correlationId)) {
+            //         return null; // Return null to indicate no new element should be created
+            //     }
+            //     headerText = `🔧 Tool Response`;
+            //     detailsText = 'Tool response received';
+            //     showJson = true;
+            //     jsonEl.textContent = JSON.stringify(data.response, null, 2);
+            //     break;
             case 'LlmRequestEvent':
-                headerText = `🤖 LLM Call`;
-                detailsText = `Model: ${data.llm?.name || 'Unknown model'}\n` + data.prompt;
+                headerText = `🤖 LLM Call - ${data.llm?.name}`;
+                detailsText = data.prompt;
                 break;
             case 'LlmResponseEvent':
-                headerText = `💬 LLM Response`;
-                // detailsText = 'Response received';
+                headerText = `💬 LLM Response - ${data.llm.name}`;
                 showJson = true;
                 jsonEl.textContent = JSON.stringify(data.response, null, 2);
                 break;
             default:
-                headerText = `⚡ ${data.type.replace('Event', '')}`;
-                detailsText = 'Processing...';
+                // headerText = `⚡ ${data.type.replace('Event', '')}`;
+                // detailsText = 'Processing...';
+                // Don't add
+                return null;
         }
 
         // Update element content
@@ -108,6 +163,30 @@
         }
 
         return updateDiv;
+    }
+
+    function updateToolCallElement(data) {
+        if (!data.request?.correlationId || !toolCallElements.has(data.request.correlationId)) {
+            return false;
+        }
+
+        const toolCallElement = toolCallElements.get(data.request.correlationId);
+        const detailsEl = toolCallElement.querySelector('[data-field="details"]');
+        const jsonEl = toolCallElement.querySelector('[data-field="json"]');
+
+        // Update the header to indicate it's now a response
+        const headerEl = toolCallElement.querySelector('[data-field="header"]');
+        headerEl.textContent = '🔧 Tool Call (Completed)';
+
+        // Append response to details
+        const originalDetails = detailsEl.textContent;
+        detailsEl.textContent = `${originalDetails}\nResponse received`;
+
+        // Show the JSON response
+        jsonEl.textContent = JSON.stringify(data.response, null, 2);
+        jsonEl.classList.remove('hidden');
+
+        return true;
     }
 
     eventSource.addEventListener('agent-process-event', function (event) {
@@ -125,12 +204,22 @@
             initMessage.classList.add('hidden');
         }
 
+        // Handle tool call responses by updating existing elements
+        if (data.type === 'ToolCallResponseEvent') {
+            const updated = updateToolCallElement(data);
+            if (updated) {
+                // No need to create a new element
+                return;
+            }
+        }
+
         // Create and append new update element
         const updateElement = createUpdateElement(data);
-        updatesContainer.appendChild(updateElement);
-
-        // Auto-scroll to latest update
-        updateElement.scrollIntoView({behavior: 'smooth'});
+        if (updateElement) {  // Only append if an element was created
+            updatesContainer.appendChild(updateElement);
+            // Auto-scroll to latest update
+            updateElement.scrollIntoView({behavior: 'smooth'});
+        }
     });
 
     eventSource.addEventListener('error', function (event) {

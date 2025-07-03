@@ -585,3 +585,18 @@ img + * {
         max-height: 200px;
     }
 }
+
+#current-plan {
+    position: sticky;
+    top: 0;
+    background-color: #1a1a1a;
+    padding: 15px;
+    border-bottom: 1px solid #333;
+    margin-bottom: 20px;
+    z-index: 100;
+    display: none;
+}
+
+#current-plan.visible {
+    display: block;
+}
