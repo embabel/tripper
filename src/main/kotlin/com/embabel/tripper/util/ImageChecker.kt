@@ -6,7 +6,7 @@ import java.net.HttpURLConnection
 import java.net.URL
 
 /**
- *
+ * Checks the validity of image links in HTML content.
  */
 object ImageChecker {
 
