@@ -5,22 +5,6 @@
     <script src="https://unpkg.com/htmx.org@2.0.5"></script>
     <script src="https://unpkg.com/htmx.org@2.2.2/dist/ext/sse.js"></script>
     <link href="/css/dark.css" rel="stylesheet">
-    <style>
-        #current-plan {
-            position: sticky;
-            top: 0;
-            background-color: #1a1a1a;
-            padding: 15px;
-            border-bottom: 1px solid #333;
-            margin-bottom: 20px;
-            z-index: 100;
-            display: none;
-        }
-
-        #current-plan.visible {
-            display: block;
-        }
-    </style>
 </head>
 <body>
 <div class="container">
@@ -50,7 +34,7 @@
             </div>
         </div>
         <div id="current-plan">
-            <h3>Current Plan</h3>
+            <h3>Plan</h3>
             <div id="plan-content"></div>
         </div>
         <div id="sse-updates">
@@ -101,12 +85,41 @@
             case 'AgentProcessPlanFormulatedEvent':
                 headerText = `📋 Plan Formulated`;
                 if (data.plan && data.plan.actions) {
-                    const planText = data.plan.actions.map(action => action.name).join('\n• ');
-                    detailsText = `• ${planText}`;
+                    // Choose appropriate icons based on action name
+                    function getActionIcon(actionName) {
+                        const actionLower = actionName.toLowerCase();
+                        if (actionLower.includes('car') || actionLower.includes('travel')) return '🚗';
+                        if (actionLower.includes('bus')) return '🚌';
+                        if (actionLower.includes('process')) return '⚙️';
+                        if (actionLower.includes('food') || actionLower.includes('eat') || actionLower.includes('restaurant')) return '🍽️';
+                        if (actionLower.includes('tour') || actionLower.includes('visit') || actionLower.includes('see')) return '🏛️';
+                        if (actionLower.includes('book') || actionLower.includes('reserve')) return '📝';
+                        return '☐'; // Default icon
+                    }
 
-                    // Update the sticky plan area without causing focus/scroll
-                    planContentElement.innerHTML = `<p>• ${planText}</p>`;
-                    // currentPlanElement.classList.add('visible');
+                    // Create a more visually appealing representation of actions
+                    const actionNames =
+                        // data.agentProcess.history.map(ai => ai.actionName) +
+                        data.plan.actions.map(action => action.name);
+                    const actionsList = actionNames.map(action => {
+                        const icon = getActionIcon(action + "use default");
+                        return `<li class="plan-action-item">
+                            <div class="action-icon">${icon}</div>
+                            <div class="action-name">${action}</div>
+                         </li>`;
+                    }).join('');
+
+                    detailsText = data.plan.actions.map(action => action.name).join('\n• ');
+                    detailsText = `• ${detailsText}`;
+
+                    // Update the sticky plan area with styled HTML elements
+                    planContentElement.innerHTML = `
+                        <ul class="plan-actions-list">
+                            ${actionsList}
+                        </ul>
+                    `;
+                    // Make the current plan visible
+                    currentPlanElement.classList.add('visible');
                     // Prevent automatic scrolling to this element
                 } else {
                     detailsText = 'Plan details not available';

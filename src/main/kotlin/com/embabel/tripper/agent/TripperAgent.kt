@@ -291,7 +291,7 @@ class TripperAgent(
         description = "Create a detailed travel plan based on a given travel brief",
     )
     @Action
-    fun postProcesHtml(
+    fun postProcessHtml(
         plan: TravelPlan
     ): TravelPlan {
         val oldPlan = plan.plan.plan

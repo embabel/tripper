@@ -600,3 +600,35 @@ img + * {
 #current-plan.visible {
     display: block;
 }
+
+/* Styles for the enhanced plan action list */
+.plan-actions-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.plan-action-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 8px 12px;
+    background-color: #2a2a2a;
+    border-radius: 6px;
+    border-left: 3px solid #4a90e2;
+    transition: background-color 0.2s ease;
+}
+
+.plan-action-item:hover {
+    background-color: #333333;
+}
+
+.action-icon {
+    margin-right: 12px;
+    font-size: 1.2em;
+}
+
+.action-name {
+    font-weight: 500;
+    color: #e6e6e6;
+}

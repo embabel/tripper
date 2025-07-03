@@ -22,10 +22,10 @@
 
 # Embabel Travel Planner Agent
 
-**WARNING - THIS IS WORK IN PROGRESS**
-
 Start by populating the data by running the `cypher/populate.cypher` script against your Neo4j database. This script
 creates a list of travelers.
+
+Set your `BRAVE_API_KEY` in the Embabel server's environment for image search.
 
 Start up background services, local model runners, and MCP gateway by running:
 
