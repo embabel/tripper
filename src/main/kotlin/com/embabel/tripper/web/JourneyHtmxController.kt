@@ -90,12 +90,7 @@ class JourneyHtmxController(
         val agent = agentPlatform.agents().singleOrNull { it.name.lowercase().contains("trip") }
             ?: error("No travel agent found. Please ensure the tripper agent is registered.")
 
-        val bindings = mapOf(
-            IoBinding.DEFAULT_BINDING to travelBrief,
-            "travelers" to travelers
-        )
-
-        val agentProcess = agentPlatform.createAgentProcess(
+        val agentProcess = agentPlatform.createAgentProcessFrom(
             agent = agent,
             processOptions = ProcessOptions(
                 verbosity = Verbosity(
@@ -103,7 +98,7 @@ class JourneyHtmxController(
                     showLlmResponses = true,
                 ),
             ),
-            bindings = bindings
+            travelBrief, travelers
         )
 
         model.addAttribute("travelBrief", travelBrief)

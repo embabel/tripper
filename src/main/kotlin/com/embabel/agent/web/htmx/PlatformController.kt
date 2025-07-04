@@ -1,16 +1,16 @@
-package com.embabel.tripper.web
+package com.embabel.agent.web.htmx
 
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 
 @Controller
-@RequestMapping("/index")
-class IndexController(
+@RequestMapping("/platform")
+class PlatformController(
 ) {
 
     @GetMapping
     fun home(): String {
-        return "home"
+        return "common/platform"
     }
 }
