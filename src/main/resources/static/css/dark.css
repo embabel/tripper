@@ -323,6 +323,22 @@ a:hover, a:focus {
     animation: pulse 1.5s infinite;
 }
 
+.delete-traveler-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 18px;
+    background: linear-gradient(135deg, #040304, #0b0a0b);
+    color: #fff;
+    font-weight: 600;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(74, 222, 128, 0.3);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    margin: 10px 0; /* Added vertical margin */
+}
+
 @keyframes pulse {
     0% {
         opacity: 0;
@@ -634,8 +650,8 @@ img + * {
 }
 
 .traveler-container {
-    border: 1px solid #444;
-    padding: 15px;
+    /*border: 1px solid #444;*/
+    /*padding: 15px;*/
     margin-bottom: 15px;
     border-radius: 5px;
 }
