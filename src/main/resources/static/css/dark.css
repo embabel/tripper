@@ -632,3 +632,23 @@ img + * {
     font-weight: 500;
     color: #e6e6e6;
 }
+
+.traveler-container {
+    border: 1px solid #444;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+}
+
+.traveler-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.remove-traveler {
+    color: #ff6b6b;
+    cursor: pointer;
+    font-weight: bold;
+}

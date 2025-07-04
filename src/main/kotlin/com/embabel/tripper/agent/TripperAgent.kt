@@ -188,7 +188,8 @@ class TripperAgent(
             .create(
                 prompt = """
                 Given the following travel brief, create a detailed plan.
-                Give it a brief, catchy title that doesn't include dates (but may consider season, mood etc.)
+                Give it a brief, catchy title that doesn't include dates,
+                but may consider season, mood or relate to travelers's interests.
 
                 Plan the journey to minimize travel time.
                 However, consider any important events or places of interest along the way
@@ -270,6 +271,7 @@ class TripperAgent(
             brief = brief,
             plan = plan,
             stays = foundStays,
+            travelers = travelers,
         )
     }
 

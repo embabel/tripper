@@ -127,10 +127,14 @@ data class Stay(
     }
 }
 
+/**
+ * Note created by an LLM but assembled in code.
+ */
 data class TravelPlan(
     val brief: JourneyTravelBrief,
     val plan: ProposedTravelPlan,
     val stays: List<Stay>,
+    val travelers: Travelers,
 ) : HasContent {
 
     /**
