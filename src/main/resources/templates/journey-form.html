@@ -29,7 +29,7 @@
             </div>
         </div>
 
-        <div class="form-row date-group">
+        <div class="form-row date-group" style="grid-template-columns: 1fr 1fr auto;">
             <div class="form-group">
                 <label for="departureDate">Start Date</label>
                 <input type="date" id="departureDate" name="departureDate"
@@ -41,11 +41,12 @@
                 <input type="date" id="returnDate" name="returnDate"
                        th:value="*{returnDate != null ? #temporals.format(returnDate, 'yyyy-MM-dd') : ''}" required>
             </div>
-        </div>
-
-        <div class="form-group">
-            <label for="brief">Brief</label>
-            <textarea id="brief" name="brief" rows="3" cols="40" th:field="*{brief}" required></textarea>
+            <div class="form-group">
+                <label>&nbsp;</label>
+                <button type="button" class="btn" onclick="addTraveler()">
+                    Add Traveler
+                </button>
+            </div>
         </div>
 
         <div id="travelers-container" class="form-group">
@@ -53,16 +54,15 @@
 
             <div class="traveler-container" th:each="traveler, iterStat : *{travelers}"
                  th:id="'traveler-' + ${iterStat.index + 1}">
-                <div class="traveler-header">
-                    <span class="remove-traveler" onclick="removeTraveler(this)"
-                          th:style="${iterStat.index == 0 and #lists.size(travelBrief.travelers) == 1} ? 'display:none;' : ''">✕</span>
-                </div>
                 <div class="form-row">
                     <div class="form-group">
                         <label th:for="'travelers[' + ${iterStat.index} + '].name'">Name</label>
                         <input type="text" th:id="'travelers[' + ${iterStat.index} + '].name'"
                                th:name="'travelers[' + ${iterStat.index} + '].name'"
                                th:field="*{travelers[__${iterStat.index}__].name}" required>
+                        <span class="remove-traveler" onclick="removeTraveler(this)"
+                              th:style="${iterStat.index == 0 and #lists.size(travelBrief.travelers) == 1} ? 'display:none;' : ''">✕</span>
+
                     </div>
                     <div class="form-group">
                         <label th:for="'travelers[' + ${iterStat.index} + '].about'">About</label>
@@ -73,9 +73,12 @@
                 </div>
             </div>
         </div>
-        <button type="button" class="btn" onclick="addTraveler()">
-            Add Traveler
-        </button>
+
+        <div class="form-group">
+            <label for="brief">Brief</label>
+            <textarea id="brief" name="brief" rows="3" cols="40" th:field="*{brief}" required></textarea>
+        </div>
+
 
         <button class="submit-btn" type="submit" style="margin-top: 20px;">Plan Journey</button>
     </form>
