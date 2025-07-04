@@ -60,7 +60,7 @@ data class Travelers(
 
     override fun contribution(): String =
         if (travelers.isEmpty()) "No information could be found about travelers"
-        else "Travelers:\n" + travelers.joinToString(separator = "\n") {
+        else "${travelers.size} travelers:\n" + travelers.joinToString(separator = "\n") {
             "${it.name}: ${it.about}"
         }
 }

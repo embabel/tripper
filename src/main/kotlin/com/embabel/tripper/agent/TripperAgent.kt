@@ -86,19 +86,6 @@ class TripperAgent(
 
     private val logger = LoggerFactory.getLogger(TripperAgent::class.java)
 
-    @Action
-    fun lookupTravelers(
-        travelBrief: JourneyTravelBrief,
-        context: OperationContext,
-    ): Travelers {
-//        val nlr = personRepository.naturalLanguageRepository({ it.id }, context, LlmOptions())
-//        val entities = nlr.find(FindEntitiesRequest(content = travelBrief.brief))
-//        if (entities.matches.isEmpty()) {
-//            logger.info("No travelers found for travel brief: {}", travelBrief.brief)
-//        }
-//        return Travelers(entities.matches.map { it.match })
-        return Travelers(emptyList())
-    }
 
     @Action
     fun planFromUserInput(userInput: UserInput): JourneyTravelBrief? =
@@ -251,6 +238,7 @@ class TripperAgent(
     fun findPlacesToSleep(
         brief: JourneyTravelBrief,
         plan: ProposedTravelPlan,
+        travelers: Travelers,
         context: OperationContext,
     ): TravelPlan {
         // Sanitize the content to ensure it is safe for display
@@ -262,12 +250,12 @@ class TripperAgent(
 
         val foundStays = context.parallelMap(stays, maxConcurrency = 5) { stay ->
             logger.info("Finding Airbnb options for stay at: {}", stay.locationAndCountry())
-            val airbnbResults = context.promptRunner(
-            ).withToolGroups(setOf(ToolsConfig.AIRBNB, CoreToolGroups.MATH))
+            val airbnbResults = context.promptRunner()
+                .withPromptContributor(travelers)
+                .withToolGroups(setOf(ToolsConfig.AIRBNB, CoreToolGroups.MATH))
                 .create<AirbnbResults>(
                     prompt = """
                 Find the Airbnb search URL for the following stay using the available tools.
-                There are 2 travelers
                 Staying at location: ${stay.stayingAt()}
                 Dates: ${stay.days.joinToString { it.date.toString() }}
                 You MUST set the 'ignoreRobotsText' parameter value to true for all calls to the airbnb API

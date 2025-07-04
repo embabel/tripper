@@ -18,6 +18,8 @@ package com.embabel.tripper.web
 import com.embabel.agent.core.*
 import com.embabel.tripper.agent.JourneyTravelBrief
 import com.embabel.tripper.agent.TravelPlan
+import com.embabel.tripper.agent.Traveler
+import com.embabel.tripper.agent.Travelers
 import org.slf4j.LoggerFactory
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.HttpStatus
@@ -36,62 +38,63 @@ class JourneyHtmxController(
 
     private val logger = LoggerFactory.getLogger(JourneyHtmxController::class.java)
 
+    data class JourneyPlanForm(
+        val from: String = "Antwerp",
+        val to: String = "Bordeaux",
+        val transportPreference: String = "driving",
+        val brief: String = """
+            Relaxed road trip exploring countryside, history, food and wine.
+        """.trimIndent(),
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+        val departureDate: LocalDate = LocalDate.now(),
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+        val returnDate: LocalDate = departureDate.plus(Period.ofDays(10)),
+        val travelers: MutableList<TravelerForm> = mutableListOf(
+            TravelerForm(name = "Ingrid", about = "Loves history and museums. Fascinated by Joan of Arc."),
+            TravelerForm(name = "Claude", about = "Enjoys food and wine. Has a particular interest in red white.")
+        ),
+    )
+
+    data class TravelerForm(
+        val name: String = "",
+        val about: String = ""
+    )
+
+
     @GetMapping
-    fun showForm(
-        @RequestParam(defaultValue = "Antwerp") from: String,
-        @RequestParam(defaultValue = "Bordeaux") to: String,
-        @RequestParam(defaultValue = "driving") transport: String,
-        @RequestParam(defaultValue = "") brief: String,
-        @RequestParam(required = false) departureDate: String?,
-        @RequestParam(required = false) returnDate: String?,
-        model: Model
-    ): String {
-        val defaultBrief = """
-            Relaxed journey with historical sightseeing for Rod and Lynda 
-            who love food, wine, cycling and history
-        """.trimIndent()
-        val defaultDepartureDate = departureDate?.let {
-            LocalDate.parse(it)
-        } ?: LocalDate.now()
-
-        val defaultReturnDate = returnDate?.let {
-            LocalDate.parse(it)
-        } ?: LocalDate.now().plus(Period.ofDays(7))
-
-        model.addAttribute(
-            "travelBrief",
-            JourneyTravelBrief(
-                from = from,
-                to = to,
-                transportPreference = transport,
-                brief = brief.ifBlank { defaultBrief },
-                departureDate = defaultDepartureDate,
-                returnDate = defaultReturnDate,
-            )
-        )
+    fun showPlanForm(model: Model): String {
+        model.addAttribute("travelBrief", JourneyPlanForm())
         return "journey-form"
     }
 
     @PostMapping("/plan")
     fun planJourney(
-        @RequestParam from: String,
-        @RequestParam to: String,
-        @RequestParam transportPreference: String,
-        @RequestParam brief: String,
-        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) departureDate: LocalDate,
-        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) returnDate: LocalDate,
+        @ModelAttribute form: JourneyPlanForm,
         model: Model
     ): String {
         val travelBrief = JourneyTravelBrief(
-            from = from,
-            to = to,
-            transportPreference = transportPreference,
-            brief = brief,
-            departureDate = departureDate,
-            returnDate = returnDate,
+            from = form.from,
+            to = form.to,
+            transportPreference = form.transportPreference,
+            brief = form.brief,
+            departureDate = form.departureDate,
+            returnDate = form.returnDate,
         )
+
+        // Convert form travelers to domain objects
+        val travelersList = form.travelers.map { travelerForm ->
+            Traveler(name = travelerForm.name, about = travelerForm.about)
+        }
+        val travelers = Travelers(travelers = travelersList)
+
         val agent = agentPlatform.agents().singleOrNull { it.name.lowercase().contains("trip") }
             ?: error("No travel agent found. Please ensure the tripper agent is registered.")
+
+        val bindings = mapOf(
+            IoBinding.DEFAULT_BINDING to travelBrief,
+            "travelers" to travelers
+        )
+
         val agentProcess = agentPlatform.createAgentProcess(
             agent = agent,
             processOptions = ProcessOptions(
@@ -100,10 +103,9 @@ class JourneyHtmxController(
                     showLlmResponses = true,
                 ),
             ),
-            bindings = mapOf(
-                IoBinding.DEFAULT_BINDING to travelBrief,
-            )
+            bindings = bindings
         )
+
         model.addAttribute("travelBrief", travelBrief)
         model.addAttribute("processId", agentProcess.id)
         agentPlatform.start(agentProcess)
