@@ -660,3 +660,9 @@ hr.dotted {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     margin: 2rem 0;
 }
+
+.footer-dark p {
+    margin: 0;
+    font-weight: 300;
+    color: #0a1113;
+}
