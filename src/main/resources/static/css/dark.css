@@ -652,3 +652,11 @@ img + * {
     cursor: pointer;
     font-weight: bold;
 }
+
+
+hr.dotted {
+    border: none;
+    border-top: 3px dotted #6aa121;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 2rem 0;
+}

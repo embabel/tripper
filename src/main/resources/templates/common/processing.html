@@ -102,16 +102,23 @@
                     const history =
                         data.history.map(ai => ai.actionName)
                     const planned = data.plan.actions.map(action => action.name);
-                    const actionsList = history.concat(planned).map(action => {
-                        const icon = history.includes(action) ? "✅" : "☐";//getActionIcon(action + "use default");
+                    const actionsList = history.concat(planned).map((action, index) => {
+                        let icon;
+                        if (history.includes(action)) {
+                            icon = "✅"; // Completed actions
+                        } else if (index === history.length) {
+                            icon = "⚙️"; // First planned action (currently working)
+                        } else {
+                            icon = "☐"; // Other planned actions
+                        }
+
                         return `<li class="plan-action-item">
-                            <div class="action-icon">${icon}</div>
-                            <div class="action-name">${action}</div>
-                         </li>`;
+        <div class="action-icon">${icon}</div>
+        <div class="action-name">${action}</div>
+     </li>`;
                     }).join('');
 
-                    detailsText = data.plan.actions.map(action => action.name).join('\n• ');
-                    detailsText = `• ${detailsText}`;
+                    detailsText = "See Plan panel";
 
                     // Update sticky plan area with styled HTML elements
                     planContentElement.innerHTML = `
@@ -131,9 +138,17 @@
                 headerText = `🚀 Executing Action`;
                 detailsText = data.action?.name?.replace('_', ' ') || 'Unknown action';
                 break;
+            case 'ObjectAddedEvent':
+                headerText = `➕ Object Added`;
+                detailsText = `Object of type ${data.type}`;
+                break;
+            case 'ObjectBoundEvent':
+                headerText = `➕ Object Added`;
+                detailsText = `${data.name} = object of type ${data.type}`;
+                break;
             case 'ToolCallRequestEvent':
                 headerText = `🔧 Tool Call`;
-                detailsText = `${data.tool}`;
+                detailsText = `${data.tool} ${data.toolInput}`;
                 // Store the element reference with the tool call ID
                 if (data.id) {
                     updateDiv.setAttribute('data-tool-call-id', data.correlationId);

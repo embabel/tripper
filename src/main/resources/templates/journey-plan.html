@@ -17,6 +17,7 @@
             </a>
         </div>
 
+
         <div th:if="${travelPlan.brief != null}">
             <h3>Brief</h3>
             <p style="margin-bottom: 0.75rem;">From [[${travelPlan.brief.from}]] to [[${travelPlan.brief.to}]]
@@ -24,7 +25,12 @@
                 [[${#temporals.format(travelPlan.brief.returnDate, 'dd MMM yyyy')}]]</p>
             <i style="margin-bottom: 1rem; display:block;">[[${travelPlan.brief.brief}]]</i>
 
-            <p>[[${travelPlan.travelers}]]</p>
+            <ul class="travelers-list">
+                <li th:each="traveler : ${travelPlan.travelers.travelers}">
+                    <strong th:text="${traveler.name}"></strong>
+                    <p th:text="${traveler.about}"></p>
+                </li>
+            </ul>
 
             <h3>Plan</h3>
             <div style="margin-bottom: 20px;">
@@ -67,14 +73,10 @@
             </div>
         </div>
     </div>
-    <h3>Usage</h3>
-    <p>Cost: $<span th:text="${#numbers.formatDecimal(agentProcess.cost(), 1, 2)}"></span> &nbsp;&nbsp;</p>
-    <p>LLMs used:
-        <span th:each="llm, iterStat : ${agentProcess.modelsUsed()}">
-        <i th:text="${llm.name}"></i><span th:if="${!iterStat.last}">, </span>
-    </span>
-        &nbsp;&nbsp;
-    </p>
+
+    <hr class="dotted"/>
+    <div id="currenxt-plan" th:replace="~{common/fragments/plan-complete :: plan-complete}"></div>
+
 </div>
 </body>
 </html>

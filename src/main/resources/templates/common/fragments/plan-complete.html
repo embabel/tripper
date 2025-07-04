@@ -1,0 +1,37 @@
+<div th:fragment="plan-complete">
+    <div>
+        <h3>Plan</h3>
+        <div id="plan-content">
+            <span class="plan-action-item" th:text="'🎯 ' + ${agentProcess.goal?.name}"></span>
+            <ul>
+                <li class="plan-action-item" th:each="action : ${agentProcess.history}">
+                    <div class="action-icon">✅</div>
+                    <div class="action-name" th:text="${action.actionName}"></div>
+                </li>
+
+                <!-- Fallback message if no history exists -->
+                <li th:if="${#lists.isEmpty(agentProcess.history)}" class="plan-action-item">
+                    <div class="action-icon">ℹ️</div>
+                    <div class="action-name">No actions in history</div>
+                </li>
+            </ul>
+        </div>
+
+        <h3>Usage</h3>
+        <p>Cost: $<span th:text="${#numbers.formatDecimal(agentProcess.cost(), 1, 2)}"></span></p>
+        <p>LLMs used:
+            <span th:each="llm, iterStat : ${agentProcess.modelsUsed()}">
+        <i th:text="${llm.name}"></i><span th:if="${!iterStat.last}">, </span>
+    </span>
+        </p>
+        <p>
+            <span>Prompt tokens: <i
+                    th:text="${#numbers.formatDecimal(agentProcess.usage.promptTokens, 1, 'COMMA', 0, 'DEFAULT')}"></i></span>
+            &nbsp;&nbsp;
+            <br/>
+            <span>Completion tokens: <i
+                    th:text="${#numbers.formatDecimal(agentProcess.usage.completionTokens, 1, 'COMMA', 0, 'DEFAULT')}"></i></span>
+        </p>
+    </div>
+
+</div>
