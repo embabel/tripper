@@ -29,18 +29,7 @@ import java.time.LocalDate
 import java.time.Period
 
 @Controller
-@RequestMapping
-class HomeController(
-) {
-
-    @GetMapping
-    fun home(): String {
-        return "home"
-    }
-}
-
-@Controller
-@RequestMapping(value = ["/travel/journey"])
+@RequestMapping(value = ["/", "/travel/journey"])
 class JourneyHtmxController(
     private val agentPlatform: AgentPlatform,
 ) {
@@ -118,7 +107,7 @@ class JourneyHtmxController(
         model.addAttribute("travelBrief", travelBrief)
         model.addAttribute("processId", agentProcess.id)
         agentPlatform.start(agentProcess)
-        return "planning"
+        return "common/processing"
     }
 
     /**
@@ -152,7 +141,8 @@ class JourneyHtmxController(
 
             else -> {
                 model.addAttribute("processId", processId)
-                "making-plan" // Keep showing loading state
+                model.addAttribute("title", "Planning Journey...")
+                "common/processing" // Keep showing loading state
             }
         }
     }

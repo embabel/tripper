@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Planning your Journey &ndash; Embabel Travel Planner</title>
     <script src="https://unpkg.com/htmx.org@2.0.5"></script>
     <script src="https://unpkg.com/htmx.org@2.2.2/dist/ext/sse.js"></script>
     <link href="/css/dark.css" rel="stylesheet">
+    <title th:text="${title}"></title>
+
 </head>
 <body>
 <div class="container">
-    <h2>Embabel Journey Planner</h2>
+    <h2 th:text="${title}"></h2>
     <div id="journey-container">
         <div id="journey-status">
             <div class="working">
@@ -112,7 +113,7 @@
                     detailsText = data.plan.actions.map(action => action.name).join('\n• ');
                     detailsText = `• ${detailsText}`;
 
-                    // Update the sticky plan area with styled HTML elements
+                    // Update sticky plan area with styled HTML elements
                     planContentElement.innerHTML = `
                     <span class="plan-action-item">🎯&nbsp;&nbsp;Goal: ${data.plan?.goal?.description} (${data.plan?.goal?.name})</span>
                         <ul class="plan-actions-list">
@@ -121,7 +122,6 @@
                     `;
                     // Make the current plan visible
                     currentPlanElement.classList.add('visible');
-                    // Prevent automatic scrolling to this element
                 } else {
                     detailsText = 'Plan details not available';
                 }
@@ -133,7 +133,7 @@
                 break;
             case 'ToolCallRequestEvent':
                 headerText = `🔧 Tool Call`;
-                detailsText = `${data.tool || 'Unknown tool'}`;
+                detailsText = `${data.tool}`;
                 // Store the element reference with the tool call ID
                 if (data.id) {
                     updateDiv.setAttribute('data-tool-call-id', data.correlationId);
@@ -162,7 +162,7 @@
             default:
                 // headerText = `⚡ ${data.type.replace('Event', '')}`;
                 // detailsText = 'Processing...';
-                // Don't add
+                // Don't add a box for unrecognized events
                 return null;
         }
 
