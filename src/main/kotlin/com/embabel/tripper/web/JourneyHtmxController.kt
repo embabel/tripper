@@ -127,13 +127,13 @@ class JourneyHtmxController(
             AgentProcessStatusCode.FAILED -> {
                 logger.error("Process {} failed: {}", processId, agentProcess.failureInfo)
                 model.addAttribute("error", "Failed to generate travel plan: ${agentProcess.failureInfo}")
-                "error-making-travel-plan"
+                "common/processing-error"
             }
 
             AgentProcessStatusCode.TERMINATED -> {
                 logger.info("Process {} was terminated", processId)
                 model.addAttribute("error", "Process was terminated before completion")
-                "error-making-travel-plan"
+                "common/processing-error"
             }
 
             else -> {
