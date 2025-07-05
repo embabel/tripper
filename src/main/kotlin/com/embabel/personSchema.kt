@@ -1,10 +1,10 @@
 package com.embabel
 
 import com.embabel.agent.rag.EntityDefinition
+import com.embabel.agent.rag.KnowledgeGraphSchema
 import com.embabel.agent.rag.RelationshipDefinition
-import com.embabel.agent.rag.Schema
 
-val PERSON_SCHEMA = Schema(
+val PERSON_SCHEMA = KnowledgeGraphSchema(
     entities = listOf(
         EntityDefinition("Person", "A human being"),
         EntityDefinition("Organization", "A group of people working together"),

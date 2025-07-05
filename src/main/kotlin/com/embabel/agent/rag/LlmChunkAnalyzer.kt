@@ -26,7 +26,7 @@ class LlmChunkAnalyzer(
 
     private val logger = LoggerFactory.getLogger(LlmChunkAnalyzer::class.java)
 
-    override fun suggestEntities(chunk: Chunk, schema: Schema): SuggestedEntities {
+    override fun suggestEntities(chunk: Chunk, schema: KnowledgeGraphSchema): SuggestedEntities {
         val prompt = """
             Given the following text, identify and summarize all entities mentioned.
             Include the entity id only if it's provided in the text as a UUID, not a name.
@@ -55,7 +55,7 @@ class LlmChunkAnalyzer(
 
     override fun suggestRelationships(
         suggestedEntitiesResolution: SuggestedEntitiesResolution,
-        schema: Schema
+        schema: KnowledgeGraphSchema
     ): SuggestedRelationships {
         val entitiesToUse =
             suggestedEntitiesResolution.resolutions.filterIsInstance<EntityDataResolution>().map { it.entityData }

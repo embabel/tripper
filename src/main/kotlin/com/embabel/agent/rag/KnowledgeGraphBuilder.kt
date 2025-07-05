@@ -1,18 +1,23 @@
 package com.embabel.agent.rag
 
 import com.embabel.agent.rag.support.NaiveEntityResolver
+import com.embabel.agent.rag.support.NaiveRelationshipResolver
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
+/**
+ * Strategy-based builder for knowledge graphs.
+ */
 @Service
 class KnowledgeGraphBuilder(
     private val ingester: Ingester,
     private val chunkAnalyzer: ChunkAnalyzer,
     private val entityResolver: EntityResolver = NaiveEntityResolver(),
+    private val relationshipResolver: RelationshipResolver = NaiveRelationshipResolver(),
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    fun computeDelta(chunks: List<Chunk>, schema: Schema): KnowledgeGraphDelta? {
+    fun computeDelta(chunks: List<Chunk>, schema: KnowledgeGraphSchema): KnowledgeGraphDelta? {
         if (chunks.isEmpty()) {
             logger.warn("No chunks provided for analysis")
             return null
@@ -23,16 +28,22 @@ class KnowledgeGraphBuilder(
         return computeChunkDelta(chunks.single(), schema)
     }
 
-    fun computeChunkDelta(chunk: Chunk, schema: Schema): KnowledgeGraphDelta {
+    fun computeChunkDelta(chunk: Chunk, schema: KnowledgeGraphSchema): KnowledgeGraphDelta {
         val suggestedEntities = chunkAnalyzer.suggestEntities(chunk, schema)
         logger.info("Suggested entities: {}", suggestedEntities)
-        val entityResolution = entityResolver.resolve(suggestedEntities)
-        logger.info("Entity resolution: {}", entityResolution)
-        val suggestedRelationships = chunkAnalyzer.suggestRelationships(entityResolution, schema)
+        val entitiesResolution = entityResolver.resolve(suggestedEntities, schema)
+        logger.info("Entity resolution: {}", entitiesResolution)
+        val suggestedRelationships = chunkAnalyzer.suggestRelationships(entitiesResolution, schema)
+        logger.info("Suggested relationships: {}", suggestedRelationships)
+        val relationshipsResolution = relationshipResolver.resolveRelationships(
+            entitiesResolution,
+            suggestedRelationships,
+            schema,
+        )
         return KnowledgeGraphDelta(
             basis = chunk,
-            newEntities = entityResolution.resolutions.filterIsInstance<NewEntity>().map { it.entityData },
-            newRelationships = suggestedRelationships.suggestedRelationships,
+            entitiesResolution = entitiesResolution,
+            relationshipsResolution = relationshipsResolution,
         )
     }
 }

@@ -6,7 +6,10 @@ import java.util.*
 // Trust in all entities
 class NaiveEntityResolver : EntityResolver {
 
-    override fun resolve(suggestedEntities: SuggestedEntities): SuggestedEntitiesResolution {
+    override fun resolve(
+        suggestedEntities: SuggestedEntities,
+        schema: KnowledgeGraphSchema,
+    ): SuggestedEntitiesResolution {
         // For simplicity, let's assume we resolve entities by their name
         val resolvedEntities = suggestedEntities.suggestedEntities.map {
             NewEntity(
@@ -24,6 +27,24 @@ class NaiveEntityResolver : EntityResolver {
         return SuggestedEntitiesResolution(
             basis = suggestedEntities.basis,
             resolutions = resolvedEntities,
+        )
+    }
+
+}
+
+class NaiveRelationshipResolver : RelationshipResolver {
+
+    override fun resolveRelationships(
+        entityResolution: SuggestedEntitiesResolution,
+        suggestedRelationships: SuggestedRelationships,
+        schema: KnowledgeGraphSchema,
+    ): SuggestedRelationshipsResolution {
+
+        return SuggestedRelationshipsResolution(
+            basis = entityResolution.basis,
+            resolutions = suggestedRelationships.suggestedRelationships.map {
+                NewRelationship(it)
+            },
         )
     }
 

@@ -51,7 +51,10 @@ data class RelationshipDefinition(
     }
 }
 
-data class Schema(
+/**
+ * Knowledge graph schema
+ */
+data class KnowledgeGraphSchema(
     val entities: List<EntityDefinition>,
     val relationships: List<RelationshipDefinition>,
 ) : HasInfoString {

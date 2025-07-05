@@ -54,7 +54,7 @@ class NeoOgmProjector(
         )
     }
 
-    override fun inferSchema(): Schema {
+    override fun inferSchema(): KnowledgeGraphSchema {
         val metadata = sessionFactory.metaData()
         val relationships = mutableListOf<RelationshipDefinition>()
         val entityDefinitions = metadata.persistentEntities()
@@ -84,7 +84,7 @@ class NeoOgmProjector(
                 }
                 entityDefinition
             }
-        return Schema(
+        return KnowledgeGraphSchema(
             entities = entityDefinitions,
             relationships = relationships,
         )
@@ -93,14 +93,23 @@ class NeoOgmProjector(
     @Transactional
     override fun applyDelta(knowledgeGraphDelta: KnowledgeGraphDelta) {
         val session = sessionFactory.openSession()
-        knowledgeGraphDelta.newEntities.forEach { ne ->
+        knowledgeGraphDelta.newEntities().forEach { ne ->
             createEntity(session, ne, knowledgeGraphDelta.basis)
         }
-        knowledgeGraphDelta.newRelationships.forEach { relationship ->
-            createRelationship(session, relationship, knowledgeGraphDelta.basis)
+        knowledgeGraphDelta.mergedEntities().forEach { ne ->
+            logger.warn("Ignoring merged entity: leaving it unchanged in the database: {}", ne)
+        }
+        knowledgeGraphDelta.newRelationships().forEach { relationship ->
+            createRelationship(session, relationship.suggestedRelationship, knowledgeGraphDelta.basis)
+        }
+        knowledgeGraphDelta.mergedRelationships().forEach { relationship ->
+//            createRelationship(session, relationship.suggestedRelationship, knowledgeGraphDelta.basis)
+            logger.warn(
+                "Ignoring merged relationship: leaving it unchanged in the database: {}",
+                relationship.suggestedRelationship
+            )
         }
     }
-
 
     private fun createEntity(
         session: Session,

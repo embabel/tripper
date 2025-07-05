@@ -33,10 +33,12 @@ data class NewEntity(
     }
 }
 
+/**
+ * An existing entity was found that matches the suggested entity.
+ */
 data class ExistingEntity(
     override val suggestedEntity: SuggestedEntity,
     override val entityData: EntityData,
-    val conflicts: Boolean,
 ) : EntityDataResolution {
 
     override fun infoString(verbose: Boolean?): String {
@@ -83,7 +85,7 @@ data class SuggestedRelationship(
 ) : RelationshipInstance {
 
     fun isValid(
-        schema: Schema,
+        schema: KnowledgeGraphSchema,
         sourceEntity: EntityData,
         targetEntity: EntityData,
     ): Boolean {
@@ -94,7 +96,7 @@ data class SuggestedRelationship(
         val valid =
             schema.relationships.any { it.type == type && it.sourceEntity == sourceType && it.targetEntity == targetType }
         if (!valid) {
-            loggerFor<Schema>().info(
+            loggerFor<KnowledgeGraphSchema>().info(
                 "Relationship between {} and {} of type {} is invalid",
                 sourceType,
                 targetType,
@@ -105,16 +107,61 @@ data class SuggestedRelationship(
     }
 }
 
-data class KnowledgeGraphDelta(
-    val basis: Retrievable,
-    val newEntities: List<EntityData>,
-    val newRelationships: List<RelationshipInstance>,
-) : HasInfoString {
+sealed interface SuggestedRelationshipResolution : HasInfoString {
+    val suggestedRelationship: SuggestedRelationship
+}
+
+data class NewRelationship(
+    override val suggestedRelationship: SuggestedRelationship,
+) : SuggestedRelationshipResolution {
 
     override fun infoString(verbose: Boolean?): String {
-        return "KnowledgeGraphUpdate(entities=${newEntities.size}, relationships=${newEntities.size}, entityLabels=${
-            newEntities.joinToString(", ") { it.infoString(verbose) }
-        }, relationshipTypes=${newRelationships.map { it.type }.distinct().joinToString(", ")})"
+        return "NewRelationship(type=${suggestedRelationship.type}, sourceId=${suggestedRelationship.sourceId}, targetId=${suggestedRelationship.targetId})"
+    }
+}
+
+data class ExistingRelationship(
+    override val suggestedRelationship: SuggestedRelationship,
+    val existingRelationship: RelationshipInstance,
+) : SuggestedRelationshipResolution {
+
+    override fun infoString(verbose: Boolean?): String {
+        return "SuggestedRelationship(type=${suggestedRelationship.type}, sourceId=${suggestedRelationship.sourceId}, targetId=${suggestedRelationship.targetId})"
+    }
+}
+
+data class SuggestedRelationshipsResolution(
+    val basis: Retrievable,
+    val resolutions: List<SuggestedRelationshipResolution>,
+)
+
+data class KnowledgeGraphDelta(
+    val basis: Retrievable,
+    val entitiesResolution: SuggestedEntitiesResolution,
+    val relationshipsResolution: SuggestedRelationshipsResolution,
+) : HasInfoString {
+
+    fun newEntities(): List<EntityData> {
+        return entitiesResolution.resolutions.filterIsInstance<NewEntity>().map { it.entityData }
+    }
+
+    fun mergedEntities(): List<ExistingEntity> {
+        return entitiesResolution.resolutions.filterIsInstance<ExistingEntity>()
+    }
+
+    fun newRelationships(): List<NewRelationship> {
+        return relationshipsResolution.resolutions.filterIsInstance<NewRelationship>()
+    }
+
+    fun mergedRelationships(): List<ExistingRelationship> {
+        return relationshipsResolution.resolutions.filterIsInstance<ExistingRelationship>()
+    }
+
+    override fun infoString(verbose: Boolean?): String {
+//        return "KnowledgeGraphUpdate(entitiesResolution=${entitiesResolution.resolutions.size}, relationships=${newRelationships.size}, entityLabels=${
+//            "TODO"
+//        }, relationshipTypes=${newRelationships.map { it.type }.distinct().joinToString(", ")})"
+        return toString()
     }
 }
 
