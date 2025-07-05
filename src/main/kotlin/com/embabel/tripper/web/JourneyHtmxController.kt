@@ -15,18 +15,20 @@
  */
 package com.embabel.tripper.web
 
-import com.embabel.agent.core.*
+import com.embabel.agent.core.AgentPlatform
+import com.embabel.agent.core.ProcessOptions
+import com.embabel.agent.core.Verbosity
 import com.embabel.tripper.agent.JourneyTravelBrief
-import com.embabel.tripper.agent.TravelPlan
 import com.embabel.tripper.agent.Traveler
 import com.embabel.tripper.agent.Travelers
 import org.slf4j.LoggerFactory
 import org.springframework.format.annotation.DateTimeFormat
-import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
-import org.springframework.web.bind.annotation.*
-import org.springframework.web.server.ResponseStatusException
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.ModelAttribute
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestMapping
 import java.time.LocalDate
 import java.time.Period
 
@@ -106,41 +108,5 @@ class JourneyHtmxController(
         agentPlatform.start(agentProcess)
         return "common/processing"
     }
-
-    /**
-     * The HTML page that shows the status of the plan generation.
-     */
-    @GetMapping("/status/{processId}")
-    fun checkPlanStatus(@PathVariable processId: String, model: Model): String {
-        val agentProcess = agentPlatform.getAgentProcess(processId)
-            ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Process not found")
-
-        return when (agentProcess.status) {
-            AgentProcessStatusCode.COMPLETED -> {
-                logger.info("Process {} completed successfully", processId)
-                val travelPlan = agentProcess.resultOfType<TravelPlan>()
-                model.addAttribute("travelPlan", travelPlan)
-                model.addAttribute("agentProcess", agentProcess)
-                "journey-plan"
-            }
-
-            AgentProcessStatusCode.FAILED -> {
-                logger.error("Process {} failed: {}", processId, agentProcess.failureInfo)
-                model.addAttribute("error", "Failed to generate travel plan: ${agentProcess.failureInfo}")
-                "common/processing-error"
-            }
-
-            AgentProcessStatusCode.TERMINATED -> {
-                logger.info("Process {} was terminated", processId)
-                model.addAttribute("error", "Process was terminated before completion")
-                "common/processing-error"
-            }
-
-            else -> {
-                model.addAttribute("processId", processId)
-                model.addAttribute("pageTitle", "Planning Journey...")
-                "common/processing" // Keep showing loading state
-            }
-        }
-    }
 }
+

@@ -224,7 +224,7 @@
             // Handle completion events
             if (data.type === "GoalAchievedEvent") {
                 eventSource.close();
-                window.location.href = `/travel/journey/status/${processId}`;
+                window.location.href = `/status/${processId}?resultModelKey=travelPlan&successView=journey-plan`;
                 return;
             }
 
