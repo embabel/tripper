@@ -142,8 +142,7 @@ class TripperAgent(
                 ToolGroupRequirement(CoreToolGroups.WEB),
                 ToolGroupRequirement(CoreToolGroups.BROWSER_AUTOMATION),
             ),
-            toolObjects = listOf(braveImageSearch)
-        )
+        ).withToolObject(braveImageSearch)
         val poiFindings = context.parallelMap(
             itineraryIdeas.pointsOfInterest,
             maxConcurrency = 6,
