@@ -10,7 +10,18 @@ data class SuggestedEntity(
     val summary: String,
     @JsonPropertyDescription("Will be a UUID. Include only if provided")
     val id: String? = null,
-)
+//    @JsonPropertyDescription("Map from property name to value")
+//    val properties: Map<String, Any> = emptyMap(),
+) {
+    val entityData: EntityData
+        get() = SimpleEntityData(
+            id = id ?: "",
+            description = summary,
+            labels = setOf(type),
+            // TODO fix this
+            properties = emptyMap(),
+        )
+}
 
 sealed interface SuggestedEntityResolution : HasInfoString {
     val suggestedEntity: SuggestedEntity
@@ -23,6 +34,9 @@ sealed interface EntityDataResolution : SuggestedEntityResolution {
     val entityData: EntityData
 }
 
+/**
+ * No entity existed. We simply create a new entity.
+ */
 data class NewEntity(
     override val suggestedEntity: SuggestedEntity,
     override val entityData: EntityData,

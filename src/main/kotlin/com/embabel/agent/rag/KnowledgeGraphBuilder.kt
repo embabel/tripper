@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service
  */
 @Service
 class KnowledgeGraphBuilder(
-    private val ingester: Ingester,
     private val chunkAnalyzer: ChunkAnalyzer,
     private val entityResolver: EntityResolver = NaiveEntityResolver(),
     private val relationshipResolver: RelationshipResolver = NaiveRelationshipResolver(),
