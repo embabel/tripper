@@ -1,5 +1,6 @@
 package com.embabel.tripper.util
 
+import com.embabel.common.util.StringTransformer
 import kotlinx.coroutines.*
 import org.slf4j.LoggerFactory
 import java.net.HttpURLConnection
@@ -15,8 +16,8 @@ object ImageChecker {
     private val IMG_REX = "<img[^>]*>".toRegex()
     private val SRC_REX = "src=[\"']([^\"']*)[\"']".toRegex()
 
-    fun removeInvalidImageLinks(html: String): String {
-        return runBlocking {
+    val removeInvalidImageLinks = StringTransformer { html ->
+        runBlocking {
             val imgTags = IMG_REX.findAll(html).toList()
             val validationResults = imgTags.map { matchResult ->
                 async(Dispatchers.IO) {

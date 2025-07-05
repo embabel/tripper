@@ -111,6 +111,8 @@ data class ProposedTravelPlan(
     val imageLinks: List<InternetResource>,
     @JsonPropertyDescription("Links to pages with more information about the travel plan")
     val pageLinks: List<InternetResource>,
+    @JsonPropertyDescription("List of country names that the travelers will visit")
+    val countriesVisited: List<String>,
 )
 
 data class Stay(

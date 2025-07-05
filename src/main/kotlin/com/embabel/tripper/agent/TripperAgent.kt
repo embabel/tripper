@@ -34,6 +34,7 @@ import com.embabel.agent.prompt.persona.Persona
 import com.embabel.agent.prompt.persona.RoleGoalBackstory
 import com.embabel.common.ai.model.LlmOptions
 import com.embabel.common.ai.model.ModelSelectionCriteria.Companion.byName
+import com.embabel.common.util.StringTransformer
 import com.embabel.tripper.config.ToolsConfig
 import com.embabel.tripper.util.ImageChecker
 import org.slf4j.LoggerFactory
@@ -284,34 +285,25 @@ class TripperAgent(
         val oldPlan = plan.plan.plan
         return plan.copy(
             plan = plan.plan.copy(
-                plan = applyTransforms(
+                plan = StringTransformer.transform(
                     oldPlan, listOf(
-                        ::styleImages,
-                        ImageChecker::removeInvalidImageLinks,
+                        styleImages,
+                        ImageChecker.removeInvalidImageLinks,
                     )
                 ),
             ),
         )
     }
 
-    private fun applyTransforms(html: String, transforms: List<(String) -> String>): String {
-        return transforms.fold(html) { acc, transform -> transform(acc) }
+
+    private val styleImages = StringTransformer { html ->
+        html.replace(
+            "<img",
+            "<img class=\"styled-image-thick\""
+        )
     }
 
-
-    private fun styleImages(html: String): String = html.replace(
-        "<img",
-        "<img class=\"styled-image-thick\"",
-    )
-
 }
-
-private fun validateImageExists(imageUrl: String): Boolean {
-    // Placeholder for actual image validation logic
-    // This could involve checking if the image URL is reachable or if it returns a valid image format
-    return true
-}
-
 
 private data class AirbnbResults(
     val searchUrl: String,
