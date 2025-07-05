@@ -119,6 +119,18 @@ It demonstrates the power of the [Embabel agent framework](https://www.github.co
 
 *Airbnb links for each stay of the trip*
 
+### Plan and Usage Information
+
+<img src="images/plan.jpg" alt="Plan and usage" width="600"/>
+
+*Information about plan and usage, including total cost*
+
+### Event Stream
+
+<img src="images/process.jpg" alt="Events" width="600"/>
+
+*Emits events about process flow*
+
 </div>
 
 ## 🏗️ Architecture
