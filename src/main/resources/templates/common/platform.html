@@ -1,19 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{common/layout :: layout(~{::title}, ~{::section})}">
 <head>
     <title>Embabel Platform</title>
-    <script src="https://unpkg.com/htmx.org@2.0.5"></script>
-    <script src="https://unpkg.com/htmx.org@2.2.2/dist/ext/sse.js"></script>
-    <link href="/css/dark.css" rel="stylesheet">
+    <th:block th:fragment="extraHeadContent">
+        <script src="https://unpkg.com/htmx.org@2.0.5"></script>
+        <script src="https://unpkg.com/htmx.org@2.2.2/dist/ext/sse.js"></script>
+    </th:block>
 </head>
 <body>
-<div class="container">
+<section>
     <h2 style="margin-bottom: 2rem;">Embabel Platform</h2>
-
-    <!--    <h3 style="margin-bottom: 1rem;">Travel</h3>-->
-    <!--    <ul style="margin-bottom: 2rem;">-->
-    <!--        <li style="margin-bottom: 0.75rem;"><a href="/travel/journey">Plan a Journey</a></li>-->
-    <!--    </ul>-->
 
     <h3 style="margin-bottom: 1rem;">Embabel Platform</h3>
     <ul>
@@ -26,6 +23,6 @@
         <li style="margin-bottom: 0.5rem;"><a href="http://127.0.0.1:9411/zipkin/" target="_blank"
                                               rel="noopener noreferrer">Traces with Zipkin</a></li>
     </ul>
-</div>
+</section>
 </body>
 </html>

@@ -1,11 +1,10 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{common/layout :: layout(~{::title}, ~{::section})}">
 <head>
     <title>Embabel Journey Planner</title>
-    <link href="/css/dark.css" rel="stylesheet">
 </head>
 <body>
-<div class="container">
+<section>
     <h2>Embabel Journey Planner</h2>
     <form action="/travel/journey/plan" method="post" th:object="${travelBrief}">
         <div class="form-row" style="grid-template-columns: 1fr 1fr 1fr;">
@@ -84,85 +83,85 @@
 
         <button class="submit-btn" type="submit" style="margin-top: 20px;">Plan Journey</button>
     </form>
-</div>
 
-<script>
-    function createTravelerHtml(index) {
-        return `
-            <div class="traveler-header">
-                <h4>Traveler ${index + 1}</h4>
-                <span class="remove-traveler" onclick="removeTraveler(this)">✕</span>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="travelers[${index}].name">Name</label>
-                    <input type="text" id="travelers[${index}].name" name="travelers[${index}].name" required>
+    <script>
+        function createTravelerHtml(index) {
+            return `
+                <div class="traveler-header">
+                    <h4>Traveler ${index + 1}</h4>
+                    <span class="remove-traveler" onclick="removeTraveler(this)">✕</span>
                 </div>
-                <div class="form-group">
-                    <label for="travelers[${index}].about">About</label>
-                    <textarea id="travelers[${index}].about" name="travelers[${index}].about" rows="2" required></textarea>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="travelers[${index}].name">Name</label>
+                        <input type="text" id="travelers[${index}].name" name="travelers[${index}].name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="travelers[${index}].about">About</label>
+                        <textarea id="travelers[${index}].about" name="travelers[${index}].about" rows="2" required></textarea>
+                    </div>
                 </div>
-            </div>
-        `;
-    }
+            `;
+        }
 
-    function removeTraveler(element) {
-        const container = element.closest('.traveler-container');
-        container.remove();
+        function removeTraveler(element) {
+            const container = element.closest('.traveler-container');
+            container.remove();
 
-        // Renumber remaining travelers
-        const travelers = document.querySelectorAll('.traveler-container');
-        travelers.forEach((traveler, index) => {
-            // Update header
-            traveler.querySelector('h4').textContent = `Traveler ${index + 1}`;
+            // Renumber remaining travelers
+            const travelers = document.querySelectorAll('.traveler-container');
+            travelers.forEach((traveler, index) => {
+                // Update header
+                traveler.querySelector('h4').textContent = `Traveler ${index + 1}`;
 
-            // Update input names and ids
-            const nameInput = traveler.querySelector('input[id$=".name"]');
-            const aboutInput = traveler.querySelector('textarea[id$=".about"]');
+                // Update input names and ids
+                const nameInput = traveler.querySelector('input[id$=".name"]');
+                const aboutInput = traveler.querySelector('textarea[id$=".about"]');
 
-            nameInput.name = `travelers[${index}].name`;
-            nameInput.id = `travelers[${index}].name`;
+                nameInput.name = `travelers[${index}].name`;
+                nameInput.id = `travelers[${index}].name`;
 
-            aboutInput.name = `travelers[${index}].about`;
-            aboutInput.id = `travelers[${index}].about`;
+                aboutInput.name = `travelers[${index}].about`;
+                aboutInput.id = `travelers[${index}].about`;
 
-            // Show remove button except for the first traveler when it's the only one
-            const removeButton = traveler.querySelector('.remove-traveler');
-            if (travelers.length === 1 && index === 0) {
-                removeButton.style.display = 'none';
-            } else {
-                removeButton.style.display = 'block';
+                // Show remove button except for the first traveler when it's the only one
+                const removeButton = traveler.querySelector('.remove-traveler');
+                if (travelers.length === 1 && index === 0) {
+                    removeButton.style.display = 'none';
+                } else {
+                    removeButton.style.display = 'block';
+                }
+            });
+        }
+
+        function addTraveler() {
+            const travelersContainer = document.getElementById('travelers-container');
+            const travelers = document.querySelectorAll('.traveler-container');
+            const newIndex = travelers.length;
+
+            // Create new traveler element
+            const newTraveler = document.createElement('div');
+            newTraveler.className = 'traveler-container';
+            newTraveler.id = `traveler-${newIndex + 1}`;
+            newTraveler.innerHTML = createTravelerHtml(newIndex);
+
+            // Add the new traveler to the container
+            travelersContainer.appendChild(newTraveler);
+
+            // Show all remove buttons when we have more than one traveler
+            if (travelers.length === 1) {
+                travelers[0].querySelector('.remove-traveler').style.display = 'block';
+            }
+        }
+
+        // Initialize - hide remove button if only one traveler
+        document.addEventListener('DOMContentLoaded', function () {
+            const travelers = document.querySelectorAll('.traveler-container');
+            if (travelers.length === 1) {
+                travelers[0].querySelector('.remove-traveler').style.display = 'none';
             }
         });
-    }
-
-    function addTraveler() {
-        const travelersContainer = document.getElementById('travelers-container');
-        const travelers = document.querySelectorAll('.traveler-container');
-        const newIndex = travelers.length;
-
-        // Create new traveler element
-        const newTraveler = document.createElement('div');
-        newTraveler.className = 'traveler-container';
-        newTraveler.id = `traveler-${newIndex + 1}`;
-        newTraveler.innerHTML = createTravelerHtml(newIndex);
-
-        // Add the new traveler to the container
-        travelersContainer.appendChild(newTraveler);
-
-        // Show all remove buttons when we have more than one traveler
-        if (travelers.length === 1) {
-            travelers[0].querySelector('.remove-traveler').style.display = 'block';
-        }
-    }
-
-    // Initialize - hide remove button if only one traveler
-    document.addEventListener('DOMContentLoaded', function () {
-        const travelers = document.querySelectorAll('.traveler-container');
-        if (travelers.length === 1) {
-            travelers[0].querySelector('.remove-traveler').style.display = 'none';
-        }
-    });
-</script>
+    </script>
+</section>
 </body>
 </html>

@@ -138,7 +138,7 @@ class JourneyHtmxController(
 
             else -> {
                 model.addAttribute("processId", processId)
-                model.addAttribute("title", "Planning Journey...")
+                model.addAttribute("pageTitle", "Planning Journey...")
                 "common/processing" // Keep showing loading state
             }
         }

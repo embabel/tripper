@@ -1,12 +1,13 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{common/layout :: layout(~{::title}, ~{::section})}">
 <head>
     <title th:text="${travelPlan.plan.title}">Embabel Journey Planner</title>
-    <script src="https://unpkg.com/htmx.org@2.0.5"></script>
-    <link href="/css/dark.css" rel="stylesheet">
+    <th:block th:fragment="extraHeadContent">
+        <script src="https://unpkg.com/htmx.org@2.0.5"></script>
+    </th:block>
 </head>
 <body>
-<div class="container">
+<section>
     <div th:if="${travelPlan != null}">
         <h2 th:text="${travelPlan.plan.title}"></h2>
 
@@ -41,19 +42,6 @@
             </div>
 
             <div th:utext="${travelPlan.plan.plan}" style="margin-bottom: 1rem;"></div>
-            <!--            <div th:if="${travelPlan.plan.days != null}">-->
-            <!--                <h3>Days</h3>-->
-            <!--                <ul style="margin-bottom: 1rem;">-->
-            <!--                    <li th:each="day : ${travelPlan.plan.days}" th:text="${day.date + ' - ' + day.stayingAt}"-->
-            <!--                        style="margin-bottom: 0.5rem;"></li>-->
-            <!--                </ul>-->
-            <!--            </div>-->
-            <!--            <h3>Map</h3>-->
-
-            <!--            <p>-->
-            <!--                <a th:href="${travelPlan.journeyMapUrl}" target="_blank" rel="noopener noreferrer">Interactive map</a>-->
-            <!--                &lt;!&ndash;            <img th:src="${travelPlan.journeyMapImageUrl(600,400)}" alt="Map of the journey" width="600" height="400" style="display:block; margin: 1rem 0;"/>&ndash;&gt;-->
-            <!--            </p>-->
             <h3>Stays</h3>
             <ul style="margin-bottom: 1rem;">
                 <li th:each="stay : ${travelPlan.stays}" style="margin-bottom: 0.5rem;">
@@ -76,9 +64,6 @@
 
     <hr class="dotted"/>
     <div id="currenxt-plan" th:replace="~{common/fragments/plan-complete :: plan-complete}"></div>
-
-</div>
-<div th:replace="~{common/fragments/footer :: footer}"></div>
-
+</section>
 </body>
 </html>

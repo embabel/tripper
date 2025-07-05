@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:fragment="layout(title, content)">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:replace="${title}">Embabel</title>
+    <link href="/css/embabel-common-dark.css" rel="stylesheet">
+    <link href="/css/travel.css" rel="stylesheet">
+    <script src="https://unpkg.com/htmx.org@2.0.5" th:if="${_htmx}"></script>
+    <script src="https://unpkg.com/htmx.org@2.2.2/dist/ext/sse.js" th:if="${_sse}"></script>
+    <th:block th:replace="${extraHeadContent != null ? extraHeadContent : 'common/fragments/empty'}"
+              th:if="${extraHeadContent != null}"></th:block>
+</head>
+<body>
+<div class="container">
+    <th:block th:replace="${content}"></th:block>
+</div>
+<div th:replace="~{common/fragments/footer :: footer}"></div>
+</body>
+</html>

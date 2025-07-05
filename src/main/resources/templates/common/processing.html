@@ -1,15 +1,16 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{common/layout :: layout(~{::title}, ~{::section})}">
 <head>
-    <script src="https://unpkg.com/htmx.org@2.0.5"></script>
-    <script src="https://unpkg.com/htmx.org@2.2.2/dist/ext/sse.js"></script>
-    <link href="/css/dark.css" rel="stylesheet">
-    <title th:text="${title}"></title>
+    <th:block th:fragment="extraHeadContent">
+        <script src="https://unpkg.com/htmx.org@2.0.5"></script>
+        <script src="https://unpkg.com/htmx.org@2.2.2/dist/ext/sse.js"></script>
+    </th:block>
+    <title>Processing</title>
 
 </head>
 <body>
-<div class="container">
-    <h2 th:text="${title}"></h2>
+<section>
+    <h2 th:text="${pageTitle}"></h2>
     <div id="journey-container">
         <div id="journey-status">
             <div class="working">
@@ -52,213 +53,213 @@
             <pre class="json-content hidden" data-field="json"></pre>
         </div>
     </template>
-</div>
 
-<script>
-    const processId = '[[${processId}]]';
-    const eventSource = new EventSource(`/events/process/${processId}`);
-    const updatesContainer = document.getElementById('sse-updates');
-    const initMessage = document.getElementById('init-message');
-    const updateTemplate = document.getElementById('update-template');
-    const currentPlanElement = document.getElementById('current-plan');
-    const planContentElement = document.getElementById('plan-content');
+    <script>
+        const processId = '[[${processId}]]';
+        const eventSource = new EventSource(`/events/process/${processId}`);
+        const updatesContainer = document.getElementById('sse-updates');
+        const initMessage = document.getElementById('init-message');
+        const updateTemplate = document.getElementById('update-template');
+        const currentPlanElement = document.getElementById('current-plan');
+        const planContentElement = document.getElementById('plan-content');
 
-    // Store tool call elements by their ID for later updates
-    const toolCallElements = new Map();
+        // Store tool call elements by their ID for later updates
+        const toolCallElements = new Map();
 
-    function createUpdateElement(data) {
-        // Clone the template
-        const clone = updateTemplate.content.cloneNode(true);
-        const updateDiv = clone.querySelector('.process-update');
+        function createUpdateElement(data) {
+            // Clone the template
+            const clone = updateTemplate.content.cloneNode(true);
+            const updateDiv = clone.querySelector('.process-update');
 
-        // Get all the field elements
-        const headerEl = updateDiv.querySelector('[data-field="header"]');
-        const detailsEl = updateDiv.querySelector('[data-field="details"]');
-        const eventTypeEl = updateDiv.querySelector('[data-field="event-type"]');
-        const jsonEl = updateDiv.querySelector('[data-field="json"]');
+            // Get all the field elements
+            const headerEl = updateDiv.querySelector('[data-field="header"]');
+            const detailsEl = updateDiv.querySelector('[data-field="details"]');
+            const eventTypeEl = updateDiv.querySelector('[data-field="event-type"]');
+            const jsonEl = updateDiv.querySelector('[data-field="json"]');
 
-        // Set content based on event type
-        let headerText = "";
-        let detailsText = "";
-        let showJson = false;
+            // Set content based on event type
+            let headerText = "";
+            let detailsText = "";
+            let showJson = false;
 
-        switch (data.type) {
-            case 'AgentProcessPlanFormulatedEvent':
-                headerText = `📋 Plan Formulated`;
-                if (data.plan && data.plan.actions) {
-                    // Choose appropriate icons based on action name
-                    function getActionIcon(actionName) {
-                        const actionLower = actionName.toLowerCase();
-                        if (actionLower.includes('car') || actionLower.includes('travel')) return '🚗';
-                        if (actionLower.includes('bus')) return '🚌';
-                        if (actionLower.includes('process')) return '⚙️';
-                        if (actionLower.includes('food') || actionLower.includes('eat') || actionLower.includes('restaurant')) return '🍽️';
-                        if (actionLower.includes('tour') || actionLower.includes('visit') || actionLower.includes('see')) return '🏛️';
-                        if (actionLower.includes('book') || actionLower.includes('reserve')) return '📝';
-                        return '☐'; // Default icon
-                    }
-
-                    // Create a more visually appealing representation of actions
-                    const history =
-                        data.history.map(ai => ai.actionName)
-                    const planned = data.plan.actions.map(action => action.name);
-                    const actionsList = history.concat(planned).map((action, index) => {
-                        let icon;
-                        if (history.includes(action)) {
-                            icon = "✅"; // Completed actions
-                        } else if (index === history.length) {
-                            icon = "⚙️"; // First planned action (currently working)
-                        } else {
-                            icon = "☐"; // Other planned actions
+            switch (data.type) {
+                case 'AgentProcessPlanFormulatedEvent':
+                    headerText = `📋 Plan Formulated`;
+                    if (data.plan && data.plan.actions) {
+                        // Choose appropriate icons based on action name
+                        function getActionIcon(actionName) {
+                            const actionLower = actionName.toLowerCase();
+                            if (actionLower.includes('car') || actionLower.includes('travel')) return '🚗';
+                            if (actionLower.includes('bus')) return '🚌';
+                            if (actionLower.includes('process')) return '⚙️';
+                            if (actionLower.includes('food') || actionLower.includes('eat') || actionLower.includes('restaurant')) return '🍽️';
+                            if (actionLower.includes('tour') || actionLower.includes('visit') || actionLower.includes('see')) return '🏛️';
+                            if (actionLower.includes('book') || actionLower.includes('reserve')) return '📝';
+                            return '☐'; // Default icon
                         }
 
-                        return `<li class="plan-action-item">
-        <div class="action-icon">${icon}</div>
-        <div class="action-name">${action}</div>
-     </li>`;
-                    }).join('');
+                        // Create a more visually appealing representation of actions
+                        const history =
+                            data.history.map(ai => ai.actionName)
+                        const planned = data.plan.actions.map(action => action.name);
+                        const actionsList = history.concat(planned).map((action, index) => {
+                            let icon;
+                            if (history.includes(action)) {
+                                icon = "✅"; // Completed actions
+                            } else if (index === history.length) {
+                                icon = "⚙️"; // First planned action (currently working)
+                            } else {
+                                icon = "☐"; // Other planned actions
+                            }
 
-                    detailsText = "See Plan panel";
+                            return `<li class="plan-action-item">
+            <div class="action-icon">${icon}</div>
+            <div class="action-name">${action}</div>
+         </li>`;
+                        }).join('');
 
-                    // Update sticky plan area with styled HTML elements
-                    planContentElement.innerHTML = `
-                    <span class="plan-action-item">🎯&nbsp;&nbsp;Goal: ${data.plan?.goal?.description} (${data.plan?.goal?.name})</span>
-                        <ul class="plan-actions-list">
-                            ${actionsList}
-                        </ul>
-                    `;
-                    // Make the current plan visible
-                    currentPlanElement.classList.add('visible');
-                } else {
-                    detailsText = 'Plan details not available';
-                }
-                break;
+                        detailsText = "See Plan panel";
 
-            case 'ActionExecutionStartEvent':
-                headerText = `🚀 Executing Action`;
-                detailsText = data.action?.name?.replace('_', ' ') || 'Unknown action';
-                break;
-            case 'ObjectAddedEvent':
-                headerText = `➕ Object Added`;
-                detailsText = `Object of type ${data.type}`;
-                break;
-            case 'ObjectBoundEvent':
-                headerText = `➕ Object Added`;
-                detailsText = `${data.name} = object of type ${data.type}`;
-                break;
-            case 'ToolCallRequestEvent':
-                headerText = `🔧 Tool Call`;
-                detailsText = `${data.tool} ${data.toolInput}`;
-                // Store the element reference with the tool call ID
-                if (data.id) {
-                    updateDiv.setAttribute('data-tool-call-id', data.correlationId);
-                    toolCallElements.set(data.id, updateDiv);
-                }
-                break;
-            // case 'ToolCallResponseEvent':
-            //     // Instead of creating a new element, find the corresponding request element
-            //     if (data.request?.correlationId && toolCallElements.has(data.request?.correlationId)) {
-            //         return null; // Return null to indicate no new element should be created
-            //     }
-            //     headerText = `🔧 Tool Response`;
-            //     detailsText = 'Tool response received';
-            //     showJson = true;
-            //     jsonEl.textContent = JSON.stringify(data.response, null, 2);
-            //     break;
-            case 'LlmRequestEvent':
-                headerText = `🤖 LLM Call - ${data.llm?.name}`;
-                detailsText = data.prompt;
-                break;
-            case 'LlmResponseEvent':
-                headerText = `💬 LLM Response - ${data.llm.name}`;
-                showJson = true;
-                jsonEl.textContent = JSON.stringify(data.response, null, 2);
-                break;
-            default:
-                // headerText = `⚡ ${data.type.replace('Event', '')}`;
-                // detailsText = 'Processing...';
-                // Don't add a box for unrecognized events
-                return null;
+                        // Update sticky plan area with styled HTML elements
+                        planContentElement.innerHTML = `
+                        <span class="plan-action-item">🎯&nbsp;&nbsp;Goal: ${data.plan?.goal?.description} (${data.plan?.goal?.name})</span>
+                            <ul class="plan-actions-list">
+                                ${actionsList}
+                            </ul>
+                        `;
+                        // Make the current plan visible
+                        currentPlanElement.classList.add('visible');
+                    } else {
+                        detailsText = 'Plan details not available';
+                    }
+                    break;
+
+                case 'ActionExecutionStartEvent':
+                    headerText = `🚀 Executing Action`;
+                    detailsText = data.action?.name?.replace('_', ' ') || 'Unknown action';
+                    break;
+                case 'ObjectAddedEvent':
+                    headerText = `➕ Object Added`;
+                    detailsText = `Object of type ${data.type}`;
+                    break;
+                case 'ObjectBoundEvent':
+                    headerText = `➕ Object Added`;
+                    detailsText = `${data.name} = object of type ${data.type}`;
+                    break;
+                case 'ToolCallRequestEvent':
+                    headerText = `🔧 Tool Call`;
+                    detailsText = `${data.tool} ${data.toolInput}`;
+                    // Store the element reference with the tool call ID
+                    if (data.id) {
+                        updateDiv.setAttribute('data-tool-call-id', data.correlationId);
+                        toolCallElements.set(data.id, updateDiv);
+                    }
+                    break;
+                // case 'ToolCallResponseEvent':
+                //     // Instead of creating a new element, find the corresponding request element
+                //     if (data.request?.correlationId && toolCallElements.has(data.request?.correlationId)) {
+                //         return null; // Return null to indicate no new element should be created
+                //     }
+                //     headerText = `🔧 Tool Response`;
+                //     detailsText = 'Tool response received';
+                //     showJson = true;
+                //     jsonEl.textContent = JSON.stringify(data.response, null, 2);
+                //     break;
+                case 'LlmRequestEvent':
+                    headerText = `🤖 LLM Call - ${data.llm?.name}`;
+                    detailsText = data.prompt;
+                    break;
+                case 'LlmResponseEvent':
+                    headerText = `💬 LLM Response - ${data.llm.name}`;
+                    showJson = true;
+                    jsonEl.textContent = JSON.stringify(data.response, null, 2);
+                    break;
+                default:
+                    // headerText = `⚡ ${data.type.replace('Event', '')}`;
+                    // detailsText = 'Processing...'
+                    // Don't add a box for unrecognized events
+                    return null;
+            }
+
+            // Update element content
+            headerEl.textContent = headerText;
+            detailsEl.textContent = detailsText;
+            // eventTypeEl.textContent = `Event: ${data.type}`;
+
+            // Show/hide JSON based on event type
+            if (showJson) {
+                jsonEl.classList.remove('hidden');
+            }
+
+            return updateDiv;
         }
 
-        // Update element content
-        headerEl.textContent = headerText;
-        detailsEl.textContent = detailsText;
-        // eventTypeEl.textContent = `Event: ${data.type}`;
+        function updateToolCallElement(data) {
+            if (!data.request?.correlationId || !toolCallElements.has(data.request.correlationId)) {
+                return false;
+            }
 
-        // Show/hide JSON based on event type
-        if (showJson) {
+            const toolCallElement = toolCallElements.get(data.request.correlationId);
+            const detailsEl = toolCallElement.querySelector('[data-field="details"]');
+            const jsonEl = toolCallElement.querySelector('[data-field="json"]');
+
+            // Update the header to indicate it's now a response
+            const headerEl = toolCallElement.querySelector('[data-field="header"]');
+            headerEl.textContent = '🔧 Tool Call (Completed)';
+
+            // Append response to details
+            const originalDetails = detailsEl.textContent;
+            detailsEl.textContent = `${originalDetails}\nResponse received`;
+
+            // Show the JSON response
+            jsonEl.textContent = JSON.stringify(data.response, null, 2);
             jsonEl.classList.remove('hidden');
+
+            return true;
         }
 
-        return updateDiv;
-    }
+        eventSource.addEventListener('agent-process-event', function (event) {
+            const data = JSON.parse(event.data);
 
-    function updateToolCallElement(data) {
-        if (!data.request?.correlationId || !toolCallElements.has(data.request.correlationId)) {
-            return false;
-        }
-
-        const toolCallElement = toolCallElements.get(data.request.correlationId);
-        const detailsEl = toolCallElement.querySelector('[data-field="details"]');
-        const jsonEl = toolCallElement.querySelector('[data-field="json"]');
-
-        // Update the header to indicate it's now a response
-        const headerEl = toolCallElement.querySelector('[data-field="header"]');
-        headerEl.textContent = '🔧 Tool Call (Completed)';
-
-        // Append response to details
-        const originalDetails = detailsEl.textContent;
-        detailsEl.textContent = `${originalDetails}\nResponse received`;
-
-        // Show the JSON response
-        jsonEl.textContent = JSON.stringify(data.response, null, 2);
-        jsonEl.classList.remove('hidden');
-
-        return true;
-    }
-
-    eventSource.addEventListener('agent-process-event', function (event) {
-        const data = JSON.parse(event.data);
-
-        // Handle completion events
-        if (data.type === "GoalAchievedEvent") {
-            eventSource.close();
-            window.location.href = `/travel/journey/status/${processId}`;
-            return;
-        }
-
-        // Remove initialization message on first real update
-        if (initMessage && !initMessage.classList.contains('hidden')) {
-            initMessage.classList.add('hidden');
-        }
-
-        // Handle tool call responses by updating existing elements
-        if (data.type === 'ToolCallResponseEvent') {
-            const updated = updateToolCallElement(data);
-            if (updated) {
-                // No need to create a new element
+            // Handle completion events
+            if (data.type === "GoalAchievedEvent") {
+                eventSource.close();
+                window.location.href = `/travel/journey/status/${processId}`;
                 return;
             }
-        }
 
-        // Create and append new update element
-        const updateElement = createUpdateElement(data);
-        if (updateElement) {  // Only append if an element was created
-            updatesContainer.appendChild(updateElement);
-            // Auto-scroll to latest update
-            updateElement.scrollIntoView({behavior: 'smooth'});
-        }
-    });
+            // Remove initialization message on first real update
+            if (initMessage && !initMessage.classList.contains('hidden')) {
+                initMessage.classList.add('hidden');
+            }
 
-    eventSource.addEventListener('error', function (event) {
-        console.error('EventSource error:', event);
-        const errorUpdate = createUpdateElement({
-            type: 'ConnectionError',
-            message: 'Connection to server lost'
+            // Handle tool call responses by updating existing elements
+            if (data.type === 'ToolCallResponseEvent') {
+                const updated = updateToolCallElement(data);
+                if (updated) {
+                    // No need to create a new element
+                    return;
+                }
+            }
+
+            // Create and append new update element
+            const updateElement = createUpdateElement(data);
+            if (updateElement) {  // Only append if an element was created
+                updatesContainer.appendChild(updateElement);
+                // Auto-scroll to latest update
+                updateElement.scrollIntoView({behavior: 'smooth'});
+            }
         });
-        updatesContainer.appendChild(errorUpdate);
-    });
-</script>
+
+        eventSource.addEventListener('error', function (event) {
+            console.error('EventSource error:', event);
+            const errorUpdate = createUpdateElement({
+                type: 'ConnectionError',
+                message: 'Connection to server lost'
+            });
+            updatesContainer.appendChild(errorUpdate);
+        });
+    </script>
+</section>
 </body>
 </html>
