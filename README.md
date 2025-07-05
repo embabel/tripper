@@ -68,10 +68,10 @@ It demonstrates the power of the [Embabel agent framework](https://www.github.co
 2. **Set MCP Environment variables** for MCP tools running in Docker
    ```bash
    # Copy the example environment file
-   cp mcp.env.example mcp.env
+   cp mcp.env.example .mcp.env
    
    # Edit mcp.env with your configuration
-   nano mcp.env
+   nano .mcp.env
    ```
 
 ### Running the Application
