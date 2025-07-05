@@ -45,6 +45,9 @@ It demonstrates the power of the [Embabel agent framework](https://www.github.co
 
 ## 🚀 Quick Start
 
+> Warning: Tripper is a genuinely useful travel planner. But be aware that its extensive LLM usage will cost money. A
+> typical run costs around $0.15c.
+
 ### Prerequisites
 
 - Java 21+
@@ -55,11 +58,14 @@ It demonstrates the power of the [Embabel agent framework](https://www.github.co
 
 1. **Configure API Keys**
    ```bash
+   export OPEN_AI_API_KEY=your_openai_api_key_here
+   export ANTHROPIC_API_KEY=your_anthropic_api_key_here
    # Set your Brave API key for image search
    export BRAVE_API_KEY=your_brave_api_key_here
+ 
    ```
 
-2. **Set MCP Environment variables** for Docker
+2. **Set MCP Environment variables** for MCP tools running in Docker
    ```bash
    # Copy the example environment file
    cp mcp.env.example mcp.env
