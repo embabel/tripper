@@ -17,37 +17,35 @@ package com.embabel.tripper.service
 
 import org.neo4j.ogm.annotation.Id
 import org.neo4j.ogm.annotation.NodeEntity
+import org.neo4j.ogm.annotation.Property
 import org.neo4j.ogm.annotation.Relationship
 
-interface NameAsId {
-
-    val id: String?
-
-    /**
-     * The name of the entity, which is used as the ID.
-     * This is a convenience for entities that do not have a separate ID field.
-     */
-    val name: String
-        get() = id ?: "Anon"
-}
 
 @NodeEntity
 data class Person(
+    @Property
+    val name: String,
     @Relationship(type = "ENJOYS", direction = Relationship.Direction.OUTGOING)
     val activities: List<Activity> = emptyList(),
     @Relationship(type = "VISITED", direction = Relationship.Direction.OUTGOING)
     val visit: List<Visit> = emptyList(),
     @Relationship(type = "LIVES_IN", direction = Relationship.Direction.OUTGOING)
     val place: Place? = null,
+    @Relationship(type = "LOVES", direction = Relationship.Direction.UNDIRECTED)
+    val partner: Person? = null,
+    @Relationship(type = "OWNS_PET", direction = Relationship.Direction.OUTGOING)
+    val pets: List<Animal> = emptyList(),
     @Id
-    override val id: String? = null,
-) : NameAsId
+    val id: String? = null,
+)
 
 @NodeEntity
 data class Activity(
+    @Property
+    val name: String,
     @Id
-    override val id: String? = null,
-) : NameAsId
+    val id: String? = null,
+)
 
 /**
  * @param place The location of the visit. Must be nullable to handle depth.
@@ -61,11 +59,29 @@ data class Visit(
     val comment: String? = null,
     val year: Int? = null,
     @Id
-    override val id: String? = null,
-) : NameAsId
+    val id: String? = null,
+)
 
 @NodeEntity
 data class Place(
+    @Property
+    val name: String,
     @Id
-    override val id: String? = null,
-) : NameAsId
+    val id: String? = null,
+)
+
+// TODO inheritance is not working yet in relationship determination
+@NodeEntity
+open class Animal(
+    @Property
+    val name: String,
+    @Id
+    val id: String? = null,
+)
+
+@NodeEntity
+class Dog(
+    name: String,
+    val breed: String? = null,
+    id: String? = null,
+) : Animal(name = name, id = id)

@@ -12,14 +12,14 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @ConfigurationProperties(prefix = "application.neo")
-data class NeoOgmProjectorProperties(
+data class NeoOgmKnowledgeGraphServiceProperties(
     val chunkNodeName: String = "Document",
 )
 
 @Service
-class NeoKnowledgeGraphService(
+class NeoOgmKnowledgeGraphService(
     private val sessionFactory: SessionFactory,
-    private val properties: NeoOgmProjectorProperties,
+    private val properties: NeoOgmKnowledgeGraphServiceProperties,
 ) : KnowledgeGraphUpdater, SchemaSource, ChunkRepository {
 
     private val logger = LoggerFactory.getLogger(javaClass)
@@ -122,7 +122,7 @@ class NeoKnowledgeGraphService(
     ) {
         val entityCreationCypher = """
             MATCH (chunk:${properties.chunkNodeName} {id: ${'$'}basisId})
-            CREATE (e:${entity.labels.joinToString(":")} {id: ${'$'}id, description: ${'$'}description })
+            CREATE (e:${entity.labels.joinToString(":")} {id: ${'$'}id, description: ${'$'}description, createdDate: timestamp()})
                 <-[:HAS_ENTITY]-(chunk) 
             SET e += ${'$'}properties
             RETURN e

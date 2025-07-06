@@ -37,6 +37,8 @@ class LlmChunkAnalyzer(
             
             ${schema.entities.joinToString("\n") { "- ${it.type}: ${it.description}" }}
             
+            IMPORTANT: You must find every entity of any of these types. Do not skip any.
+            
             You must be sure that every entity is of one of the types above.
             For example, are you sure something is a company and not a location?
             
@@ -78,6 +80,9 @@ class LlmChunkAnalyzer(
                     .joinToString("\n") { "- (:${it.labels.joinToString(":")} {id='${it.id}', description='${it.description}'})" }
             }
             
+            IMPORTANT: You must find all relationships implied in the text between any of these types.
+            Do not skip any.
+            
             # TEXT
             ${suggestedEntitiesResolution.basis.infoString()}
         """.trimIndent()
@@ -90,9 +95,6 @@ class LlmChunkAnalyzer(
         )
         val allEntities = suggestedEntitiesResolution.resolutions
             .filterIsInstance<EntityDataResolution>()
-            .map { it.entityData }
-        val newEntities = suggestedEntitiesResolution.resolutions
-            .filterIsInstance<NewEntity>()
             .map { it.entityData }
         val newRelationships = relationships.relationships
             .filter {
