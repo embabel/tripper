@@ -189,6 +189,11 @@ This project is licensed under the Apache License - see the [LICENSE](LICENSE) f
 For questions, issues, or contributions, please visit our [GitHub repository](https://github.com/embabel/embabel-agent)
 or open an issue.
 
+## Contributors
+
+[![Embabel contributors](https://contrib.rocks/image?repo=embabel/tripper)](https://github.com/embabel/tripper/graphs/contributors)
+
+
 ---
 
 <div align="center">
