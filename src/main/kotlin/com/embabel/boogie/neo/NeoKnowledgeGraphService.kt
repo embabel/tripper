@@ -17,10 +17,10 @@ data class NeoOgmProjectorProperties(
 )
 
 @Service
-class NeoOgmProjector(
+class NeoKnowledgeGraphService(
     private val sessionFactory: SessionFactory,
     private val properties: NeoOgmProjectorProperties,
-) : Projector, SchemaSource, ChunkRepository {
+) : KnowledgeGraphUpdater, SchemaSource, ChunkRepository {
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
@@ -57,7 +57,8 @@ class NeoOgmProjector(
         )
     }
 
-    override fun inferSchema(): KnowledgeGraphSchema {
+    // TODO is not using name
+    override fun getSchema(name: String): KnowledgeGraphSchema {
         val metadata = sessionFactory.metaData()
         val relationships = mutableListOf<RelationshipDefinition>()
         val entityDefinitions = metadata.persistentEntities()

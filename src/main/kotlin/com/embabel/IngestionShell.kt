@@ -17,7 +17,7 @@ package com.embabel
 
 import com.embabel.agent.config.annotation.*
 import com.embabel.boogie.KnowledgeGraphBuilder
-import com.embabel.boogie.Projector
+import com.embabel.boogie.KnowledgeGraphUpdater
 import com.embabel.boogie.SchemaSource
 import com.embabel.boogie.neo.ChunkRepository
 import com.embabel.tripper.service.PersonService
@@ -46,7 +46,7 @@ fun main(args: Array<String>) {
 @ShellComponent("Ingestion commands")
 internal class IngestionShell(
     private val knowledgeGraphBuilder: KnowledgeGraphBuilder,
-    private val projector: Projector,
+    private val knowledgeGraphUpdater: KnowledgeGraphUpdater,
     private val schemaSource: SchemaSource,
     private val personService: PersonService,
     private val chunkRepository: ChunkRepository,
@@ -55,7 +55,7 @@ internal class IngestionShell(
     private val logger = LoggerFactory.getLogger(javaClass)
 
     val schema = run {
-        val schema = schemaSource.inferSchema()
+        val schema = schemaSource.getSchema("default")
         logger.info("Using schema: {}", schema.infoString(verbose = true))
         schema
     }
@@ -97,7 +97,7 @@ internal class IngestionShell(
             return "No knowledge graph update computed"
         }
         logger.info("Knowledge graph delta:\n{}", kgDelta.infoString(verbose = true))
-        projector.applyDelta(kgDelta)
+        knowledgeGraphUpdater.applyDelta(kgDelta)
         return "Ingestion complete"
     }
 

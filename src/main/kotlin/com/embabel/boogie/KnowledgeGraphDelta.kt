@@ -86,6 +86,19 @@ data class SuggestedEntitiesResolution(
     val resolutions: List<SuggestedEntityResolution>,
 )
 
+data class EntityDetermination(
+    val resolution: SuggestedEntityResolution,
+    val entityProduct: EntityData?
+)
+
+/**
+ * Decide on final entities to write
+ */
+data class EntityDeterminations(
+    val basis: Retrievable,
+    val determinations: List<EntityDetermination>,
+)
+
 interface RelationshipInstance {
     val sourceId: String
     val targetId: String
@@ -153,16 +166,16 @@ data class SuggestedRelationshipsResolution(
 
 data class KnowledgeGraphDelta(
     val basis: Retrievable,
-    val entitiesResolution: SuggestedEntitiesResolution,
+    val entityDeterminations: EntityDeterminations,
     val relationshipsResolution: SuggestedRelationshipsResolution,
 ) : HasInfoString {
 
     fun newEntities(): List<EntityData> {
-        return entitiesResolution.resolutions.filterIsInstance<NewEntity>().map { it.entityData }
+        return entityDeterminations.determinations.filter { it.resolution is NewEntity }.mapNotNull { it.entityProduct }
     }
 
-    fun mergedEntities(): List<ExistingEntity> {
-        return entitiesResolution.resolutions.filterIsInstance<ExistingEntity>()
+    fun mergedEntities(): List<EntityDetermination> {
+        return entityDeterminations.determinations.filter { it.entityProduct != null && it.resolution is ExistingEntity }
     }
 
     fun newRelationships(): List<NewRelationship> {

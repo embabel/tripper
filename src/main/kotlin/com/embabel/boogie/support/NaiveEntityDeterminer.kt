@@ -1,0 +1,36 @@
+package com.embabel.boogie.support
+
+import com.embabel.boogie.*
+
+/**
+ * Always adds new entities and ignores existing or vetoed entities.
+ */
+class NaiveEntityDeterminer : EntityDeterminer {
+
+    override fun determineEntities(
+        suggestedEntitiesResolution: SuggestedEntitiesResolution,
+        schema: KnowledgeGraphSchema,
+    ): EntityDeterminations {
+        return EntityDeterminations(
+            basis = suggestedEntitiesResolution.basis,
+            determinations = suggestedEntitiesResolution.resolutions.map {
+                when (it) {
+                    is NewEntity -> EntityDetermination(
+                        resolution = it,
+                        entityProduct = it.entityData
+                    )
+
+                    is ExistingEntity -> EntityDetermination(
+                        resolution = it,
+                        entityProduct = null // Vetoed entities have no product
+                    )
+
+                    is VetoedEntity -> EntityDetermination(
+                        resolution = it,
+                        entityProduct = null // Vetoed entities have no product
+                    )
+                }
+            }
+        )
+    }
+}

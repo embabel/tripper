@@ -1,6 +1,7 @@
 package com.embabel.boogie
 
 import com.embabel.agent.rag.Chunk
+import com.embabel.boogie.support.NaiveEntityDeterminer
 import com.embabel.boogie.support.NaiveEntityResolver
 import com.embabel.boogie.support.NaiveRelationshipResolver
 import org.slf4j.LoggerFactory
@@ -14,6 +15,7 @@ class KnowledgeGraphBuilder(
     private val chunkAnalyzer: ChunkAnalyzer,
     private val entityResolver: EntityResolver = NaiveEntityResolver(),
     private val relationshipResolver: RelationshipResolver = NaiveRelationshipResolver(),
+    private val entityDeterminer: EntityDeterminer = NaiveEntityDeterminer(),
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
 
@@ -40,9 +42,10 @@ class KnowledgeGraphBuilder(
             suggestedRelationships,
             schema,
         )
+        val entityDeterminations = entityDeterminer.determineEntities(entitiesResolution, schema)
         return KnowledgeGraphDelta(
             basis = chunk,
-            entitiesResolution = entitiesResolution,
+            entityDeterminations = entityDeterminations,
             relationshipsResolution = relationshipsResolution,
         )
     }
