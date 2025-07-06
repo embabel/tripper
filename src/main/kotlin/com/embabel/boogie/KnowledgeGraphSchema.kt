@@ -1,6 +1,7 @@
-package com.embabel.agent.rag
+package com.embabel.boogie
 
 import com.embabel.agent.core.PropertyDefinition
+import com.embabel.agent.rag.EntityData
 import com.embabel.common.core.types.HasInfoString
 
 /**

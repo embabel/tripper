@@ -1,5 +1,7 @@
-package com.embabel.agent.rag
+package com.embabel.boogie
 
+import com.embabel.agent.rag.EntityData
+import com.embabel.agent.rag.Retrievable
 import com.embabel.common.core.types.HasInfoString
 import com.embabel.common.util.loggerFor
 import com.fasterxml.jackson.annotation.JsonPropertyDescription

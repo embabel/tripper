@@ -1,4 +1,4 @@
-package com.embabel.agent.rag
+package com.embabel.boogie
 
 class KnowledgeGraphUpdateIT {
 

@@ -1,7 +1,8 @@
-package com.embabel.agent.rag
+package com.embabel.boogie
 
-import com.embabel.agent.rag.support.NaiveEntityResolver
-import com.embabel.agent.rag.support.NaiveRelationshipResolver
+import com.embabel.agent.rag.Chunk
+import com.embabel.boogie.support.NaiveEntityResolver
+import com.embabel.boogie.support.NaiveRelationshipResolver
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 

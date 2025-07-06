@@ -1,4 +1,4 @@
-package com.embabel.agent.rag
+package com.embabel.boogie
 
 /**
  * Takes our knowledge graph update and projects it somewhere:

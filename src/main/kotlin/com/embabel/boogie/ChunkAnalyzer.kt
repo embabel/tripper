@@ -1,5 +1,10 @@
-package com.embabel.agent.rag
+package com.embabel.boogie
 
+import com.embabel.agent.rag.Chunk
+
+/**
+ * Resolves entities based on existing data
+ */
 interface EntityResolver {
 
     fun resolve(

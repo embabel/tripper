@@ -1,6 +1,6 @@
-package com.embabel.agent.rag.support
+package com.embabel.boogie.support
 
-import com.embabel.agent.rag.*
+import com.embabel.boogie.*
 import java.util.*
 
 // Trust in all entities

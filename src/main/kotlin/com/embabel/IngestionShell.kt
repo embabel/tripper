@@ -16,10 +16,10 @@
 package com.embabel
 
 import com.embabel.agent.config.annotation.*
-import com.embabel.agent.rag.KnowledgeGraphBuilder
-import com.embabel.agent.rag.Projector
-import com.embabel.agent.rag.SchemaSource
-import com.embabel.agent.rag.neo.ChunkRepository
+import com.embabel.boogie.KnowledgeGraphBuilder
+import com.embabel.boogie.Projector
+import com.embabel.boogie.SchemaSource
+import com.embabel.boogie.neo.ChunkRepository
 import com.embabel.tripper.service.PersonService
 import org.slf4j.LoggerFactory
 import org.springframework.boot.autoconfigure.SpringBootApplication

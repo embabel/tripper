@@ -1,8 +1,8 @@
 package com.embabel
 
-import com.embabel.agent.rag.EntityDefinition
-import com.embabel.agent.rag.KnowledgeGraphSchema
-import com.embabel.agent.rag.RelationshipDefinition
+import com.embabel.boogie.EntityDefinition
+import com.embabel.boogie.KnowledgeGraphSchema
+import com.embabel.boogie.RelationshipDefinition
 
 val PERSON_SCHEMA = KnowledgeGraphSchema(
     entities = listOf(

@@ -1,6 +1,9 @@
-package com.embabel.agent.rag.neo
+package com.embabel.boogie.neo
 
-import com.embabel.agent.rag.*
+import com.embabel.agent.rag.Chunk
+import com.embabel.agent.rag.EntityData
+import com.embabel.agent.rag.Retrievable
+import com.embabel.boogie.*
 import org.neo4j.ogm.session.Session
 import org.neo4j.ogm.session.SessionFactory
 import org.slf4j.LoggerFactory

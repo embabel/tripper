@@ -1,4 +1,4 @@
-package com.embabel.agent.rag.neo
+package com.embabel.boogie.neo
 
 import com.embabel.agent.rag.Chunk
 

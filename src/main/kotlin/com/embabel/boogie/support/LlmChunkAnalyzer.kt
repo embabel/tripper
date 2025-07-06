@@ -1,27 +1,30 @@
-package com.embabel.agent.rag
+package com.embabel.boogie.support
 
 import com.embabel.agent.config.models.AnthropicModels
+import com.embabel.agent.rag.Chunk
 import com.embabel.agent.spi.InteractionId
 import com.embabel.agent.spi.LlmInteraction
 import com.embabel.agent.spi.LlmOperations
+import com.embabel.boogie.*
 import com.embabel.common.ai.model.LlmOptions
 import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.stereotype.Service
 
-@ConfigurationProperties("embabel.agent.rag")
-data class ChunkAnalyzerProperties(
-    var llm: String = AnthropicModels.CLAUDE_37_SONNET,
+@ConfigurationProperties("embabel.boogie.llm-chunk-analyzer")
+data class LlmChunkAnalyzerProperties(
+    val llm: String = AnthropicModels.CLAUDE_37_SONNET,
+    val temperature: Double = 0.0,
 ) {
 
     fun llmOptions(): LlmOptions = LlmOptions.fromModel(llm)
-        .withTemperature(0.0)
+        .withTemperature(temperature)
 }
 
 @Service
 class LlmChunkAnalyzer(
     private val llmOperations: LlmOperations,
-    private val properties: ChunkAnalyzerProperties = ChunkAnalyzerProperties(),
+    private val properties: LlmChunkAnalyzerProperties = LlmChunkAnalyzerProperties(),
 ) : ChunkAnalyzer {
 
     private val logger = LoggerFactory.getLogger(LlmChunkAnalyzer::class.java)
