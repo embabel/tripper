@@ -269,7 +269,7 @@ class TripperAgent(
 
         return TravelPlan(
             brief = brief,
-            plan = plan,
+            proposal = plan,
             stays = foundStays,
             travelers = travelers,
         )
@@ -282,9 +282,9 @@ class TripperAgent(
     fun postProcessHtml(
         plan: TravelPlan
     ): TravelPlan {
-        val oldPlan = plan.plan.plan
+        val oldPlan = plan.proposal.plan
         return plan.copy(
-            plan = plan.plan.copy(
+            proposal = plan.proposal.copy(
                 plan = StringTransformer.transform(
                     oldPlan, listOf(
                         styleImages,

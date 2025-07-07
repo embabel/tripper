@@ -134,7 +134,7 @@ data class Stay(
  */
 data class TravelPlan(
     val brief: JourneyTravelBrief,
-    val plan: ProposedTravelPlan,
+    val proposal: ProposedTravelPlan,
     val stays: List<Stay>,
     val travelers: Travelers,
 ) : HasContent {
@@ -145,7 +145,7 @@ data class TravelPlan(
      */
     val journeyMapUrl: String
         get() {
-            val encodedLocations = plan.days.distinctBy { it.locationAndCountry }.map { day ->
+            val encodedLocations = proposal.days.distinctBy { it.locationAndCountry }.map { day ->
                 URLEncoder.encode(day.locationAndCountry, Charsets.UTF_8.name())
             }
 
@@ -158,14 +158,14 @@ data class TravelPlan(
 
     override val content: String
         get() = """
-            ${plan.title}
-            ${plan.plan}
-            Days: ${plan.days.joinToString(separator = "\n") { "${it.date} - ${it.stayingAt}" }}
+            ${proposal.title}
+            ${proposal.plan}
+            Days: ${proposal.days.joinToString(separator = "\n") { "${it.date} - ${it.stayingAt}" }}
             Map:
             $journeyMapUrl
             Pages:
-            ${plan.pageLinks.joinToString("\n") { "${it.url} - ${it.summary}" }}
+            ${proposal.pageLinks.joinToString("\n") { "${it.url} - ${it.summary}" }}
             Images:
-            ${plan.imageLinks.joinToString("\n") { "${it.url} - ${it.summary}" }}
+            ${proposal.imageLinks.joinToString("\n") { "${it.url} - ${it.summary}" }}
         """.trimIndent()
 }

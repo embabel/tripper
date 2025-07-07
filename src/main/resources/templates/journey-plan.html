@@ -1,7 +1,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       th:replace="~{common/layout :: layout(~{::title}, ~{::section})}">
 <head>
-    <title th:text="${travelPlan.plan.title}">Embabel Journey Planner</title>
+    <title th:text="${travelPlan.proposal.title}">Embabel Journey Planner</title>
     <th:block th:fragment="extraHeadContent">
         <script src="https://unpkg.com/htmx.org@2.0.5"></script>
     </th:block>
@@ -9,7 +9,7 @@
 <body>
 <section>
     <div th:if="${travelPlan != null}">
-        <h2 th:text="${travelPlan.plan.title}"></h2>
+        <h2 th:text="${travelPlan.proposal.title}"></h2>
 
         <div style="margin-bottom: 20px;">
             <a href="/travel/journey" target="_blank" rel="noopener noreferrer"
@@ -41,7 +41,7 @@
                 </a>
             </div>
 
-            <div th:utext="${travelPlan.plan.plan}" style="margin-bottom: 1rem;"></div>
+            <div th:utext="${travelPlan.proposal.plan}" style="margin-bottom: 1rem;"></div>
             <h3>Stays</h3>
             <ul style="margin-bottom: 1rem;">
                 <li th:each="stay : ${travelPlan.stays}" style="margin-bottom: 0.5rem;">
@@ -50,10 +50,10 @@
                 </li>
             </ul>
 
-            <div th:if="${travelPlan.plan.pageLinks != null && !#lists.isEmpty(travelPlan.plan.pageLinks)}">
+            <div th:if="${travelPlan.proposal.pageLinks != null && !#lists.isEmpty(travelPlan.proposal.pageLinks)}">
                 <h3>Useful Links</h3>
                 <ul style="margin-bottom: 1rem;">
-                    <li th:each="page : ${travelPlan.plan.pageLinks}" style="margin-bottom: 0.5rem;">
+                    <li th:each="page : ${travelPlan.proposal.pageLinks}" style="margin-bottom: 0.5rem;">
                         <a th:href="${page.url}" target="_blank" rel="noopener noreferrer"><span
                                 th:text="${page.summary}"></span></a>
                     </li>
