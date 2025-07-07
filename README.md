@@ -53,8 +53,7 @@ It demonstrates the power of the [Embabel agent framework](https://www.github.co
 - Java 21+
 - Docker
 - Maven 3.6+
-
-- Make sure you have 'Docker Model Runner' up and running and exposed on port 12434 (```console docker desktop enable model-runner --tcp=12434```)
+- Make sure you have 'Docker Model Runner' up and running and exposed on port 12434 (```docker desktop enable model-runner --tcp=12434```)
 
 ### Environment Setup
 
