@@ -54,6 +54,8 @@ It demonstrates the power of the [Embabel agent framework](https://www.github.co
 - Docker
 - Maven 3.6+
 
+- Make sure you have 'Docker Model Runner' up and running and exposed on port 12434 (```console docker desktop enable model-runner --tcp=12434```)
+
 ### Environment Setup
 
 1. **Configure API Keys**
