@@ -2,8 +2,6 @@ package com.embabel.agent.web.htmx
 
 import com.embabel.agent.core.AgentPlatform
 import com.embabel.agent.core.AgentProcessStatusCode
-import com.embabel.agent.core.resultOfType
-import com.embabel.tripper.agent.TravelPlan
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Controller
@@ -36,8 +34,8 @@ class ProcessStatusController(
         return when (agentProcess.status) {
             AgentProcessStatusCode.COMPLETED -> {
                 logger.info("Process {} completed successfully", processId)
-                val travelPlan = agentProcess.resultOfType<TravelPlan>()
-                model.addAttribute(resultModelKey, travelPlan)
+                val result = agentProcess.lastResult()
+                model.addAttribute(resultModelKey, result)
                 model.addAttribute("agentProcess", agentProcess)
                 successView
             }
