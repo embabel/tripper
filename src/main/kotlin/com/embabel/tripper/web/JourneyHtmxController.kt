@@ -18,6 +18,7 @@ package com.embabel.tripper.web
 import com.embabel.agent.core.AgentPlatform
 import com.embabel.agent.core.ProcessOptions
 import com.embabel.agent.core.Verbosity
+import com.embabel.agent.web.htmx.GenericProcessingValues
 import com.embabel.tripper.agent.JourneyTravelBrief
 import com.embabel.tripper.agent.Traveler
 import com.embabel.tripper.agent.Travelers
@@ -104,9 +105,14 @@ class JourneyHtmxController(
         )
 
         model.addAttribute("travelBrief", travelBrief)
-        model.addAttribute("processId", agentProcess.id)
+        GenericProcessingValues(
+            agentProcess = agentProcess,
+            pageTitle = "Planning your journey",
+            detail = travelBrief.brief,
+            resultModelKey = "travelPlan",
+            successView = "journey-plan",
+        ).addToModel(model)
         agentPlatform.start(agentProcess)
         return "common/processing"
     }
 }
-

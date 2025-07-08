@@ -14,8 +14,7 @@
     <div id="journey-container">
         <div id="journey-status">
             <div class="working">
-                <h3>Planning your journey...</h3>
-                <p th:text="${travelBrief.brief}"></p>
+                <p th:text="${detail}"></p>
 
                 <div class="process-controls">
                     <button type="button"
@@ -80,20 +79,7 @@
             switch (data.type) {
                 case 'AgentProcessPlanFormulatedEvent':
                     headerText = `📋 Plan Formulated`;
-                    if (data.plan && data.plan.actions) {
-                        // Choose appropriate icons based on action name
-                        function getActionIcon(actionName) {
-                            const actionLower = actionName.toLowerCase();
-                            if (actionLower.includes('car') || actionLower.includes('travel')) return '🚗';
-                            if (actionLower.includes('bus')) return '🚌';
-                            if (actionLower.includes('process')) return '⚙️';
-                            if (actionLower.includes('food') || actionLower.includes('eat') || actionLower.includes('restaurant')) return '🍽️';
-                            if (actionLower.includes('tour') || actionLower.includes('visit') || actionLower.includes('see')) return '🏛️';
-                            if (actionLower.includes('book') || actionLower.includes('reserve')) return '📝';
-                            return '☐'; // Default icon
-                        }
-
-                        // Create a more visually appealing representation of actions
+                    if (data.plan?.actions) {
                         const history =
                             data.history.map(ai => ai.actionName)
                         const planned = data.plan.actions.map(action => action.name);
@@ -219,7 +205,9 @@
             // Handle completion events
             if (data.type === "GoalAchievedEvent") {
                 eventSource.close();
-                window.location.href = `/status/${processId}?resultModelKey=travelPlan&successView=journey-plan`;
+
+                // Get values from template context
+                window.location.href = `/status/${processId}?resultModelKey=[[${resultModelKey}]]&successView=[[${successView}]]`;
                 return;
             }
 
