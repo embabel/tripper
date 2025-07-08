@@ -1,6 +1,10 @@
 # Spring Security with Google OAuth2 Authentication
 
-This application uses Spring Security with Google OAuth2 for authentication. Follow these steps to set up Google OAuth2:
+This application uses Spring Security with Google OAuth2 for authentication.
+
+Set the `embabel.security.enabled` property to `true` in your `application.properties` file to enable security features.
+
+Follow these steps to set up Google OAuth2:
 
 ## Setting Up Google OAuth2
 
@@ -11,8 +15,10 @@ This application uses Spring Security with Google OAuth2 for authentication. Fol
 5. Select "Web application" as the application type
 6. Add a name for your OAuth client
 7. Add authorized redirect URIs:
-   - `http://localhost:8080/login/oauth2/code/google` (for local development)
-   - Add your production URLs if deploying to production
+
+- `http://localhost:8080/login/oauth2/code/google` (for local development)
+- Add your production URLs if deploying to production
+
 8. Click "Create"
 9. Google will provide a Client ID and Client Secret
 
@@ -39,6 +45,7 @@ The security configuration is defined in `SecurityConfig.kt`. The current setup:
 ## User Information
 
 After authentication, user details from Google are available:
+
 - User profile at `/user` shows detailed information
 - User name displayed in the navigation bar
 - Access to OAuth2 user attributes in Thymeleaf templates
@@ -46,6 +53,7 @@ After authentication, user details from Google are available:
 ## Custom OAuth2 User Service
 
 The application uses a custom OAuth2 user service (`CustomOAuth2UserService.kt`) to:
+
 - Load user details from Google
 - Extract user information (email, name)
 - Assign default role (ROLE_USER)
@@ -59,7 +67,9 @@ The application uses Thymeleaf's Spring Security integration to show/hide conten
 - Use `sec:authentication="name"` to display the authenticated user's name
 
 Example:
+
 ```html
+
 <div sec:authorize="isAuthenticated()">
     Welcome, <span sec:authentication="name">User</span>!
 </div>
@@ -68,6 +78,7 @@ Example:
 ## For Production Deployment
 
 For production deployments, consider:
+
 1. Enabling CSRF protection
 2. Implementing proper user persistence in a database
 3. Adding more granular authorization rules

@@ -8,13 +8,13 @@
     <link href="/css/travel.css" rel="stylesheet">
     <script src="https://unpkg.com/htmx.org@2.0.5" th:if="${_htmx}"></script>
     <script src="https://unpkg.com/htmx.org@2.2.2/dist/ext/sse.js" th:if="${_sse}"></script>
-    <th:block th:replace="${extraHeadContent != null ? extraHeadContent : 'common/fragments/empty'}"
+    <th:block th:replace="~{${extraHeadContent != null ? extraHeadContent : 'common/fragments/empty'}}"
               th:if="${extraHeadContent != null}"></th:block>
 </head>
 <body>
 
 <div class="container">
-    <div th:insert="~{common/fragments/user :: userAuth}"></div>
+    <div th:insert="~{common/fragments/user :: userAuth}" style="float: right;"></div>
 
     <th:block th:replace="${content}"></th:block>
 </div>

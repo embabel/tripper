@@ -1,4 +1,4 @@
-package com.embabel.tripper.web
+package com.embabel.agent.web.security
 
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
@@ -10,5 +10,5 @@ class LoginController {
     fun login(): String {
         return "login"
     }
-    
+
 }

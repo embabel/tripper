@@ -1,4 +1,4 @@
-package com.embabel.tripper.config
+package com.embabel.agent.web.security
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService

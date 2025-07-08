@@ -99,11 +99,23 @@ It demonstrates the power of the [Embabel agent framework](https://www.github.co
 
 ### Setup OAuth Credentials
 
-1. Copy `application-example.properties` to `application-local.properties`
-2. Get Google OAuth credentials from [Google Cloud Console](https://console.cloud.google.com/)
-3. Add redirect URI: `http://localhost:8080/login/oauth2/code/google`
-4. Fill in your credentials in `application-local.properties`
-5. Run with: `./mvnw spring-boot:run -Dspring-boot.run.profiles=local`
+Enable security by changing the following line in `application.properties`:
+
+```properties
+embabel.security.enabled=true
+```
+
+Then follow these steps to set up Google OAuth:
+
+1. Get Google OAuth credentials from [Google Cloud Console](https://console.cloud.google.com/)
+2. Add redirect URI: `http://localhost:8080/login/oauth2/code/google`
+3. Set your `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` environment variables:
+   ```bash
+   export GOOGLE_CLIENT_ID=your_google_client_id_here
+   export GOOGLE_CLIENT_SECRET=your_google_client_secret_here
+   ```
+
+For more details, see the [Security Guide](README-SECURITY.md).
 
 ## 📸 Screenshots
 
