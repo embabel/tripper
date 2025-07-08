@@ -97,6 +97,14 @@ It demonstrates the power of the [Embabel agent framework](https://www.github.co
     - Travel Planner: [http://localhost:8080/](http://localhost:8080/)
     - Platform Info: [http://localhost:8080/platform](http://localhost:8080/platform)
 
+### Setup OAuth Credentials
+
+1. Copy `application-example.properties` to `application-local.properties`
+2. Get Google OAuth credentials from [Google Cloud Console](https://console.cloud.google.com/)
+3. Add redirect URI: `http://localhost:8080/login/oauth2/code/google`
+4. Fill in your credentials in `application-local.properties`
+5. Run with: `./mvnw spring-boot:run -Dspring-boot.run.profiles=local`
+
 ## 📸 Screenshots
 
 <div align="center">

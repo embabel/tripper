@@ -12,7 +12,10 @@
               th:if="${extraHeadContent != null}"></th:block>
 </head>
 <body>
+
 <div class="container">
+    <div th:insert="~{common/fragments/user :: userAuth}"></div>
+
     <th:block th:replace="${content}"></th:block>
 </div>
 <div th:replace="~{common/fragments/footer :: footer}"></div>
