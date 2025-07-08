@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile - Tripper</title>
+    <link href="/css/embabel-common-dark.css" rel="stylesheet">
+
+</head>
+<body class="bg-light">
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-body p-4">
+                    <h2 class="text-center mb-4">User Profile</h2>
+
+                    <div class="text-center mb-4" th:if="${picture != null and !#strings.isEmpty(picture)}">
+                        <img th:src="${picture}"
+                             th:alt="${name + ' profile picture'}"
+                             class="profile-image"
+                             onerror="this.style.display='none'">
+                    </div>
+                    <div class="mb-3">
+                        <h4>Welcome, <span th:text="${name}">User</span>!</h4>
+                        <p class="text-muted" th:text="${email}">user@example.com</p>
+                    </div>
+
+                    <!--                    <div class="mb-3">-->
+                    <!--                        <h5>Your Account Details</h5>-->
+                    <!--                        <table class="table table-striped">-->
+                    <!--                            <thead>-->
+                    <!--                            <tr>-->
+                    <!--                                <th>Attribute</th>-->
+                    <!--                                <th>Value</th>-->
+                    <!--                            </tr>-->
+                    <!--                            </thead>-->
+                    <!--                            <tbody>-->
+                    <!--                            <tr th:each="attr : ${attributes}">-->
+                    <!--                                <td th:text="${attr.key}">Attribute</td>-->
+                    <!--                                <td th:text="${attr.value}">Value</td>-->
+                    <!--                            </tr>-->
+                    <!--                            </tbody>-->
+                    <!--                        </table>-->
+                    <!--                    </div>-->
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="/" class="friendly-map-btn">Back to Home</a>
+                        <form th:action="@{/logout}" method="post">
+                            <button type="submit" class="submit-btn">Logout</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -640,3 +640,11 @@ hr.dotted {
     font-weight: 300;
     color: #0a1113;
 }
+
+.profile-image {
+    max-width: 150px;
+    max-height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #dee2e6;
+}

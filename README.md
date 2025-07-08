@@ -97,6 +97,26 @@ It demonstrates the power of the [Embabel agent framework](https://www.github.co
     - Travel Planner: [http://localhost:8080/](http://localhost:8080/)
     - Platform Info: [http://localhost:8080/platform](http://localhost:8080/platform)
 
+### Setup OAuth Credentials
+
+Enable security by changing the following line in `application.properties`:
+
+```properties
+embabel.security.enabled=true
+```
+
+Then follow these steps to set up Google OAuth:
+
+1. Get Google OAuth credentials from [Google Cloud Console](https://console.cloud.google.com/)
+2. Add redirect URI: `http://localhost:8080/login/oauth2/code/google`
+3. Set your `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` environment variables:
+   ```bash
+   export GOOGLE_CLIENT_ID=your_google_client_id_here
+   export GOOGLE_CLIENT_SECRET=your_google_client_secret_here
+   ```
+
+For more details, see the [Security Guide](README-SECURITY.md).
+
 ## 📸 Screenshots
 
 <div align="center">
