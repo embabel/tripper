@@ -16,13 +16,13 @@
 package com.embabel.tripper.web
 
 import com.embabel.agent.core.AgentPlatform
+import com.embabel.agent.core.Budget
 import com.embabel.agent.core.ProcessOptions
 import com.embabel.agent.core.Verbosity
 import com.embabel.agent.web.htmx.GenericProcessingValues
 import com.embabel.tripper.agent.JourneyTravelBrief
 import com.embabel.tripper.agent.Traveler
 import com.embabel.tripper.agent.Travelers
-import org.slf4j.LoggerFactory
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
@@ -38,8 +38,6 @@ import java.time.Period
 class JourneyHtmxController(
     private val agentPlatform: AgentPlatform,
 ) {
-
-    private val logger = LoggerFactory.getLogger(JourneyHtmxController::class.java)
 
     data class JourneyPlanForm(
         val from: String = "Antwerp",
@@ -100,6 +98,10 @@ class JourneyHtmxController(
                     showPrompts = true,
                     showLlmResponses = true,
                 ),
+                // This is expensive and that's OK
+                budget = Budget(
+                    tokens = Budget.DEFAULT_TOKEN_LIMIT * 3,
+                )
             ),
             travelBrief, travelers
         )

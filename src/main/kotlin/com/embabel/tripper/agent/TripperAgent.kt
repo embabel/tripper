@@ -60,8 +60,10 @@ data class TravelPlannerProperties(
     val travelPlannerPersona: Persona = HermesPersona,
     val researcher: RoleGoalBackstory = Researcher,
     val toolCallControl: ToolCallControl = ToolCallControl(),
-    private val thinkerModel: String = AnthropicModels.CLAUDE_37_SONNET,
+    private val thinkerModel: String = OpenAiModels.GPT_41,
     private val researcherModel: String = OpenAiModels.GPT_41_MINI,
+    private val writerModel: String = AnthropicModels.CLAUDE_37_SONNET,
+    val maxConcurrency: Int = 15,
 ) {
     val thinkerLlm = LlmOptions(
         criteria = byName(thinkerModel),
@@ -69,6 +71,10 @@ data class TravelPlannerProperties(
 
     val researcherLlm = LlmOptions(
         criteria = byName(researcherModel),
+    )
+
+    val writerLlm = LlmOptions(
+        criteria = byName(writerModel),
     )
 
 }
@@ -146,7 +152,7 @@ class TripperAgent(
         ).withToolObject(braveImageSearch)
         val poiFindings = context.parallelMap(
             itineraryIdeas.pointsOfInterest,
-            maxConcurrency = 6,
+            maxConcurrency = config.maxConcurrency,
         ) { poi ->
             val rpi = promptRunner.create<ResearchedPointOfInterest>(
                 prompt = """
@@ -178,7 +184,7 @@ class TripperAgent(
         travelers: Travelers,
         poiFindings: PointOfInterestFindings,
     ): ProposedTravelPlan {
-        return using(config.thinkerLlm)
+        return using(config.writerLlm)
             .withToolGroups(setOf(CoreToolGroups.WEB, CoreToolGroups.MAPS, CoreToolGroups.MATH))
             .withPromptContributors(
                 listOf(
@@ -249,11 +255,13 @@ class TripperAgent(
             )
         }.sortedBy { it.days.first().date }
 
-        val foundStays = context.parallelMap(stays, maxConcurrency = 5) { stay ->
+        val stayFinderPromptRunner = context.promptRunner()
+            .withLlm(config.researcherLlm)
+            .withPromptContributor(travelers)
+            .withToolGroups(setOf(ToolsConfig.AIRBNB, CoreToolGroups.MATH))
+        val foundStays = context.parallelMap(stays, maxConcurrency = config.maxConcurrency) { stay ->
             logger.info("Finding Airbnb options for stay at: {}", stay.locationAndCountry())
-            val airbnbResults = context.promptRunner()
-                .withPromptContributor(travelers)
-                .withToolGroups(setOf(ToolsConfig.AIRBNB, CoreToolGroups.MATH))
+            val airbnbResults = stayFinderPromptRunner
                 .create<AirbnbResults>(
                     prompt = """
                 Find the Airbnb search URL for the following stay using the available tools.
