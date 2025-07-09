@@ -193,6 +193,19 @@ The Tripper agent follows a modern microservices architecture:
 - **Build**: Apache Maven
 - **DevOps**: Docker, GitHub Actions
 
+### Note For Linux Developers
+
+- Ensure proper software version: Docker Desktop 4.43.1
+- Linux Docker Desktop does not support yet Model Runner in GUI. Please follow [Model Runner Documentation](https://docs.docker.com/ai/model-runner/)
+- Validation step:
+ ```bash
+   docker model pull  jimclark106/all-minilm:23M-F16
+```
+* Thereafter below *compose* would not be required (due to temparary lack of support on Linux):
+ ```bash
+   docker compose --file compose.dmr.yaml up
+```
+
 ### Contributing
 
 1. Fork the repository
