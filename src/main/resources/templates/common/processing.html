@@ -151,7 +151,7 @@
                     detailsText = data.prompt;
                     break;
                 case 'LlmResponseEvent':
-                    headerText = `💬 LLM Response - ${data.llm.name}`;
+                    headerText = `💬 LLM Response - ${data.llm?.name}`;
                     showJson = true;
                     jsonEl.textContent = JSON.stringify(data.response, null, 2);
                     break;

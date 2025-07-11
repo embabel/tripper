@@ -35,6 +35,7 @@
             <groupId>com.embabel.agent</groupId>
             <artifactId>embabel-agent-test</artifactId>
             <version>${embabel-agent.version}</version>
+	    <scope>test</scope>
         </dependency>
 
 

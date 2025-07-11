@@ -59,7 +59,7 @@ It demonstrates the power of the [Embabel agent framework](https://www.github.co
 
 1. **Configure API Keys**
    ```bash
-   export OPEN_AI_API_KEY=your_openai_api_key_here
+   export OPENAI_API_KEY=your_openai_api_key_here
    export ANTHROPIC_API_KEY=your_anthropic_api_key_here
    # Set your Brave API key for image search
    export BRAVE_API_KEY=your_brave_api_key_here
@@ -95,6 +95,17 @@ It demonstrates the power of the [Embabel agent framework](https://www.github.co
       `TripperApplication.kt`.
 
 3. **Access the Application**
+    - Travel Planner: [http://localhost:8080/](http://localhost:8080/)
+    - Platform Info: [http://localhost:8080/platform](http://localhost:8080/platform)
+
+### Running the Application with Docker
+
+1. **Launch the Travel Planner**
+   ```bash
+   docker compose --profile in-docker up
+   ```
+
+2. **Access the Application**
     - Travel Planner: [http://localhost:8080/](http://localhost:8080/)
     - Platform Info: [http://localhost:8080/platform](http://localhost:8080/platform)
 
