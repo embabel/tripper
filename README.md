@@ -46,14 +46,15 @@ It demonstrates the power of the [Embabel agent framework](https://www.github.co
 ## 🚀 Quick Start
 
 > Warning: Tripper is a genuinely useful travel planner. But be aware that its extensive LLM usage will cost money. A
-> typical run costs around $0.15c.
+> typical run costs around $0.10c.
 
 ### Prerequisites
 
 - Java 21+
 - Docker
 - Maven 3.6+
-- Make sure you have 'Docker Model Runner' up and running and exposed on port 12434 (```docker desktop enable model-runner --tcp=12434```)
+- Make sure you have 'Docker Model Runner' up and running and exposed on port 12434 (
+  ```docker desktop enable model-runner --tcp=12434```)
 
 ### Environment Setup
 
@@ -207,12 +208,16 @@ The Tripper agent follows a modern microservices architecture:
 ### Note For Linux Developers
 
 - Ensure proper software version: Docker Desktop 4.43.1
-- Linux Docker Desktop does not support yet Model Runner in GUI. Please follow [Model Runner Documentation](https://docs.docker.com/ai/model-runner/)
+- Linux Docker Desktop does not support yet Model Runner in GUI. Please
+  follow [Model Runner Documentation](https://docs.docker.com/ai/model-runner/)
 - Validation step:
+
  ```bash
    docker model pull  jimclark106/all-minilm:23M-F16
 ```
+
 * Thereafter below *compose* would not be required (due to temparary lack of support on Linux):
+
  ```bash
    docker compose --file compose.dmr.yaml up
 ```
