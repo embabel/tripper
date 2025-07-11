@@ -14,7 +14,7 @@ RUN mvn dependency:go-offline -B
 COPY src ./src
 
 # Build the application
-RUN mvn clean package -DskipTests
+RUN mvn clean package -DskipTests -Dmaven.test.skip=true
 
 # Runtime stage
 FROM maven:3.9.6-eclipse-temurin-21
@@ -25,18 +25,9 @@ RUN useradd -r -m -s /bin/false app
 # Set working directory
 WORKDIR /app
 
-# Copy Maven configuration files first
-COPY --from=builder /app/pom.xml .
-
-# Pre-download dependencies as root to cache in layer
-RUN mvn dependency:go-offline -B
-
 # Copy the rest of the project from builder stage
 COPY --from=builder /app/src ./src
 COPY --from=builder /app/target ./target
-
-# Create Maven home directory for app user and copy cached dependencies
-RUN mkdir -p /home/app/.m2 && cp -r /root/.m2/repository /home/app/.m2/ && chown -R app:app /home/app/.m2
 
 # Change ownership to app user
 RUN chown -R app:app .
@@ -56,4 +47,4 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=60s --retries=3 \
   CMD curl -f http://localhost:8080/actuator/health || exit 1
 
 # Run the application
-ENTRYPOINT ["mvn", "-Dmaven.test.skip=true", "spring-boot:run"]
+ENTRYPOINT ["java", "-Dmaven.test.skip=true", "-jar", "/app/target/tripper-0.1.0-SNAPSHOT.jar"]
