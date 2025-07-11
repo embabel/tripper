@@ -11,12 +11,7 @@ services:
       - --verbose
       - --transport=sse
       - --secrets=/run/secrets/mcp_secret
-      - --servers=brave
-      - --servers=wikipedia-mcp
-      - --servers=puppeteer
-      - --servers=github
-      - --servers=openbnb-airbnb
-      - --servers=google-maps
+      - --servers=brave,wikipedia-mcp,puppeteer,github,openbnb-airbnb,google-maps
       - --tools=openbnb-airbnb:*
       - --tools=brave_web_search
       - --tools=wikipedia-mcp:*
@@ -37,6 +32,23 @@ services:
     ports:
       - "9411:9411"
 
+  agent:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+    environment:
+      - DOCKER_MCP=http://mcp-gateway:9011
+      - BRAVE_API_KEY=${BRAVE_API_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      #- SPRING_PROFILES_ACTIVE=starwars,neo,docker-desktop,docker,shell
+    depends_on:
+      - mcp-gateway
+      - zipkin
+    profiles:
+      - in-docker
 
 secrets:
   mcp_secret:

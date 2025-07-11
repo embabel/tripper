@@ -9,13 +9,10 @@ spring:
         request-timeout: 30s
         type: SYNC
 
-        stdio:
+        sse:
           connections:
-            # MCP server exposed by Docker Desktop MCP Toolkit extension
-            # Add --verbose to the args to enable verbose logging
-            docker-mcp:
-              command: docker
-              args:
-                - mcp
-                - gateway
-                - run
+            local:
+              # Allow the DOCKER_MCP environment variable to override the default URL
+              url: ${DOCKER_MCP:http://localhost:9011}
+
+

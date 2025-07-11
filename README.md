@@ -46,20 +46,21 @@ It demonstrates the power of the [Embabel agent framework](https://www.github.co
 ## 🚀 Quick Start
 
 > Warning: Tripper is a genuinely useful travel planner. But be aware that its extensive LLM usage will cost money. A
-> typical run costs around $0.15c.
+> typical run costs around $0.10c.
 
 ### Prerequisites
 
 - Java 21+
 - Docker
 - Maven 3.6+
-- Make sure you have 'Docker Model Runner' up and running and exposed on port 12434 (```docker desktop enable model-runner --tcp=12434```)
+- Make sure you have 'Docker Model Runner' up and running and exposed on port 12434 (
+  ```docker desktop enable model-runner --tcp=12434```)
 
 ### Environment Setup
 
 1. **Configure API Keys**
    ```bash
-   export OPEN_AI_API_KEY=your_openai_api_key_here
+   export OPENAI_API_KEY=your_openai_api_key_here
    export ANTHROPIC_API_KEY=your_anthropic_api_key_here
    # Set your Brave API key for image search
    export BRAVE_API_KEY=your_brave_api_key_here
@@ -95,6 +96,17 @@ It demonstrates the power of the [Embabel agent framework](https://www.github.co
       `TripperApplication.kt`.
 
 3. **Access the Application**
+    - Travel Planner: [http://localhost:8080/](http://localhost:8080/)
+    - Platform Info: [http://localhost:8080/platform](http://localhost:8080/platform)
+
+### Running the Application with Docker
+
+1. **Launch the Travel Planner**
+   ```bash
+   docker compose --profile in-docker up
+   ```
+
+2. **Access the Application**
     - Travel Planner: [http://localhost:8080/](http://localhost:8080/)
     - Platform Info: [http://localhost:8080/platform](http://localhost:8080/platform)
 
@@ -196,12 +208,16 @@ The Tripper agent follows a modern microservices architecture:
 ### Note For Linux Developers
 
 - Ensure proper software version: Docker Desktop 4.43.1
-- Linux Docker Desktop does not support yet Model Runner in GUI. Please follow [Model Runner Documentation](https://docs.docker.com/ai/model-runner/)
+- Linux Docker Desktop does not support yet Model Runner in GUI. Please
+  follow [Model Runner Documentation](https://docs.docker.com/ai/model-runner/)
 - Validation step:
+
  ```bash
    docker model pull  jimclark106/all-minilm:23M-F16
 ```
+
 * Thereafter below *compose* would not be required (due to temparary lack of support on Linux):
+
  ```bash
    docker compose --file compose.dmr.yaml up
 ```
