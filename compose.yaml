@@ -1,7 +1,7 @@
 services:
 
   mcp-gateway:
-    image: docker/agents_gateway:v2
+    image: docker/mcp-gateway:latest
     ports:
       - 9011:9011
     volumes:
