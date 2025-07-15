@@ -1,7 +1,7 @@
 services:
 
   mcp-gateway:
-    image: docker/agents_gateway:v2
+    image: docker/mcp-gateway:latest
     ports:
       - 9011:9011
     volumes:
@@ -10,7 +10,7 @@ services:
     command:
       - --verbose
       - --transport=sse
-      - --secrets=/run/secrets/mcp_secret
+      - --secrets=docker-desktop:/run/secrets/mcp_secret
       - --servers=brave,wikipedia-mcp,puppeteer,github,openbnb-airbnb,google-maps
       - --tools=openbnb-airbnb:*
       - --tools=brave_web_search
