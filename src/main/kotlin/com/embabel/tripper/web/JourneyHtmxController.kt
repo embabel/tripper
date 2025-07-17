@@ -40,7 +40,7 @@ class JourneyHtmxController(
 ) {
 
     data class JourneyPlanForm(
-        val from: String = "Antwerp",
+        val from: String = "Barcelona",
         val to: String = "Bordeaux",
         val transportPreference: String = "driving",
         val brief: String = """
