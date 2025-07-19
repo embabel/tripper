@@ -8,7 +8,7 @@ import com.embabel.common.core.types.HasInfoString
 data class KnowledgeGraphDelta(
     override val basis: Retrievable,
     val entityDeterminations: EntityDeterminations,
-    val relationshipsResolution: SuggestedRelationshipsResolution,
+    val relationshipDeterminations: RelationshipDeterminations,
 ) : Sourced, HasInfoString {
 
     fun newEntities(): List<EntityData> {
@@ -20,11 +20,11 @@ data class KnowledgeGraphDelta(
     }
 
     fun newRelationships(): List<NewRelationship> {
-        return relationshipsResolution.resolutions.filterIsInstance<NewRelationship>()
+        return relationshipDeterminations.determinations.map { it.resolution }.filterIsInstance<NewRelationship>()
     }
 
     fun mergedRelationships(): List<ExistingRelationship> {
-        return relationshipsResolution.resolutions.filterIsInstance<ExistingRelationship>()
+        return relationshipDeterminations.determinations.map { it.resolution }.filterIsInstance<ExistingRelationship>()
     }
 
     override fun infoString(verbose: Boolean?): String {
