@@ -7,7 +7,7 @@ package com.embabel.boogie
 interface KnowledgeGraphUpdater {
 
     /**
-     * Project somewhere
+     * Apply this delta to the knowledge graph.
      */
     fun applyDelta(
         knowledgeGraphDelta: KnowledgeGraphDelta,

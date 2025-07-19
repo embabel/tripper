@@ -6,11 +6,15 @@ import com.embabel.common.core.types.HasInfoString
 import com.embabel.common.util.loggerFor
 import com.fasterxml.jackson.annotation.JsonPropertyDescription
 
+interface Based {
+    val basis: Retrievable
+}
+
 data class SuggestedEntity(
     val type: String,
     val name: String,
     val summary: String,
-    @JsonPropertyDescription("Will be a UUID. Include only if provided")
+    @param:JsonPropertyDescription("Will be a UUID. Include only if provided")
     val id: String? = null,
 //    @JsonPropertyDescription("Map from property name to value")
 //    val properties: Map<String, Any> = emptyMap(),
@@ -72,9 +76,9 @@ data class VetoedEntity(
 }
 
 data class SuggestedEntities(
-    val basis: Retrievable,
+    override val basis: Retrievable,
     val suggestedEntities: List<SuggestedEntity>,
-)
+) : Based
 
 data class SuggestedRelationships(
     val entitiesResolution: SuggestedEntitiesResolution,
@@ -82,9 +86,9 @@ data class SuggestedRelationships(
 )
 
 data class SuggestedEntitiesResolution(
-    val basis: Retrievable,
+    override val basis: Retrievable,
     val resolutions: List<SuggestedEntityResolution>,
-)
+) : Based
 
 data class EntityDetermination(
     val resolution: SuggestedEntityResolution,
@@ -95,9 +99,9 @@ data class EntityDetermination(
  * Decide on final entities to write
  */
 data class EntityDeterminations(
-    val basis: Retrievable,
+    override val basis: Retrievable,
     val determinations: List<EntityDetermination>,
-)
+) : Based
 
 interface RelationshipInstance {
     val sourceId: String
@@ -160,15 +164,15 @@ data class ExistingRelationship(
 }
 
 data class SuggestedRelationshipsResolution(
-    val basis: Retrievable,
+    override val basis: Retrievable,
     val resolutions: List<SuggestedRelationshipResolution>,
-)
+) : Based
 
 data class KnowledgeGraphDelta(
-    val basis: Retrievable,
+    override val basis: Retrievable,
     val entityDeterminations: EntityDeterminations,
     val relationshipsResolution: SuggestedRelationshipsResolution,
-) : HasInfoString {
+) : Based, HasInfoString {
 
     fun newEntities(): List<EntityData> {
         return entityDeterminations.determinations.filter { it.resolution is NewEntity }.mapNotNull { it.entityProduct }
@@ -200,4 +204,9 @@ data class SimpleEntityData(
     override val labels: Set<String>,
     override val properties: Map<String, Any>,
     override val metadata: Map<String, Any?> = emptyMap(),
-) : EntityData
+) : EntityData {
+
+    override fun embeddableValue(): String {
+        return description
+    }
+}
