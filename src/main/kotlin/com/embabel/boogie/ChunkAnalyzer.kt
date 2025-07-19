@@ -1,6 +1,78 @@
 package com.embabel.boogie
 
 import com.embabel.agent.rag.Chunk
+import com.embabel.agent.rag.EntityData
+import com.embabel.agent.rag.Retrievable
+import com.embabel.common.util.loggerFor
+import com.fasterxml.jackson.annotation.JsonPropertyDescription
+
+data class SuggestedEntity(
+    val type: String,
+    val name: String,
+    val summary: String,
+    @param:JsonPropertyDescription("Will be a UUID. Include only if provided")
+    val id: String? = null,
+//    @JsonPropertyDescription("Map from property name to value")
+//    val properties: Map<String, Any> = emptyMap(),
+) {
+    val entityData: EntityData
+        get() = SimpleEntityData(
+            id = id ?: "",
+            description = summary,
+            labels = setOf(type),
+            // TODO fix this
+            properties = emptyMap(),
+        )
+}
+
+
+data class SuggestedEntities(
+    override val basis: Retrievable,
+    val suggestedEntities: List<SuggestedEntity>,
+) : Sourced
+
+interface RelationshipInstance {
+    val sourceId: String
+    val targetId: String
+    val type: String
+    val description: String?
+}
+
+data class SuggestedRelationship(
+    override val sourceId: String,
+    override val targetId: String,
+    override val type: String,
+    override val description: String? = null,
+) : RelationshipInstance {
+
+    fun isValid(
+        schema: KnowledgeGraphSchema,
+        sourceEntity: EntityData,
+        targetEntity: EntityData,
+    ): Boolean {
+        val sourceType = sourceEntity.labels.singleOrNull()
+            ?: throw IllegalArgumentException("Source entity must have a single label")
+        val targetType = targetEntity.labels.singleOrNull()
+            ?: throw IllegalArgumentException("Target entity must have a single label")
+        val valid =
+            schema.relationships.any { it.type == type && it.sourceEntity == sourceType && it.targetEntity == targetType }
+        if (!valid) {
+            loggerFor<KnowledgeGraphSchema>().info(
+                "Relationship between {} and {} of type {} is invalid",
+                sourceType,
+                targetType,
+                type,
+            )
+        }
+        return valid
+    }
+}
+
+
+data class SuggestedRelationships(
+    val entitiesResolution: SuggestedEntitiesResolution,
+    val suggestedRelationships: List<SuggestedRelationship>,
+) : Sourced by entitiesResolution
 
 /**
  * First identify entities in a chunk, then analyze relationships between them
