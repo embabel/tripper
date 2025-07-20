@@ -1,4 +1,4 @@
-package com.embabel.boogie
+package com.embabel.boogie.schema
 
 import com.embabel.agent.core.PropertyDefinition
 import com.embabel.agent.rag.EntityData

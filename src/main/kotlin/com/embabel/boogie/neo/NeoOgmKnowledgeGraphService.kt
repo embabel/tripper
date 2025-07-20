@@ -1,8 +1,15 @@
 package com.embabel.boogie.neo
 
 import com.embabel.agent.rag.Chunk
+import com.embabel.agent.rag.EntityData
+import com.embabel.agent.rag.NamedEntityData
 import com.embabel.agent.rag.Retrievable
-import com.embabel.boogie.*
+import com.embabel.boogie.KnowledgeGraphDelta
+import com.embabel.boogie.KnowledgeGraphUpdater
+import com.embabel.boogie.RelationshipInstance
+import com.embabel.boogie.schema.*
+import com.embabel.common.ai.model.DefaultModelSelectionCriteria
+import com.embabel.common.ai.model.ModelProvider
 import org.neo4j.ogm.session.Session
 import org.neo4j.ogm.session.SessionFactory
 import org.slf4j.LoggerFactory
@@ -21,10 +28,13 @@ data class NeoOgmKnowledgeGraphServiceProperties(
 @Service
 class NeoOgmKnowledgeGraphService(
     private val sessionFactory: SessionFactory,
+    modelProvider: ModelProvider,
     private val properties: NeoOgmKnowledgeGraphServiceProperties,
 ) : KnowledgeGraphUpdater, SchemaSource, ChunkRepository {
 
     private val logger = LoggerFactory.getLogger(javaClass)
+
+    private val embeddingService = modelProvider.getEmbeddingService(DefaultModelSelectionCriteria)
 
     override fun findAll(): List<Chunk> {
         val rows = sessionFactory.openSession().query(
@@ -105,6 +115,7 @@ class NeoOgmKnowledgeGraphService(
         knowledgeGraphDelta.mergedEntities().forEach { ne ->
             logger.warn("Ignoring merged entity: leaving it unchanged in the database: {}", ne)
         }
+        embedEntities(session, knowledgeGraphDelta.newOrModifiedEntities())
         knowledgeGraphDelta.newRelationships().forEach { relationship ->
             createRelationship(session, relationship.suggestedRelationship, knowledgeGraphDelta.basis)
         }
@@ -168,5 +179,35 @@ class NeoOgmKnowledgeGraphService(
                 "targetId" to relationship.targetId
             )
         )
+    }
+
+    private fun embedEntities(
+        session: Session,
+        entities: List<EntityData>
+    ) {
+        entities.forEach { entity ->
+            embedEntity(session, entity)
+        }
+    }
+
+    private fun embedEntity(
+        session: Session,
+        entity: EntityData
+    ) {
+        val embedding = embeddingService.model.embed(entity.embeddableValue())
+        val cypher = """
+                MERGE (n:${entity.labels.joinToString(":")} {id: ${'$'}entityId})
+                SET n.embedding = ${'$'}embedding
+                RETURN COUNT(n) as nodesUpdated
+               """.trimIndent()
+        logger.info("Executing embedding cypher: {}", cypher)
+        session.query(
+            cypher,
+            mapOf(
+                "entityId" to entity.id,
+                "embedding" to embedding,
+            )
+        )
+
     }
 }

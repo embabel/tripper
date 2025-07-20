@@ -1,6 +1,7 @@
 package com.embabel.boogie
 
 import com.embabel.agent.rag.Chunk
+import com.embabel.boogie.schema.KnowledgeGraphSchema
 import com.embabel.boogie.support.NaiveEntityDeterminer
 import com.embabel.boogie.support.NaiveEntityResolver
 import com.embabel.boogie.support.NaiveRelationshipDeterminer
@@ -21,7 +22,10 @@ class KnowledgeGraphBuilder(
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    fun computeDelta(chunks: List<Chunk>, schema: KnowledgeGraphSchema): KnowledgeGraphDelta? {
+    fun computeDelta(
+        chunks: List<Chunk>,
+        schema: KnowledgeGraphSchema,
+    ): KnowledgeGraphDelta? {
         if (chunks.isEmpty()) {
             logger.warn("No chunks provided for analysis")
             return null
@@ -32,7 +36,10 @@ class KnowledgeGraphBuilder(
         return computeChunkDelta(chunks.single(), schema)
     }
 
-    fun computeChunkDelta(chunk: Chunk, schema: KnowledgeGraphSchema): KnowledgeGraphDelta {
+    fun computeChunkDelta(
+        chunk: Chunk,
+        schema: KnowledgeGraphSchema,
+    ): KnowledgeGraphDelta {
         val suggestedEntities = chunkAnalyzer.suggestEntities(chunk, schema)
         logger.info("Suggested entities: {}", suggestedEntities)
         val entitiesResolution = entityResolver.resolve(suggestedEntities, schema)
@@ -46,7 +53,7 @@ class KnowledgeGraphBuilder(
         )
         logger.info("Relationships resolution: {}", relationshipsResolution)
         val relationshipDeterminations = relationshipDeterminer.determineRelationships(relationshipsResolution, schema)
-        
+
         val entityDeterminations = entityDeterminer.determineEntities(entitiesResolution, schema)
         return KnowledgeGraphDelta(
             basis = chunk,

@@ -6,6 +6,7 @@ import com.embabel.agent.spi.InteractionId
 import com.embabel.agent.spi.LlmInteraction
 import com.embabel.agent.spi.LlmOperations
 import com.embabel.boogie.*
+import com.embabel.boogie.schema.KnowledgeGraphSchema
 import com.embabel.common.ai.model.LlmOptions
 import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.ConfigurationProperties

@@ -8,8 +8,10 @@ interface KnowledgeGraphUpdater {
 
     /**
      * Apply this delta to the knowledge graph.
+     * Responsible for updating embeddings
      */
     fun applyDelta(
         knowledgeGraphDelta: KnowledgeGraphDelta,
     )
 }
+

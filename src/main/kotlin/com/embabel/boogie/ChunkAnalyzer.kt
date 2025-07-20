@@ -1,8 +1,7 @@
 package com.embabel.boogie
 
-import com.embabel.agent.rag.Chunk
-import com.embabel.agent.rag.EntityData
-import com.embabel.agent.rag.Retrievable
+import com.embabel.agent.rag.*
+import com.embabel.boogie.schema.KnowledgeGraphSchema
 import com.embabel.common.util.loggerFor
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonPropertyDescription

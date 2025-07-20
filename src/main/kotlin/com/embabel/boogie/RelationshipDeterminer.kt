@@ -1,6 +1,7 @@
 package com.embabel.boogie
 
 import com.embabel.agent.rag.Retrievable
+import com.embabel.boogie.schema.KnowledgeGraphSchema
 
 typealias RelationshipDetermination = Convergence<SuggestedRelationshipResolution, RelationshipInstance>
 

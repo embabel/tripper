@@ -1,6 +1,7 @@
 package com.embabel.boogie.support
 
 import com.embabel.boogie.*
+import com.embabel.boogie.schema.KnowledgeGraphSchema
 
 // Trust in all entities
 class NaiveEntityResolver : EntityResolver {

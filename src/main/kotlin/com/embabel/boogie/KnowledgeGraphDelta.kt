@@ -1,9 +1,13 @@
 package com.embabel.boogie
 
+import com.embabel.agent.rag.NamedEntityData
 import com.embabel.agent.rag.Retrievable
 import com.embabel.common.core.types.HasInfoString
 
 
+/**
+ * Update we'll apply to a knowledge graph in a persistent store.
+ */
 data class KnowledgeGraphDelta(
     override val basis: Retrievable,
     val entityDeterminations: EntityDeterminations,
@@ -17,6 +21,10 @@ data class KnowledgeGraphDelta(
 
     fun mergedEntities(): List<EntityDetermination> {
         return entityDeterminations.determinations.filter { it.convergenceTarget != null && it.resolution is ExistingEntity }
+    }
+
+    fun newOrModifiedEntities(): List<NamedEntityData> {
+        return newEntities() + mergedEntities().mapNotNull { it.convergenceTarget }
     }
 
     fun newRelationships(): List<NewRelationship> {

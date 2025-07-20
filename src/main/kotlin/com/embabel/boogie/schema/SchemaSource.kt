@@ -1,4 +1,4 @@
-package com.embabel.boogie
+package com.embabel.boogie.schema
 
 interface SchemaSource {
 

@@ -1,6 +1,10 @@
 package com.embabel.boogie.support
 
-import com.embabel.boogie.*
+import com.embabel.boogie.RelationshipDetermination
+import com.embabel.boogie.RelationshipDeterminations
+import com.embabel.boogie.RelationshipDeterminer
+import com.embabel.boogie.SuggestedRelationshipsResolution
+import com.embabel.boogie.schema.KnowledgeGraphSchema
 
 /**
  * Always adds new entities and ignores existing or vetoed entities.

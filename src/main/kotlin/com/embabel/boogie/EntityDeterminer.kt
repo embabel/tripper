@@ -1,6 +1,8 @@
 package com.embabel.boogie
 
+import com.embabel.agent.rag.NamedEntityData
 import com.embabel.agent.rag.Retrievable
+import com.embabel.boogie.schema.KnowledgeGraphSchema
 
 typealias EntityDetermination = Convergence<SuggestedEntityResolution, NamedEntityData>
 
