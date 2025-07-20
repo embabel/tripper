@@ -119,7 +119,7 @@ class NeoOgmKnowledgeGraphService(
 
     private fun createEntity(
         session: Session,
-        entity: KgEntity,
+        entity: NamedEntityData,
         basis: Retrievable,
     ) {
         val entityCreationCypher = """

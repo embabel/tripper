@@ -16,7 +16,7 @@ sealed interface SuggestedEntityResolution : HasInfoString {
  * We were able to resolve the suggested entity to an existing or new entity.
  */
 sealed interface EntityDataResolution : SuggestedEntityResolution {
-    val kgEntity: KgEntity
+    val kgEntity: NamedEntityData
 }
 
 /**
@@ -26,7 +26,7 @@ data class NewEntity(
     override val suggestedEntity: SuggestedEntity,
 ) : EntityDataResolution {
 
-    override val kgEntity: KgEntity = suggestedEntity.kgEntity
+    override val kgEntity: NamedEntityData = suggestedEntity.kgEntity
 
     override fun infoString(verbose: Boolean?): String {
         return "NewEntity(${kgEntity.infoString(verbose)})"
@@ -38,7 +38,7 @@ data class NewEntity(
  */
 data class ExistingEntity(
     override val suggestedEntity: SuggestedEntity,
-    override val kgEntity: KgEntity,
+    override val kgEntity: NamedEntityData,
 ) : EntityDataResolution {
 
     override fun infoString(verbose: Boolean?): String {

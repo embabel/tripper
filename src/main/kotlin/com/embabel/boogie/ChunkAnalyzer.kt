@@ -19,7 +19,7 @@ data class SuggestedEntity(
 //    val properties: Map<String, Any> = emptyMap(),
 ) {
     @JsonIgnore
-    val kgEntity: KgEntity = SimpleKgEntity(
+    val kgEntity: NamedEntityData = SimpleNamedEntityData(
         id = id ?: UUID.randomUUID().toString(),
         name = name,
         description = summary,

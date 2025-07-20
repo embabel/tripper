@@ -2,7 +2,7 @@ package com.embabel.boogie
 
 import com.embabel.agent.rag.Retrievable
 
-typealias EntityDetermination = Convergence<SuggestedEntityResolution, KgEntity>
+typealias EntityDetermination = Convergence<SuggestedEntityResolution, NamedEntityData>
 
 /**
  * Decide on final entities to write
