@@ -11,7 +11,7 @@ data class KnowledgeGraphDelta(
     val relationshipDeterminations: RelationshipDeterminations,
 ) : Sourced, HasInfoString {
 
-    fun newEntities(): List<EntityData> {
+    fun newEntities(): List<KgEntity> {
         return entityDeterminations.determinations.filter { it.resolution is NewEntity }
             .mapNotNull { it.convergenceTarget }
     }
@@ -36,15 +36,20 @@ data class KnowledgeGraphDelta(
     }
 }
 
-data class SimpleEntityData(
+interface KgEntity : EntityData {
+    val name: String
+}
+
+data class SimpleKgEntity(
     override val id: String,
+    override val name: String,
     override val description: String,
     override val labels: Set<String>,
     override val properties: Map<String, Any>,
     override val metadata: Map<String, Any?> = emptyMap(),
-) : EntityData {
+) : KgEntity {
 
     override fun embeddableValue(): String {
-        return description
+        return "$name: $description"
     }
 }

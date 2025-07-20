@@ -17,7 +17,7 @@ class NaiveEntityDeterminer : EntityDeterminer {
                 when (it) {
                     is NewEntity -> EntityDetermination(
                         resolution = it,
-                        convergenceTarget = it.entityData
+                        convergenceTarget = it.kgEntity
                     )
 
                     is ExistingEntity -> EntityDetermination(

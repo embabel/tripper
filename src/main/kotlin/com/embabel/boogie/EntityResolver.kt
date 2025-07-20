@@ -1,6 +1,5 @@
 package com.embabel.boogie
 
-import com.embabel.agent.rag.EntityData
 import com.embabel.agent.rag.Retrievable
 import com.embabel.common.core.types.HasInfoString
 
@@ -17,7 +16,7 @@ sealed interface SuggestedEntityResolution : HasInfoString {
  * We were able to resolve the suggested entity to an existing or new entity.
  */
 sealed interface EntityDataResolution : SuggestedEntityResolution {
-    val entityData: EntityData
+    val kgEntity: KgEntity
 }
 
 /**
@@ -25,11 +24,12 @@ sealed interface EntityDataResolution : SuggestedEntityResolution {
  */
 data class NewEntity(
     override val suggestedEntity: SuggestedEntity,
-    override val entityData: EntityData,
 ) : EntityDataResolution {
 
+    override val kgEntity: KgEntity = suggestedEntity.kgEntity
+
     override fun infoString(verbose: Boolean?): String {
-        return "NewEntity(type=${suggestedEntity.type}, ${entityData.infoString(verbose)})"
+        return "NewEntity(${kgEntity.infoString(verbose)})"
     }
 }
 
@@ -38,11 +38,11 @@ data class NewEntity(
  */
 data class ExistingEntity(
     override val suggestedEntity: SuggestedEntity,
-    override val entityData: EntityData,
+    override val kgEntity: KgEntity,
 ) : EntityDataResolution {
 
     override fun infoString(verbose: Boolean?): String {
-        return "ResolvedEntity(type=${suggestedEntity.type}, ${entityData.infoString(verbose)})"
+        return "ExistingEntity(${kgEntity.infoString(verbose)})"
     }
 }
 
@@ -51,7 +51,7 @@ data class VetoedEntity(
 ) : SuggestedEntityResolution {
 
     override fun infoString(verbose: Boolean?): String {
-        return "VetoedEntity(type=${suggestedEntity.type})"
+        return "VetoedEntity(${suggestedEntity})"
     }
 }
 

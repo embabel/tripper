@@ -1,7 +1,6 @@
 package com.embabel.boogie.neo
 
 import com.embabel.agent.rag.Chunk
-import com.embabel.agent.rag.EntityData
 import com.embabel.agent.rag.Retrievable
 import com.embabel.boogie.*
 import org.neo4j.ogm.session.Session
@@ -16,6 +15,9 @@ data class NeoOgmKnowledgeGraphServiceProperties(
     val chunkNodeName: String = "Document",
 )
 
+/**
+ * Implements several interfaces to write knowledge graph data to Neo4j using Neo4j OGM.
+ */
 @Service
 class NeoOgmKnowledgeGraphService(
     private val sessionFactory: SessionFactory,
@@ -117,26 +119,36 @@ class NeoOgmKnowledgeGraphService(
 
     private fun createEntity(
         session: Session,
-        entity: EntityData,
+        entity: KgEntity,
         basis: Retrievable,
     ) {
         val entityCreationCypher = """
             MATCH (chunk:${properties.chunkNodeName} {id: ${'$'}basisId})
-            CREATE (e:${entity.labels.joinToString(":")} {id: ${'$'}id, description: ${'$'}description, createdDate: timestamp()})
+            CREATE (e:${entity.labels.joinToString(":")} {id: ${'$'}id, name: ${'$'}name, description: ${'$'}description, createdDate: timestamp()})
                 <-[:HAS_ENTITY]-(chunk) 
             SET e += ${'$'}properties
-            RETURN e
+            RETURN COUNT(e) as nodesCreated
             """.trimIndent()
         logger.info("Executing create entity cypher: {}", entityCreationCypher)
-        session.query(
-            entityCreationCypher,
-            mapOf(
-                "id" to entity.id,
-                "description" to entity.description,
-                "basisId" to basis.id,
-                "properties" to entity.properties,
-            )
+        val params = mapOf(
+            "id" to entity.id,
+            "name" to entity.name,
+            "description" to entity.description,
+            "basisId" to basis.id,
+            "properties" to entity.properties,
         )
+        val result = session.query(
+            entityCreationCypher,
+            params,
+        )
+        if (result.queryStatistics().nodesCreated != 1) {
+            logger.warn(
+                "Expected to create 1 node, but created: {}. Cypher={}, params={}",
+                result.queryStatistics().nodesCreated,
+                entityCreationCypher,
+                params
+            )
+        }
     }
 
     private fun createRelationship(

@@ -1,7 +1,6 @@
 package com.embabel.boogie.support
 
 import com.embabel.boogie.*
-import java.util.*
 
 // Trust in all entities
 class NaiveEntityResolver : EntityResolver {
@@ -10,19 +9,8 @@ class NaiveEntityResolver : EntityResolver {
         suggestedEntities: SuggestedEntities,
         schema: KnowledgeGraphSchema,
     ): SuggestedEntitiesResolution {
-        // For simplicity, let's assume we resolve entities by their name
         val resolvedEntities = suggestedEntities.suggestedEntities.map {
-            NewEntity(
-                it,
-                SimpleEntityData(
-                    id = it.id ?: UUID.randomUUID().toString(),
-                    description = it.summary,
-                    labels = setOf(it.type),
-                    properties = mapOf(
-                        "name" to it.name,
-                    ),
-                )
-            )
+            NewEntity(it)
         }
         return SuggestedEntitiesResolution(
             basis = suggestedEntities.basis,

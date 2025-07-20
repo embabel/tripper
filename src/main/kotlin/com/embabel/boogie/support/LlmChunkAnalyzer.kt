@@ -63,7 +63,7 @@ class LlmChunkAnalyzer(
         schema: KnowledgeGraphSchema
     ): SuggestedRelationships {
         val entitiesToUse =
-            suggestedEntitiesResolution.resolutions.filterIsInstance<EntityDataResolution>().map { it.entityData }
+            suggestedEntitiesResolution.resolutions.filterIsInstance<EntityDataResolution>().map { it.kgEntity }
         val prompt =
             """
             Given the following text, identify and summarize all relationships.
@@ -77,7 +77,7 @@ class LlmChunkAnalyzer(
             Relationships may only be between following entities:
             ${
                 entitiesToUse
-                    .joinToString("\n") { "- (:${it.labels.joinToString(":")} {id='${it.id}', description='${it.description}'})" }
+                    .joinToString("\n") { "- (:${it.labels.joinToString(":")} {id='${it.id}', name='${it.name}', description='${it.description}'})" }
             }
             
             IMPORTANT: You must find all relationships implied in the text between any of these types.
@@ -95,7 +95,7 @@ class LlmChunkAnalyzer(
         )
         val allEntities = suggestedEntitiesResolution.resolutions
             .filterIsInstance<EntityDataResolution>()
-            .map { it.entityData }
+            .map { it.kgEntity }
         val newRelationships = relationships.relationships
             .filter {
                 val sourceEntity = allEntities.find { entity -> entity.id == it.sourceId }

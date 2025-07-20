@@ -4,25 +4,29 @@ import com.embabel.agent.rag.Chunk
 import com.embabel.agent.rag.EntityData
 import com.embabel.agent.rag.Retrievable
 import com.embabel.common.util.loggerFor
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonPropertyDescription
+import java.util.*
+
 
 data class SuggestedEntity(
-    val type: String,
-    val name: String,
-    val summary: String,
+    private val type: String,
+    private val name: String,
+    private val summary: String,
     @param:JsonPropertyDescription("Will be a UUID. Include only if provided")
-    val id: String? = null,
+    private val id: String? = null,
 //    @JsonPropertyDescription("Map from property name to value")
 //    val properties: Map<String, Any> = emptyMap(),
 ) {
-    val entityData: EntityData
-        get() = SimpleEntityData(
-            id = id ?: "",
-            description = summary,
-            labels = setOf(type),
-            // TODO fix this
-            properties = emptyMap(),
-        )
+    @JsonIgnore
+    val kgEntity: KgEntity = SimpleKgEntity(
+        id = id ?: UUID.randomUUID().toString(),
+        name = name,
+        description = summary,
+        labels = setOf(type),
+        // TODO fix this
+        properties = emptyMap(),
+    )
 }
 
 /**
