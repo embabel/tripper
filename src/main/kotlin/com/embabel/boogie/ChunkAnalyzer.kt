@@ -25,18 +25,13 @@ data class SuggestedEntity(
         )
 }
 
-
+/**
+ * Entities suggested by the LLM based on input.
+ */
 data class SuggestedEntities(
     override val basis: Retrievable,
     val suggestedEntities: List<SuggestedEntity>,
 ) : Sourced
-
-interface RelationshipInstance {
-    val sourceId: String
-    val targetId: String
-    val type: String
-    val description: String?
-}
 
 data class SuggestedRelationship(
     override val sourceId: String,

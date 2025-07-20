@@ -13,24 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.embabel.tripper
+package com.embabel
 
+import com.embabel.agent.config.annotation.EnableAgentShell
 import com.embabel.agent.config.annotation.EnableAgents
 import com.embabel.agent.config.annotation.LocalModels
 import com.embabel.agent.config.annotation.LoggingThemes
-import com.embabel.agent.config.annotation.McpServers
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan
+import org.springframework.boot.runApplication
 
 @SpringBootApplication
 @ConfigurationPropertiesScan
 @EnableAgents(
     loggingTheme = LoggingThemes.SEVERANCE,
     localModels = [LocalModels.DOCKER, LocalModels.OLLAMA],
-    mcpServers = [McpServers.DOCKER, McpServers.DOCKER_DESKTOP],
 )
-class TripperApplication
+@EnableAgentShell
+class IngestionApplication
 
-//fun main(args: Array<String>) {
-//    runApplication<TripperApplication>(*args)
-//}
+fun main(args: Array<String>) {
+    runApplication<IngestionApplication>(*args)
+}
+
+

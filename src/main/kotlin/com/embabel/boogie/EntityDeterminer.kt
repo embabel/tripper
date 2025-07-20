@@ -3,10 +3,7 @@ package com.embabel.boogie
 import com.embabel.agent.rag.EntityData
 import com.embabel.agent.rag.Retrievable
 
-data class EntityDetermination(
-    val resolution: SuggestedEntityResolution,
-    val entityProduct: EntityData?
-)
+typealias EntityDetermination = Convergence<SuggestedEntityResolution, EntityData>
 
 /**
  * Decide on final entities to write

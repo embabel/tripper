@@ -17,17 +17,17 @@ class NaiveEntityDeterminer : EntityDeterminer {
                 when (it) {
                     is NewEntity -> EntityDetermination(
                         resolution = it,
-                        entityProduct = it.entityData
+                        convergenceTarget = it.entityData
                     )
 
                     is ExistingEntity -> EntityDetermination(
                         resolution = it,
-                        entityProduct = null // Vetoed entities have no product
+                        convergenceTarget = null // Vetoed entities have no product
                     )
 
                     is VetoedEntity -> EntityDetermination(
                         resolution = it,
-                        entityProduct = null // Vetoed entities have no product
+                        convergenceTarget = null // Vetoed entities have no product
                     )
                 }
             }

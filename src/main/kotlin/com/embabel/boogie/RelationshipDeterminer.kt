@@ -2,10 +2,8 @@ package com.embabel.boogie
 
 import com.embabel.agent.rag.Retrievable
 
-data class RelationshipDetermination(
-    val resolution: SuggestedRelationshipResolution,
-    val relationship: RelationshipInstance
-)
+typealias RelationshipDetermination = Convergence<SuggestedRelationshipResolution, RelationshipInstance>
+
 
 /**
  * Decide on final entities to write

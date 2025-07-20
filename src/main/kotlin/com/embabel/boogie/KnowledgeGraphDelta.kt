@@ -12,11 +12,12 @@ data class KnowledgeGraphDelta(
 ) : Sourced, HasInfoString {
 
     fun newEntities(): List<EntityData> {
-        return entityDeterminations.determinations.filter { it.resolution is NewEntity }.mapNotNull { it.entityProduct }
+        return entityDeterminations.determinations.filter { it.resolution is NewEntity }
+            .mapNotNull { it.convergenceTarget }
     }
 
     fun mergedEntities(): List<EntityDetermination> {
-        return entityDeterminations.determinations.filter { it.entityProduct != null && it.resolution is ExistingEntity }
+        return entityDeterminations.determinations.filter { it.convergenceTarget != null && it.resolution is ExistingEntity }
     }
 
     fun newRelationships(): List<NewRelationship> {
