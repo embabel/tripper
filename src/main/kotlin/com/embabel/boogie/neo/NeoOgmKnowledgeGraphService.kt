@@ -86,8 +86,8 @@ class NeoOgmKnowledgeGraphService(
                     val targetEntity = relationshipField.typeDescriptor.split(".").last()
                     relationships.add(
                         RelationshipDefinition(
-                            sourceEntity = entityDefinition.type,
-                            targetEntity = targetEntity,
+                            sourceLabel = entityDefinition.type,
+                            targetLabel = targetEntity,
                             type = relationshipField.relationship(),
                             description = relationshipField.name,
                             cardinality = if (relationshipField.isArray || relationshipField.isIterable) {
@@ -135,7 +135,7 @@ class NeoOgmKnowledgeGraphService(
     ) {
         val entityCreationCypher = """
             MATCH (chunk:${properties.chunkNodeName} {id: ${'$'}basisId})
-            CREATE (e:${entity.labels.joinToString(":")} {id: ${'$'}id, name: ${'$'}name, description: ${'$'}description, createdDate: timestamp()})
+            CREATE (e:${entity.neoLabels()} {id: ${'$'}id, name: ${'$'}name, description: ${'$'}description, createdDate: timestamp()})
                 <-[:HAS_ENTITY]-(chunk) 
             SET e += ${'$'}properties
             RETURN COUNT(e) as nodesCreated
@@ -210,4 +210,8 @@ class NeoOgmKnowledgeGraphService(
         )
 
     }
+}
+
+fun EntityData.neoLabels(): String {
+    return labels.joinToString(":")
 }

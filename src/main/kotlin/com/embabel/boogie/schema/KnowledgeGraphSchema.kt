@@ -4,6 +4,8 @@ import com.embabel.agent.core.PropertyDefinition
 import com.embabel.agent.rag.EntityData
 import com.embabel.common.core.types.HasInfoString
 
+const val ENTITY_LABEL = "Entity"
+
 /**
  * @param description a human-readable description of the entity type
  * @param labels a set of labels or types that this entity belongs to
@@ -17,13 +19,7 @@ data class EntityDefinition(
     val creationPermitted: Boolean = true,
 ) : HasInfoString {
 
-    constructor (
-        type: String,
-        description: String,
-        properties: List<PropertyDefinition> = emptyList(),
-    ) : this(description, setOf(type), properties)
-
-    val type get() = labels.firstOrNull() ?: "Unknown"
+    val type get() = labels.firstOrNull() ?: ENTITY_LABEL
 
     override fun infoString(verbose: Boolean?): String {
         return """
@@ -38,8 +34,8 @@ enum class Cardinality {
 }
 
 data class RelationshipDefinition(
-    val sourceEntity: String,
-    val targetEntity: String,
+    val sourceLabel: String,
+    val targetLabel: String,
     val type: String,
     val description: String,
     val cardinality: Cardinality = Cardinality.ONE,
@@ -47,7 +43,7 @@ data class RelationshipDefinition(
 
     override fun infoString(verbose: Boolean?): String {
         return """
-            RelationshipDefinition(sourceEntity='$sourceEntity', targetEntity='$targetEntity', type='$type', cardinality=$cardinality, description='$description')
+            RelationshipDefinition(sourceEntity='$sourceLabel', targetEntity='$targetLabel', type='$type', cardinality=$cardinality, description='$description')
         """.trimIndent()
     }
 }
@@ -62,8 +58,8 @@ data class KnowledgeGraphSchema(
 
     fun possibleRelationshipsBetween(entities: List<EntityData>): List<RelationshipDefinition> {
         return relationships.filter { relationship ->
-            entities.any { it.labels.contains(relationship.sourceEntity) } &&
-                    entities.any { it.labels.contains(relationship.targetEntity) }
+            entities.any { it.labels.contains(relationship.sourceLabel) } &&
+                    entities.any { it.labels.contains(relationship.targetLabel) }
         }
     }
 

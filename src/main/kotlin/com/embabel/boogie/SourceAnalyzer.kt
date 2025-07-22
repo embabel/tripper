@@ -9,9 +9,9 @@ import java.util.*
 
 
 data class SuggestedEntity(
-    private val type: String,
-    private val name: String,
-    private val summary: String,
+    val labels: List<String>,
+    val name: String,
+    val summary: String,
     @param:JsonPropertyDescription("Will be a UUID. Include only if provided")
     private val id: String? = null,
 //    @JsonPropertyDescription("Map from property name to value")
@@ -22,7 +22,7 @@ data class SuggestedEntity(
         id = id ?: UUID.randomUUID().toString(),
         name = name,
         description = summary,
-        labels = setOf(type),
+        labels = labels.toSet(),
         // TODO fix this
         properties = emptyMap(),
     )
@@ -48,17 +48,17 @@ data class SuggestedRelationship(
         sourceEntity: EntityData,
         targetEntity: EntityData,
     ): Boolean {
-        val sourceType = sourceEntity.labels.singleOrNull()
-            ?: throw IllegalArgumentException("Source entity must have a single label")
-        val targetType = targetEntity.labels.singleOrNull()
-            ?: throw IllegalArgumentException("Target entity must have a single label")
         val valid =
-            schema.relationships.any { it.type == type && it.sourceEntity == sourceType && it.targetEntity == targetType }
+            schema.relationships.any {
+                it.type == type && sourceEntity.labels.contains(it.sourceLabel) && targetEntity.labels.contains(
+                    it.targetLabel
+                )
+            }
         if (!valid) {
             loggerFor<KnowledgeGraphSchema>().info(
                 "Relationship between {} and {} of type {} is invalid",
-                sourceType,
-                targetType,
+                sourceEntity.infoString(verbose = false),
+                targetEntity.infoString(verbose = false),
                 type,
             )
         }
@@ -76,7 +76,7 @@ data class SuggestedRelationships(
  * First identify entities in a chunk, then analyze relationships between them
  * once they've been resolved
  */
-interface ChunkAnalyzer {
+interface SourceAnalyzer {
 
     /**
      * Identify entities in a chunk based on the provided schema.

@@ -12,8 +12,8 @@ import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.stereotype.Service
 
-@ConfigurationProperties("embabel.boogie.llm-chunk-analyzer")
-data class LlmChunkAnalyzerProperties(
+@ConfigurationProperties("embabel.boogie.llm-source-analyzer")
+data class LlmSourceAnalyzerProperties(
     val llm: String = AnthropicModels.CLAUDE_37_SONNET,
     val temperature: Double = 0.0,
 ) {
@@ -23,12 +23,12 @@ data class LlmChunkAnalyzerProperties(
 }
 
 @Service
-class LlmChunkAnalyzer(
+class LlmSourceAnalyzer(
     private val llmOperations: LlmOperations,
-    private val properties: LlmChunkAnalyzerProperties = LlmChunkAnalyzerProperties(),
-) : ChunkAnalyzer {
+    private val properties: LlmSourceAnalyzerProperties = LlmSourceAnalyzerProperties(),
+) : SourceAnalyzer {
 
-    private val logger = LoggerFactory.getLogger(LlmChunkAnalyzer::class.java)
+    private val logger = LoggerFactory.getLogger(LlmSourceAnalyzer::class.java)
 
     override fun suggestEntities(chunk: Chunk, schema: KnowledgeGraphSchema): SuggestedEntities {
         val prompt = """
@@ -46,10 +46,13 @@ class LlmChunkAnalyzer(
             # TEXT
             ${chunk.text}
         """.trimIndent()
-        logger.info("Identifying entities with prompt:\n$prompt")
+        logger.info("Identifying entities using prompt:\n$prompt")
         val entities = llmOperations.doTransform(
             prompt,
-            LlmInteraction(id = InteractionId("identify-entities"), llm = properties.llmOptions()),
+            LlmInteraction(
+                id = InteractionId("identify-entities"),
+                llm = properties.llmOptions(),
+            ),
             Entities::class.java,
             llmRequestEvent = null,
         )
@@ -72,7 +75,7 @@ class LlmChunkAnalyzer(
             
             ${
                 schema.possibleRelationshipsBetween(entitiesToUse)
-                    .joinToString("\n") { "(:${it.sourceEntity})-[:${it.type}]->(:${it.targetEntity}): cardinality=${it.cardinality}, ${it.description}" }
+                    .joinToString("\n") { "(:${it.sourceLabel})-[:${it.type}]->(:${it.targetLabel}): cardinality=${it.cardinality}, ${it.description}" }
             }
             
             Relationships may only be between following entities:
@@ -115,7 +118,7 @@ class LlmChunkAnalyzer(
     }
 }
 
-private data class Entities(
+internal data class Entities(
     val entities: List<SuggestedEntity>,
 )
 

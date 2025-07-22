@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service
  */
 @Service
 class KnowledgeGraphBuilder(
-    private val chunkAnalyzer: ChunkAnalyzer,
+    private val sourceAnalyzer: SourceAnalyzer,
     private val entityResolver: EntityResolver = NaiveEntityResolver(),
     private val relationshipResolver: RelationshipResolver = NaiveRelationshipResolver(),
     private val entityDeterminer: EntityDeterminer = NaiveEntityDeterminer(),
@@ -40,11 +40,11 @@ class KnowledgeGraphBuilder(
         chunk: Chunk,
         schema: KnowledgeGraphSchema,
     ): KnowledgeGraphDelta {
-        val suggestedEntities = chunkAnalyzer.suggestEntities(chunk, schema)
+        val suggestedEntities = sourceAnalyzer.suggestEntities(chunk, schema)
         logger.info("Suggested entities: {}", suggestedEntities)
         val entitiesResolution = entityResolver.resolve(suggestedEntities, schema)
         logger.info("Entity resolution: {}", entitiesResolution)
-        val suggestedRelationships = chunkAnalyzer.suggestRelationships(entitiesResolution, schema)
+        val suggestedRelationships = sourceAnalyzer.suggestRelationships(entitiesResolution, schema)
         logger.info("Suggested relationships: {}", suggestedRelationships)
         val relationshipsResolution = relationshipResolver.resolveRelationships(
             entitiesResolution,
