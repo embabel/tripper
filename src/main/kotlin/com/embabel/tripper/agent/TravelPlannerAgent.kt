@@ -38,6 +38,7 @@ import com.embabel.tripper.config.ToolsConfig
 import com.embabel.tripper.service.PersonRepository
 import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.ConfigurationProperties
+import org.springframework.transaction.annotation.Transactional
 
 val HermesPersona = Persona(
     name = "Hermes",
@@ -112,7 +113,7 @@ class TravelPlannerAgent(
             )
 
 
-    //    @Transactional
+    @Transactional
     @Action
     fun findPointsOfInterest(
         travelBrief: JourneyTravelBrief,
