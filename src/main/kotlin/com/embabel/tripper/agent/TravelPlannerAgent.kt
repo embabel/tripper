@@ -112,6 +112,7 @@ class TravelPlannerAgent(
             )
 
 
+    //    @Transactional
     @Action
     fun findPointsOfInterest(
         travelBrief: JourneyTravelBrief,
