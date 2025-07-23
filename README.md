@@ -107,8 +107,13 @@ It demonstrates the power of the [Embabel agent framework](https://www.github.co
    ```
 
 2. **Access the Application**
-    - Travel Planner: [http://localhost:8080/](http://localhost:8080/)
-    - Platform Info: [http://localhost:8080/platform](http://localhost:8080/platform)
+    - Travel Planner: [http://localhost:8747/](http://localhost:8080/)
+    - Platform Info: [http://localhost:8747/platform](http://localhost:8080/platform)
+
+> Note that the default port is `8747` not the usual Java `8080`. This is because
+> we often run multiple Embabel servers at once and don't want them to conflict.
+> The specific port is a reference to an [iconic aircraft](https://en.wikipedia.org/wiki/Boeing_747).
+> It's easy to change the port in `application.properties`.
 
 ### Setup OAuth Credentials
 
@@ -121,7 +126,7 @@ embabel.security.enabled=true
 Then follow these steps to set up Google OAuth:
 
 1. Get Google OAuth credentials from [Google Cloud Console](https://console.cloud.google.com/)
-2. Add redirect URI: `http://localhost:8080/login/oauth2/code/google`
+2. Add redirect URI: `http://localhost:8747/login/oauth2/code/google`
 3. Set your `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` environment variables:
    ```bash
    export GOOGLE_CLIENT_ID=your_google_client_id_here
