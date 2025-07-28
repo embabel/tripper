@@ -28,8 +28,13 @@
             <dependency>
                 <groupId>org.springframework.ai</groupId>
                 <artifactId>spring-ai-starter-mcp-server-webmvc</artifactId>
-                <version>1.0.0</version>
                 <scope>provided</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>*</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
         </dependencies>
     </dependencyManagement>
