@@ -16,11 +16,9 @@
 package com.embabel.tripper.agent
 
 import com.embabel.agent.BraveImageSearchService
-import com.embabel.agent.api.annotation.AchievesGoal
-import com.embabel.agent.api.annotation.Action
-import com.embabel.agent.api.annotation.Agent
-import com.embabel.agent.api.annotation.using
+import com.embabel.agent.api.annotation.*
 import com.embabel.agent.api.common.OperationContext
+import com.embabel.agent.api.common.SomeOf
 import com.embabel.agent.api.common.create
 import com.embabel.agent.api.common.createObjectIfPossible
 import com.embabel.agent.config.models.AnthropicModels
@@ -103,6 +101,11 @@ class TripperAgent(
                 <user-input>${userInput.content}</user-input>
             """.trimIndent(),
             )
+
+    @Action
+    fun destructureSomeOf(
+        tbf: TravelersAndBrief,
+    ): TravelersAndBrief = tbf
 
 
     @Action
@@ -285,6 +288,8 @@ class TripperAgent(
 
     @AchievesGoal(
         description = "Create a detailed travel plan based on a given travel brief",
+        startingInputTypes = [TravelersAndBrief::class],
+        export = Export(name = "makeTravelPlan", remote = true, exposeTextInput = false),
     )
     @Action
     fun postProcessHtml(
@@ -316,3 +321,8 @@ class TripperAgent(
 private data class AirbnbResults(
     val searchUrl: String,
 )
+
+data class TravelersAndBrief(
+    val travelers: Travelers,
+    val brief: JourneyTravelBrief,
+) : SomeOf
