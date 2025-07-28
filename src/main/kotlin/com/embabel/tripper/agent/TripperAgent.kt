@@ -102,11 +102,6 @@ class TripperAgent(
             """.trimIndent(),
             )
 
-    @Action
-    fun destructureSomeOf(
-        tbf: TravelersAndBrief,
-    ): TravelersAndBrief = tbf
-
 
     @Action
     fun findPointsOfInterest(
@@ -288,8 +283,12 @@ class TripperAgent(
 
     @AchievesGoal(
         description = "Create a detailed travel plan based on a given travel brief",
-        startingInputTypes = [TravelersAndBrief::class],
-        export = Export(name = "makeTravelPlan", remote = true, exposeTextInput = false),
+        export = Export(
+            name = "makeTravelPlan",
+            remote = true,
+            exposeTextInput = false,
+            startingInputTypes = [TravelersAndBrief::class],
+        ),
     )
     @Action
     fun postProcessHtml(
