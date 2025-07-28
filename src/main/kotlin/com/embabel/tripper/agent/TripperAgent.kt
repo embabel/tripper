@@ -286,7 +286,6 @@ class TripperAgent(
         export = Export(
             name = "makeTravelPlan",
             remote = true,
-            exposeTextInput = false,
             startingInputTypes = [TravelersAndBrief::class],
         ),
     )
