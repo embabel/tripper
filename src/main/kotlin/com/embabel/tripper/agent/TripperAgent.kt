@@ -20,12 +20,11 @@ import com.embabel.agent.api.annotation.*
 import com.embabel.agent.api.common.OperationContext
 import com.embabel.agent.api.common.SomeOf
 import com.embabel.agent.api.common.create
-import com.embabel.agent.api.common.createObjectIfPossible
 import com.embabel.agent.config.models.AnthropicModels
 import com.embabel.agent.config.models.OpenAiModels
 import com.embabel.agent.core.CoreToolGroups
 import com.embabel.agent.core.ToolGroupRequirement
-import com.embabel.agent.domain.io.UserInput
+import com.embabel.agent.core.last
 import com.embabel.agent.prompt.ResponseFormat
 import com.embabel.agent.prompt.element.ToolCallControl
 import com.embabel.agent.prompt.persona.Persona
@@ -91,16 +90,32 @@ class TripperAgent(
 
     private val logger = LoggerFactory.getLogger(TripperAgent::class.java)
 
+    /**
+     * This object being bound to the blackboard represents acceptance
+     * of the cost of calculating the plan
+     */
+    object AcceptanceOfCost
 
     @Action
-    fun planFromUserInput(userInput: UserInput): JourneyTravelBrief? =
-        using()
-            .createObjectIfPossible(
-                """
-                Given the following user input, extract a travel brief for a journey.
-                <user-input>${userInput.content}</user-input>
-            """.trimIndent(),
-            )
+    fun confirmExpensiveOperation(
+        travelBrief: JourneyTravelBrief,
+        travelers: Travelers,
+        context: OperationContext
+    ): AcceptanceOfCost {
+        // Confirmation is needed if we came through the MCP route
+        val confirmationNeeded = context.last<TravelersAndBrief>() != null
+        if (!confirmationNeeded) {
+            // Take it as a given
+            return AcceptanceOfCost
+        }
+        // Otherwise, explicitly ask the user for confirmation
+        return confirm(
+            AcceptanceOfCost,
+            "Go ahead? Building a travel plan for ${
+                travelers.travelers.map { it.name }.joinToString { " and " }
+            } will cost up to 20c"
+        )
+    }
 
 
     @Action
@@ -133,6 +148,7 @@ class TripperAgent(
         travelBrief: JourneyTravelBrief,
         travelers: Travelers,
         itineraryIdeas: ItineraryIdeas,
+        confirmation: AcceptanceOfCost,
         context: OperationContext,
     ): PointOfInterestFindings {
         logger.info(
