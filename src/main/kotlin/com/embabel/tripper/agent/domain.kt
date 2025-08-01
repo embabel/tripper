@@ -81,7 +81,7 @@ data class ResearchedPointOfInterest(
     val pointOfInterest: PointOfInterest,
     val research: String,
     override val links: List<InternetResource>,
-    @JsonPropertyDescription("Links to images. Links must be the images themselves, not just links to them.")
+    @param:JsonPropertyDescription("Links to images. Links must be the images themselves, not just links to them.")
     val imageLinks: List<InternetResource>,
 ) : InternetResources
 
@@ -91,7 +91,7 @@ data class PointOfInterestFindings(
 
 data class Day(
     val date: LocalDate,
-    @JsonPropertyDescription("Location where the traveler will stay on this day in Google Maps friendly format 'City,+Country'")
+    @param:JsonPropertyDescription("Location where the traveler will stay on this day in Google Maps friendly format 'City,+Country'")
     val locationAndCountry: String,
 ) {
     /**
@@ -101,17 +101,17 @@ data class Day(
 }
 
 data class ProposedTravelPlan(
-    @JsonPropertyDescription("Catchy title appropriate to the travelers and travel brief")
+    @param:JsonPropertyDescription("Catchy title appropriate to the travelers and travel brief")
     val title: String,
-    @JsonPropertyDescription("Detailed travel plan")
+    @param:JsonPropertyDescription("Detailed travel plan")
     val plan: String,
-    @JsonPropertyDescription("List of days in the travel plan")
+    @param:JsonPropertyDescription("List of days in the travel plan")
     val days: List<Day>,
-    @JsonPropertyDescription("Links to images")
+    @param:JsonPropertyDescription("Links to images")
     val imageLinks: List<InternetResource>,
-    @JsonPropertyDescription("Links to pages with more information about the travel plan")
+    @param:JsonPropertyDescription("Links to pages with more information about the travel plan")
     val pageLinks: List<InternetResource>,
-    @JsonPropertyDescription("List of country names that the travelers will visit")
+    @param:JsonPropertyDescription("List of country names that the travelers will visit")
     val countriesVisited: List<String>,
 )
 
