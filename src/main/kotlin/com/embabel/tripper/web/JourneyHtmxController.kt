@@ -46,9 +46,9 @@ class JourneyHtmxController(
         val brief: String = """
             Relaxed road trip exploring countryside, history, food and wine.
         """.trimIndent(),
-        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+        @param:DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
         val departureDate: LocalDate = LocalDate.now(),
-        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+        @param:DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
         val returnDate: LocalDate = departureDate.plus(Period.ofDays(10)),
         val travelers: MutableList<TravelerForm> = mutableListOf(
             TravelerForm(name = "Ingrid", about = "Loves history and museums. Fascinated by Joan of Arc."),
