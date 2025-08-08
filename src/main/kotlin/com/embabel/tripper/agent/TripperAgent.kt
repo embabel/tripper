@@ -122,16 +122,19 @@ class TripperAgent(
     fun findPointsOfInterest(
         travelBrief: JourneyTravelBrief,
         travelers: Travelers,
+        context: OperationContext,
     ): ItineraryIdeas {
-        return using(
-            llm = config.thinkerLlm,
-            promptContributors = listOf(
-                config.travelPlannerPersona,
-                travelers,
-            ),
-        ).withToolGroups(
-            setOf(CoreToolGroups.WEB, CoreToolGroups.MAPS, CoreToolGroups.MATH),
+        return context.promptRunner().withLlm(
+            config.thinkerLlm
         )
+            .withPromptContributors(
+                listOf(
+                    config.travelPlannerPersona,
+                    travelers,
+                ),
+            ).withToolGroups(
+                setOf(CoreToolGroups.WEB, CoreToolGroups.MAPS, CoreToolGroups.MATH),
+            )
             .create(
                 prompt = """
                 Consider the following travel brief for a journey from ${travelBrief.from} to ${travelBrief.to}.
@@ -197,8 +200,9 @@ class TripperAgent(
         travelBrief: JourneyTravelBrief,
         travelers: Travelers,
         poiFindings: PointOfInterestFindings,
+        context: OperationContext,
     ): ProposedTravelPlan {
-        return using(config.writerLlm)
+        return context.promptRunner(config.writerLlm)
             .withToolGroups(setOf(CoreToolGroups.WEB, CoreToolGroups.MAPS, CoreToolGroups.MATH))
             .withPromptContributors(
                 listOf(
