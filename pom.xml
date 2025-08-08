@@ -16,7 +16,7 @@
     <description>Travel planner</description>
 
     <properties>
-        <embabel-agent.version>0.1.0-SNAPSHOT</embabel-agent.version>
+        <embabel-agent.version>0.1.0</embabel-agent.version>
         <spring-ai.version>1.0.0-M8</spring-ai.version>
         <kotlin.version>2.1.10</kotlin.version>
         <kotlin.compiler.apiVersion>2.1</kotlin.compiler.apiVersion>
@@ -121,8 +121,18 @@
 
     <repositories>
         <repository>
+            <id>embabel-releases</id>
+            <url>https://repo.embabel.com/artifactory/libs-release</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
             <id>embabel-snapshots</id>
             <url>https://repo.embabel.com/artifactory/libs-snapshot</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
