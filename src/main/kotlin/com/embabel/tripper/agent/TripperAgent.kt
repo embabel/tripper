@@ -23,14 +23,11 @@ import com.embabel.agent.api.common.create
 import com.embabel.agent.config.models.AnthropicModels
 import com.embabel.agent.config.models.OpenAiModels
 import com.embabel.agent.core.CoreToolGroups
-import com.embabel.agent.core.ToolGroupRequirement
 import com.embabel.agent.core.last
 import com.embabel.agent.prompt.ResponseFormat
 import com.embabel.agent.prompt.element.ToolCallControl
 import com.embabel.agent.prompt.persona.Persona
 import com.embabel.agent.prompt.persona.RoleGoalBackstory
-import com.embabel.common.ai.model.LlmOptions
-import com.embabel.common.ai.model.ModelSelectionCriteria.Companion.byName
 import com.embabel.common.util.StringTransformer
 import com.embabel.tripper.config.ToolsConfig
 import com.embabel.tripper.util.ImageChecker
@@ -57,24 +54,11 @@ data class TravelPlannerProperties(
     val travelPlannerPersona: Persona = HermesPersona,
     val researcher: RoleGoalBackstory = Researcher,
     val toolCallControl: ToolCallControl = ToolCallControl(),
-    private val thinkerModel: String = OpenAiModels.GPT_41,
-    private val researcherModel: String = OpenAiModels.GPT_41_MINI,
-    private val writerModel: String = AnthropicModels.CLAUDE_37_SONNET,
+    val thinkerModel: String = OpenAiModels.GPT_41,
+    val researcherModel: String = OpenAiModels.GPT_41_MINI,
+    val writerModel: String = AnthropicModels.CLAUDE_37_SONNET,
     val maxConcurrency: Int = 15,
-) {
-    val thinkerLlm = LlmOptions(
-        criteria = byName(thinkerModel),
-    )
-
-    val researcherLlm = LlmOptions(
-        criteria = byName(researcherModel),
-    )
-
-    val writerLlm = LlmOptions(
-        criteria = byName(writerModel),
-    )
-
-}
+)
 
 /**
  * Overall flow:
@@ -124,16 +108,13 @@ class TripperAgent(
         travelers: Travelers,
         context: OperationContext,
     ): ItineraryIdeas {
-        return context.promptRunner().withLlm(
-            config.thinkerLlm
-        )
-            .withPromptContributors(
-                listOf(
-                    config.travelPlannerPersona,
-                    travelers,
-                ),
-            ).withToolGroups(
-                setOf(CoreToolGroups.WEB, CoreToolGroups.MAPS, CoreToolGroups.MATH),
+        return context.ai()
+            .withLlm(config.thinkerModel)
+            .withPromptElements(
+                config.travelPlannerPersona,
+                travelers,
+            ).withTools(
+                CoreToolGroups.WEB, CoreToolGroups.MAPS, CoreToolGroups.MATH,
             )
             .create(
                 prompt = """
@@ -159,14 +140,14 @@ class TripperAgent(
             itineraryIdeas.pointsOfInterest.size,
             itineraryIdeas.pointsOfInterest.sortedBy { it.name }.joinToString { it.name },
         )
-        val promptRunner = context.promptRunner(
-            llm = config.researcherLlm,
-            promptContributors = listOf(config.researcher, travelers, config.toolCallControl),
-            toolGroups = setOf(
-                ToolGroupRequirement(CoreToolGroups.WEB),
-                ToolGroupRequirement(CoreToolGroups.BROWSER_AUTOMATION),
-            ),
-        ).withToolObject(braveImageSearch)
+        val promptRunner = context.ai()
+            .withLlm(config.researcherModel)
+            .withPromptElements(config.researcher, travelers, config.toolCallControl)
+            .withTools(
+                CoreToolGroups.WEB,
+                CoreToolGroups.BROWSER_AUTOMATION,
+            )
+            .withToolObject(braveImageSearch)
         val poiFindings = context.parallelMap(
             itineraryIdeas.pointsOfInterest,
             maxConcurrency = config.maxConcurrency,
@@ -202,12 +183,11 @@ class TripperAgent(
         poiFindings: PointOfInterestFindings,
         context: OperationContext,
     ): ProposedTravelPlan {
-        return context.promptRunner(config.writerLlm)
-            .withToolGroups(setOf(CoreToolGroups.WEB, CoreToolGroups.MAPS, CoreToolGroups.MATH))
-            .withPromptContributors(
-                listOf(
-                    config.travelPlannerPersona, travelers, ResponseFormat.HTML,
-                )
+        return context.ai()
+            .withLlm(config.writerModel)
+            .withTools(CoreToolGroups.WEB, CoreToolGroups.MAPS, CoreToolGroups.MATH)
+            .withPromptElements(
+                config.travelPlannerPersona, travelers, ResponseFormat.HTML,
             )
             .create(
                 prompt = """
@@ -273,14 +253,14 @@ class TripperAgent(
             )
         }.sortedBy { it.days.first().date }
 
-        val stayFinderPromptRunner = context.promptRunner()
-            .withLlm(config.researcherLlm)
+        val stayFinderPromptRunner = context.ai()
+            .withLlm(config.researcherModel)
             .withPromptContributor(travelers)
-            .withToolGroups(setOf(ToolsConfig.AIRBNB, CoreToolGroups.MATH))
+            .withTools(ToolsConfig.AIRBNB, CoreToolGroups.MATH)
         val foundStays = context.parallelMap(stays, maxConcurrency = config.maxConcurrency) { stay ->
             logger.info("Finding Airbnb options for stay at: {}", stay.locationAndCountry())
             val airbnbResults = stayFinderPromptRunner
-                .create<AirbnbResults>(
+                .create<AirbnbResultsLlmReturn>(
                     prompt = """
                 Find the Airbnb search URL for the following stay using the available tools.
                 Staying at location: ${stay.stayingAt()}
@@ -336,10 +316,16 @@ class TripperAgent(
 
 }
 
-private data class AirbnbResults(
+/**
+ * Used for an LLM return
+ */
+private data class AirbnbResultsLlmReturn(
     val searchUrl: String,
 )
 
+/**
+ * Extending SomeOf causes both Travelers and JourneyTravelBrief to be bound to the blackboard
+ */
 data class TravelersAndBrief(
     val travelers: Travelers,
     val brief: JourneyTravelBrief,
