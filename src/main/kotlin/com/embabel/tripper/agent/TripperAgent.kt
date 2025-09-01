@@ -20,14 +20,13 @@ import com.embabel.agent.api.annotation.*
 import com.embabel.agent.api.common.OperationContext
 import com.embabel.agent.api.common.SomeOf
 import com.embabel.agent.api.common.create
-import com.embabel.agent.config.models.AnthropicModels
-import com.embabel.agent.config.models.OpenAiModels
 import com.embabel.agent.core.CoreToolGroups
 import com.embabel.agent.core.last
 import com.embabel.agent.prompt.ResponseFormat
 import com.embabel.agent.prompt.element.ToolCallControl
 import com.embabel.agent.prompt.persona.Persona
 import com.embabel.agent.prompt.persona.RoleGoalBackstory
+import com.embabel.common.ai.model.LlmOptions
 import com.embabel.common.util.StringTransformer
 import com.embabel.tripper.config.ToolsConfig
 import com.embabel.tripper.util.ImageChecker
@@ -54,9 +53,9 @@ data class TravelPlannerProperties(
     val travelPlannerPersona: Persona = HermesPersona,
     val researcher: RoleGoalBackstory = Researcher,
     val toolCallControl: ToolCallControl = ToolCallControl(),
-    val thinkerModel: String = OpenAiModels.GPT_41,
-    val researcherModel: String = OpenAiModels.GPT_41_MINI,
-    val writerModel: String = AnthropicModels.CLAUDE_37_SONNET,
+    val thinkerLlm: LlmOptions,
+    val researcherLlm: LlmOptions,
+    val writerLlm: LlmOptions,
     val maxConcurrency: Int = 15,
 )
 
@@ -109,7 +108,7 @@ class TripperAgent(
         context: OperationContext,
     ): ItineraryIdeas {
         return context.ai()
-            .withLlm(config.thinkerModel)
+            .withLlm(config.thinkerLlm)
             .withPromptElements(
                 config.travelPlannerPersona,
                 travelers,
@@ -141,7 +140,7 @@ class TripperAgent(
             itineraryIdeas.pointsOfInterest.sortedBy { it.name }.joinToString { it.name },
         )
         val promptRunner = context.ai()
-            .withLlm(config.researcherModel)
+            .withLlm(config.researcherLlm)
             .withPromptElements(config.researcher, travelers, config.toolCallControl)
             .withTools(
                 CoreToolGroups.WEB,
@@ -184,7 +183,7 @@ class TripperAgent(
         context: OperationContext,
     ): ProposedTravelPlan {
         return context.ai()
-            .withLlm(config.writerModel)
+            .withLlm(config.writerLlm)
             .withTools(CoreToolGroups.WEB, CoreToolGroups.MAPS, CoreToolGroups.MATH)
             .withPromptElements(
                 config.travelPlannerPersona, travelers, ResponseFormat.HTML,
@@ -254,7 +253,7 @@ class TripperAgent(
         }.sortedBy { it.days.first().date }
 
         val stayFinderPromptRunner = context.ai()
-            .withLlm(config.researcherModel)
+            .withLlm(config.researcherLlm)
             .withPromptContributor(travelers)
             .withTools(ToolsConfig.AIRBNB, CoreToolGroups.MATH)
         val foundStays = context.parallelMap(stays, maxConcurrency = config.maxConcurrency) { stay ->
