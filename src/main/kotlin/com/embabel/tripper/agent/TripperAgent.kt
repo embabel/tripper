@@ -33,30 +33,17 @@ import com.embabel.tripper.util.ImageChecker
 import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.ConfigurationProperties
 
-val HermesPersona = Persona(
-    name = "Hermes",
-    persona = "You are an expert travel planner",
-    voice = "friendly and concise",
-    objective = "Make a detailed travel plan meeting requirements",
-)
-
-val Researcher = RoleGoalBackstory(
-    role = "Researcher",
-    goal = "Research points of interest for a travel plan",
-    backstory = "You are an expert researcher who can find interesting stories about art, culture, and famous people associated with places.",
-)
-
 @ConfigurationProperties("embabel.tripper")
 data class TravelPlannerProperties(
     val wordCount: Int = 700,
     val imageWidth: Int = 800,
-    val travelPlannerPersona: Persona = HermesPersona,
-    val researcher: RoleGoalBackstory = Researcher,
+    val planner: Persona,
+    val researcher: RoleGoalBackstory,
     val toolCallControl: ToolCallControl = ToolCallControl(),
     val thinkerLlm: LlmOptions,
     val researcherLlm: LlmOptions,
     val writerLlm: LlmOptions,
-    val maxConcurrency: Int = 15,
+    val maxConcurrency: Int = 12,
 )
 
 /**
@@ -110,7 +97,7 @@ class TripperAgent(
         return context.ai()
             .withLlm(config.thinkerLlm)
             .withPromptElements(
-                config.travelPlannerPersona,
+                config.planner,
                 travelers,
             ).withTools(
                 CoreToolGroups.WEB, CoreToolGroups.MAPS, CoreToolGroups.MATH,
@@ -186,7 +173,7 @@ class TripperAgent(
             .withLlm(config.writerLlm)
             .withTools(CoreToolGroups.WEB, CoreToolGroups.MAPS, CoreToolGroups.MATH)
             .withPromptElements(
-                config.travelPlannerPersona, travelers, ResponseFormat.HTML,
+                config.planner, travelers, ResponseFormat.HTML,
             )
             .create(
                 prompt = """

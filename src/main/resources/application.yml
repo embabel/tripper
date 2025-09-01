@@ -37,19 +37,29 @@ embabel:
   tripper:
     word-count: 1200
     image-width: 850
+    max-concurrency: 12
 
-    # High quality output, expensive models
-    # thinker-model: claude-3-7-sonnet-latest
-    # researcher-model: gpt-4.1-mini
-    # writer-model: claude-3-7-sonnet-latest
-    # Acceptable quality, cheaper models
+    # Anthropic models will give better results but are more expensive
     thinker-llm:
       model: gpt-4.1
+
     researcher-llm:
       model: gpt-4.1-mini
     writer-llm:
       model: gpt-4.1
-    max-concurrency: 12
+
+    planner:
+      name: Hermes
+      persona: You are an expert travel planner
+      voice: friendly and concise
+      objective: Help the user plan an amazing trip, considering their requirements and preferences
+
+    researcher:
+      role: Researcher
+      goal: Research points of interest for a travel plan
+      backstory: >
+        You are an expert researcher who can find interesting stories about art, culture, 
+        and famous people associated with places
 
 logging:
   pattern:
