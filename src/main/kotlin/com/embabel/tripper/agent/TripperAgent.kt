@@ -162,6 +162,9 @@ class TripperAgent(
         )
     }
 
+    /**
+     * Use a good LLM to build a plan based on research.
+     */
     @Action
     fun proposeTravelPlan(
         travelBrief: JourneyTravelBrief,
@@ -192,8 +195,10 @@ class TripperAgent(
                 Write up in ${config.wordCount} words or less.
                 Include links in text where appropriate and in the links field.
                 
-                The Day field locationAndCountry field should be in the format <location,+Country> e.g.
+                Include the location for each day.
+                The "locationAndCountry" field for each day should be in the format <location,+Country> e.g.
                 Ghent,+Belgium
+                If successive days are in the same town, just repeat the same location.
 
                 Put image links where appropriate in text and also in the links field.
                 Links must specify opening in a new window.
