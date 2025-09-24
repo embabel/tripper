@@ -16,7 +16,6 @@
 package com.embabel.tripper
 
 import com.embabel.agent.config.annotation.EnableAgents
-import com.embabel.agent.config.annotation.LocalModels
 import com.embabel.agent.config.annotation.LoggingThemes
 import com.embabel.agent.config.annotation.McpServers
 import org.springframework.boot.autoconfigure.SpringBootApplication
@@ -27,8 +26,7 @@ import org.springframework.boot.runApplication
 @ConfigurationPropertiesScan
 @EnableAgents(
     loggingTheme = LoggingThemes.SEVERANCE,
-    localModels = [LocalModels.DOCKER, LocalModels.OLLAMA],
-    mcpServers = [McpServers.DOCKER, McpServers.DOCKER_DESKTOP],
+    mcpServers = [McpServers.DOCKER_DESKTOP],
 )
 class TripperApplication
 
