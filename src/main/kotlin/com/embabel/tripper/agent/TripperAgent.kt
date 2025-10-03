@@ -24,6 +24,7 @@ import com.embabel.agent.core.CoreToolGroups
 import com.embabel.agent.core.last
 import com.embabel.agent.prompt.ResponseFormat
 import com.embabel.agent.prompt.element.ToolCallControl
+import com.embabel.agent.prompt.persona.Actor
 import com.embabel.agent.prompt.persona.Persona
 import com.embabel.agent.prompt.persona.RoleGoalBackstory
 import com.embabel.common.ai.model.LlmOptions
@@ -34,15 +35,13 @@ import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.ConfigurationProperties
 
 @ConfigurationProperties("embabel.tripper")
-data class TravelPlannerProperties(
+data class TripperConfig(
     val wordCount: Int = 700,
     val imageWidth: Int = 800,
-    val planner: Persona,
-    val researcher: RoleGoalBackstory,
+    val planner: Actor<Persona>,
+    val researcher: Actor<RoleGoalBackstory>,
     val toolCallControl: ToolCallControl = ToolCallControl(),
     val thinkerLlm: LlmOptions,
-    val researcherLlm: LlmOptions,
-    val writerLlm: LlmOptions,
     val maxConcurrency: Int = 12,
 )
 
@@ -54,7 +53,7 @@ data class TravelPlannerProperties(
  */
 @Agent(description = "Make a detailed travel plan")
 class TripperAgent(
-    private val config: TravelPlannerProperties,
+    private val config: TripperConfig,
     private val braveImageSearch: BraveImageSearchService,
 ) {
 
@@ -126,9 +125,8 @@ class TripperAgent(
             itineraryIdeas.pointsOfInterest.size,
             itineraryIdeas.pointsOfInterest.sortedBy { it.name }.joinToString { it.name },
         )
-        val promptRunner = context.ai()
-            .withLlm(config.researcherLlm)
-            .withPromptElements(config.researcher, travelers, config.toolCallControl)
+        val promptRunner = config.researcher.promptRunner(context)
+            .withPromptElements(travelers, config.toolCallControl)
             .withTools(
                 CoreToolGroups.WEB,
                 CoreToolGroups.BROWSER_AUTOMATION,
@@ -172,11 +170,10 @@ class TripperAgent(
         poiFindings: PointOfInterestFindings,
         context: OperationContext,
     ): ProposedTravelPlan {
-        return context.ai()
-            .withLlm(config.writerLlm)
+        return config.planner.promptRunner(context)
             .withTools(CoreToolGroups.WEB, CoreToolGroups.MAPS, CoreToolGroups.MATH)
             .withPromptElements(
-                config.planner, travelers, ResponseFormat.HTML,
+                travelers, ResponseFormat.HTML,
             )
             .create(
                 prompt = """
@@ -244,8 +241,7 @@ class TripperAgent(
             )
         }.sortedBy { it.days.first().date }
 
-        val stayFinderPromptRunner = context.ai()
-            .withLlm(config.researcherLlm)
+        val stayFinderPromptRunner = config.researcher.promptRunner(context)
             .withPromptContributor(travelers)
             .withTools(ToolsConfig.AIRBNB, CoreToolGroups.MATH)
         val foundStays = context.parallelMap(stays, maxConcurrency = config.maxConcurrency) { stay ->
@@ -296,7 +292,6 @@ class TripperAgent(
             ),
         )
     }
-
 
     private val styleImages = StringTransformer { html ->
         html.replace(
