@@ -10,7 +10,7 @@ services:
     command:
       - --verbose
       - --transport=sse
-      - --secrets=docker-desktop:/run/secrets/mcp_secret
+      - --secrets=file:/run/secrets/mcp_secret
       - --servers=brave,wikipedia-mcp,puppeteer,github,openbnb-airbnb,google-maps
       - --tools=openbnb-airbnb:*
       - --tools=brave_web_search
