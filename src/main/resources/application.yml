@@ -31,8 +31,17 @@ spring:
 embabel:
   security:
     enabled: false
-  models:
-    default-embedding-model: jimclark106/all-minilm:23M-F16
+
+  # Add additional MCP tools
+  agent:
+    platform:
+      tools:
+        includes:
+          weather:
+            description: Get the current weather and forecast for any location
+            provider: Docker
+            tools:
+              - weather
 
   tripper:
     word-count: 1200

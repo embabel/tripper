@@ -45,6 +45,8 @@ data class TripperConfig(
     val maxConcurrency: Int = 12,
 )
 
+private const val WEATHER_TOOLS = "weather"
+
 /**
  * Overall flow:
  * 1. Lookup travelers based on a travel brief. Brief may be about exploring a location or a journey.
@@ -99,7 +101,10 @@ class TripperAgent(
                 config.planner,
                 travelers,
             ).withTools(
-                CoreToolGroups.WEB, CoreToolGroups.MAPS, CoreToolGroups.MATH,
+                CoreToolGroups.WEB,
+                CoreToolGroups.MAPS,
+                CoreToolGroups.MATH,
+                WEATHER_TOOLS,
             )
             .create(
                 prompt = """
@@ -108,6 +113,7 @@ class TripperAgent(
                 Find points of interest that are relevant to the travel brief and travelers.
                 Use mapping tools to consider appropriate order and put a rough date
                 range for each point of interest.
+                Consider likely weather
             """.trimIndent(),
             )
     }
@@ -130,6 +136,7 @@ class TripperAgent(
             .withTools(
                 CoreToolGroups.WEB,
                 CoreToolGroups.BROWSER_AUTOMATION,
+                WEATHER_TOOLS,
             )
             .withToolObject(braveImageSearch)
         val poiFindings = context.parallelMap(
@@ -144,6 +151,7 @@ class TripperAgent(
                 Dates to consider: ${travelBrief.departureDate} to ${travelBrief.returnDate}
                 If any particularly important events are happening here during this time, mention them
                 and list specific dates.
+                Also consider likely weather.
                 <point-of-interest-to-research>
                 ${poi.name}
                 ${poi.description}
