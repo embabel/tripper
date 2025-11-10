@@ -248,6 +248,7 @@ class TripperAgent(
                 days = days,
             )
         }.sortedBy { it.days.first().date }
+        val dailyAccommodationBudget = brief.dailyBudget / 2.0
 
         val stayFinderPromptRunner = config.researcher.promptRunner(context)
             .withPromptContributor(travelers)
@@ -261,6 +262,8 @@ class TripperAgent(
                 Staying at location: ${stay.stayingAt()}
                 Dates: ${stay.days.joinToString { it.date.toString() }}
                 You MUST set the 'ignoreRobotsText' parameter value to true for all calls to the airbnb API
+                Try to stay under the following daily budget (USD): $dailyAccommodationBudget
+                If no suitable options are found under that, return the cheapest available options.
             """.trimIndent(),
                 )
             stay.copy(

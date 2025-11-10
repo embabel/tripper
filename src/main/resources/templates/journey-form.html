@@ -48,6 +48,12 @@
             </div>
         </div>
 
+        <div class="form-group">
+            <label for="dailyBudget">Daily Budget ($USD)</label>
+            <input type="number" id="dailyBudget" name="dailyBudget" th:field="*{dailyBudget}"
+                   step="0.01" min="0" required>
+        </div>
+
         <div id="travelers-container" class="form-group">
             <label for="travelers-container">Travelers</label>
 

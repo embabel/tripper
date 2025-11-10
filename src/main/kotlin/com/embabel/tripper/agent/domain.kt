@@ -29,6 +29,7 @@ sealed interface TravelBrief : PromptContributor {
     val brief: String
     val departureDate: LocalDate
     val returnDate: LocalDate
+    val dailyBudget: Double
 }
 
 data class JourneyTravelBrief(
@@ -38,6 +39,7 @@ data class JourneyTravelBrief(
     override val brief: String,
     override val departureDate: LocalDate,
     override val returnDate: LocalDate,
+    override val dailyBudget: Double = 200.0,
 ) : TravelBrief {
 
     override fun contribution(): String =
