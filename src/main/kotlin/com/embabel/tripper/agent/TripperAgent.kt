@@ -227,7 +227,7 @@ class TripperAgent(
                     ${it.research}
                     ${it.links.joinToString { link -> "${link.url}: ${link.summary}" }}
                     Images: ${it.imageLinks.joinToString { link -> "${link.url}: ${link.summary}" }}
-
+                    Videos: ${it.videoLinks.joinToString { link -> "${link.url}: ${link.summary}" }}
                 """.trimIndent()
                     }
                 }

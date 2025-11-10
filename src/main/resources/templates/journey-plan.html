@@ -59,6 +59,15 @@
                     </li>
                 </ul>
             </div>
+            <div th:if="${travelPlan.proposal.videoLinks != null && !#lists.isEmpty(travelPlan.proposal.videoLinks)}">
+                <h3>Videos</h3>
+                <ul style="margin-bottom: 1rem;">
+                    <li th:each="page : ${travelPlan.proposal.videoLinks}" style="margin-bottom: 0.5rem;">
+                        <a th:href="${page.url}" target="_blank" rel="noopener noreferrer"><span
+                                th:text="${page.summary}"></span></a>
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
 

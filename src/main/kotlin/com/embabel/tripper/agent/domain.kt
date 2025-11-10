@@ -83,6 +83,8 @@ data class ResearchedPointOfInterest(
     val pointOfInterest: PointOfInterest,
     val research: String,
     override val links: List<InternetResource>,
+    @param:JsonPropertyDescription("Links to videos, from YouTube or other")
+    val videoLinks: List<InternetResource>,
     @param:JsonPropertyDescription("Links to images. Links must be the images themselves, not just links to them.")
     val imageLinks: List<InternetResource>,
 ) : InternetResources
@@ -111,6 +113,8 @@ data class ProposedTravelPlan(
     val days: List<Day>,
     @param:JsonPropertyDescription("Links to images")
     val imageLinks: List<InternetResource>,
+    @param:JsonPropertyDescription("Links to videos")
+    val videoLinks: List<InternetResource>,
     @param:JsonPropertyDescription("Links to pages with more information about the travel plan")
     val pageLinks: List<InternetResource>,
     @param:JsonPropertyDescription("List of country names that the travelers will visit")
