@@ -7,11 +7,17 @@ import com.embabel.agent.tools.mcp.McpToolGroup
 import io.modelcontextprotocol.client.McpSyncClient
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.web.client.RestClient
 
 @Configuration
 class ToolsConfig(
     private val mcpSyncClients: List<McpSyncClient>,
 ) {
+
+    @Bean
+    fun restClient(): RestClient {
+        return RestClient.create()
+    }
 
     @Bean
     fun mcpAirbnbToolsGroup(): ToolGroup {
