@@ -17,6 +17,7 @@ package com.embabel.tripper.agent
 
 import com.embabel.agent.BraveImageSearchService
 import com.embabel.agent.api.annotation.*
+import com.embabel.agent.api.common.Actor
 import com.embabel.agent.api.common.OperationContext
 import com.embabel.agent.api.common.SomeOf
 import com.embabel.agent.api.common.create
@@ -24,7 +25,6 @@ import com.embabel.agent.core.CoreToolGroups
 import com.embabel.agent.core.last
 import com.embabel.agent.prompt.ResponseFormat
 import com.embabel.agent.prompt.element.ToolCallControl
-import com.embabel.agent.prompt.persona.Actor
 import com.embabel.agent.prompt.persona.Persona
 import com.embabel.agent.prompt.persona.RoleGoalBackstory
 import com.embabel.common.ai.model.LlmOptions
