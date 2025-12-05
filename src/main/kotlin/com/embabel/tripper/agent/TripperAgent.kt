@@ -15,7 +15,6 @@
  */
 package com.embabel.tripper.agent
 
-import com.embabel.agent.BraveImageSearchService
 import com.embabel.agent.api.annotation.*
 import com.embabel.agent.api.common.Actor
 import com.embabel.agent.api.common.OperationContext
@@ -29,6 +28,7 @@ import com.embabel.agent.prompt.persona.Persona
 import com.embabel.agent.prompt.persona.RoleGoalBackstory
 import com.embabel.common.ai.model.LlmOptions
 import com.embabel.common.util.StringTransformer
+import com.embabel.tripper.BraveImageSearchService
 import com.embabel.tripper.config.ToolsConfig
 import com.embabel.tripper.util.ImageChecker
 import org.slf4j.LoggerFactory

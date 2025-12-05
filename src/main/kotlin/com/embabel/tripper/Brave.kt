@@ -1,4 +1,4 @@
-package com.embabel.agent
+package com.embabel.tripper
 
 import com.fasterxml.jackson.annotation.JsonPropertyDescription
 import com.fasterxml.jackson.annotation.JsonSubTypes
@@ -40,8 +40,8 @@ abstract class BraveSearchService(
             .header("Accept", "application/json")
             .retrieve()
             .body(BraveResponse::class.java) ?: run {
-                throw RuntimeException("No response body")
-            }
+            throw RuntimeException("No response body")
+        }
         return rawResponse.toBraveSearchResults(request)
     }
 
@@ -59,8 +59,8 @@ abstract class BraveSearchService(
             .header("Accept", "application/json")
             .retrieve()
             .body(String::class.java) ?: run {
-                throw RuntimeException("No response body")
-            }
+            throw RuntimeException("No response body")
+        }
     }
 }
 
