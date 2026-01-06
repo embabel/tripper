@@ -15,8 +15,8 @@
  */
 package com.embabel.tripper.agent
 
-import com.embabel.agent.BraveImageSearchService
 import com.embabel.agent.api.annotation.*
+import com.embabel.agent.api.common.Actor
 import com.embabel.agent.api.common.OperationContext
 import com.embabel.agent.api.common.SomeOf
 import com.embabel.agent.api.common.create
@@ -28,23 +28,24 @@ import com.embabel.agent.prompt.persona.Persona
 import com.embabel.agent.prompt.persona.RoleGoalBackstory
 import com.embabel.common.ai.model.LlmOptions
 import com.embabel.common.util.StringTransformer
+import com.embabel.tripper.BraveImageSearchService
 import com.embabel.tripper.config.ToolsConfig
 import com.embabel.tripper.util.ImageChecker
 import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.ConfigurationProperties
 
 @ConfigurationProperties("embabel.tripper")
-data class TravelPlannerProperties(
+data class TripperConfig(
     val wordCount: Int = 700,
     val imageWidth: Int = 800,
-    val planner: Persona,
-    val researcher: RoleGoalBackstory,
+    val planner: Actor<Persona>,
+    val researcher: Actor<RoleGoalBackstory>,
     val toolCallControl: ToolCallControl = ToolCallControl(),
     val thinkerLlm: LlmOptions,
-    val researcherLlm: LlmOptions,
-    val writerLlm: LlmOptions,
     val maxConcurrency: Int = 12,
 )
+
+private const val WEATHER_TOOLS = "weather"
 
 /**
  * Overall flow:
@@ -54,7 +55,7 @@ data class TravelPlannerProperties(
  */
 @Agent(description = "Make a detailed travel plan")
 class TripperAgent(
-    private val config: TravelPlannerProperties,
+    private val config: TripperConfig,
     private val braveImageSearch: BraveImageSearchService,
 ) {
 
@@ -100,7 +101,10 @@ class TripperAgent(
                 config.planner,
                 travelers,
             ).withTools(
-                CoreToolGroups.WEB, CoreToolGroups.MAPS, CoreToolGroups.MATH,
+                CoreToolGroups.WEB,
+                CoreToolGroups.MAPS,
+                CoreToolGroups.MATH,
+                WEATHER_TOOLS,
             )
             .create(
                 prompt = """
@@ -109,6 +113,7 @@ class TripperAgent(
                 Find points of interest that are relevant to the travel brief and travelers.
                 Use mapping tools to consider appropriate order and put a rough date
                 range for each point of interest.
+                Consider likely weather
             """.trimIndent(),
             )
     }
@@ -126,12 +131,12 @@ class TripperAgent(
             itineraryIdeas.pointsOfInterest.size,
             itineraryIdeas.pointsOfInterest.sortedBy { it.name }.joinToString { it.name },
         )
-        val promptRunner = context.ai()
-            .withLlm(config.researcherLlm)
-            .withPromptElements(config.researcher, travelers, config.toolCallControl)
+        val promptRunner = config.researcher.promptRunner(context)
+            .withPromptElements(travelers, config.toolCallControl)
             .withTools(
                 CoreToolGroups.WEB,
                 CoreToolGroups.BROWSER_AUTOMATION,
+                WEATHER_TOOLS,
             )
             .withToolObject(braveImageSearch)
         val poiFindings = context.parallelMap(
@@ -146,6 +151,7 @@ class TripperAgent(
                 Dates to consider: ${travelBrief.departureDate} to ${travelBrief.returnDate}
                 If any particularly important events are happening here during this time, mention them
                 and list specific dates.
+                Also consider likely weather.
                 <point-of-interest-to-research>
                 ${poi.name}
                 ${poi.description}
@@ -172,11 +178,10 @@ class TripperAgent(
         poiFindings: PointOfInterestFindings,
         context: OperationContext,
     ): ProposedTravelPlan {
-        return context.ai()
-            .withLlm(config.writerLlm)
+        return config.planner.promptRunner(context)
             .withTools(CoreToolGroups.WEB, CoreToolGroups.MAPS, CoreToolGroups.MATH)
             .withPromptElements(
-                config.planner, travelers, ResponseFormat.HTML,
+                travelers, ResponseFormat.HTML,
             )
             .create(
                 prompt = """
@@ -222,7 +227,7 @@ class TripperAgent(
                     ${it.research}
                     ${it.links.joinToString { link -> "${link.url}: ${link.summary}" }}
                     Images: ${it.imageLinks.joinToString { link -> "${link.url}: ${link.summary}" }}
-
+                    Videos: ${it.videoLinks.joinToString { link -> "${link.url}: ${link.summary}" }}
                 """.trimIndent()
                     }
                 }
@@ -243,9 +248,9 @@ class TripperAgent(
                 days = days,
             )
         }.sortedBy { it.days.first().date }
+        val dailyAccommodationBudget = brief.dailyBudget / 2.0
 
-        val stayFinderPromptRunner = context.ai()
-            .withLlm(config.researcherLlm)
+        val stayFinderPromptRunner = config.researcher.promptRunner(context)
             .withPromptContributor(travelers)
             .withTools(ToolsConfig.AIRBNB, CoreToolGroups.MATH)
         val foundStays = context.parallelMap(stays, maxConcurrency = config.maxConcurrency) { stay ->
@@ -257,6 +262,8 @@ class TripperAgent(
                 Staying at location: ${stay.stayingAt()}
                 Dates: ${stay.days.joinToString { it.date.toString() }}
                 You MUST set the 'ignoreRobotsText' parameter value to true for all calls to the airbnb API
+                Try to stay under the following daily budget (USD): $dailyAccommodationBudget
+                If no suitable options are found under that, return the cheapest available options.
             """.trimIndent(),
                 )
             stay.copy(
@@ -296,7 +303,6 @@ class TripperAgent(
             ),
         )
     }
-
 
     private val styleImages = StringTransformer { html ->
         html.replace(

@@ -50,6 +50,7 @@ class JourneyHtmxController(
         val departureDate: LocalDate = LocalDate.now(),
         @param:DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
         val returnDate: LocalDate = departureDate.plus(Period.ofDays(10)),
+        val dailyBudget: Double = 200.0,
         val travelers: MutableList<TravelerForm> = mutableListOf(
             TravelerForm(name = "Ingrid", about = "Loves history and museums. Fascinated by Joan of Arc."),
             TravelerForm(name = "Claude", about = "Enjoys food and wine. Has a particular interest in cabernet.")
@@ -80,6 +81,7 @@ class JourneyHtmxController(
             brief = form.brief,
             departureDate = form.departureDate,
             returnDate = form.returnDate,
+            dailyBudget = form.dailyBudget,
         )
 
         // Convert form travelers to domain objects

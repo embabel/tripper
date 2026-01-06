@@ -39,6 +39,7 @@ class TravelPlanTest {
                 ),
                 imageLinks = emptyList(),
                 pageLinks = emptyList(),
+                videoLinks = emptyList(),
                 countriesVisited = listOf("France"),
             )
 //            println(travelPlan.plan.journeyMapUrl)

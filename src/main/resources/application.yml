@@ -31,8 +31,17 @@ spring:
 embabel:
   security:
     enabled: false
-  models:
-    default-embedding-model: jimclark106/all-minilm:23M-F16
+
+  # Add additional MCP tools
+  agent:
+    platform:
+      tools:
+        includes:
+          weather:
+            description: Get the current weather and forecast for any location
+            provider: Docker
+            tools:
+              - weather
 
   tripper:
     word-count: 1200
@@ -43,23 +52,26 @@ embabel:
     thinker-llm:
       model: gpt-4.1
 
-    researcher-llm:
-      model: gpt-4.1-mini
-    writer-llm:
-      model: gpt-4.1
+    researcher:
+      persona:
+        role: Researcher
+        goal: Research points of interest for a travel plan
+        backstory: >
+          You are an expert researcher who can find interesting stories about art, culture, 
+          and famous people associated with places
+      llm:
+        model: gpt-4.1-mini
+
 
     planner:
-      name: Hermes
-      persona: You are an expert travel planner
-      voice: friendly and concise
-      objective: Help the user plan an amazing trip, considering their requirements and preferences
+      persona:
+        name: Hermes
+        persona: You are an expert travel planner
+        voice: friendly and concise
+        objective: Help the user plan an amazing trip, considering their requirements and preferences
+      llm:
+        model: gpt-4.1
 
-    researcher:
-      role: Researcher
-      goal: Research points of interest for a travel plan
-      backstory: >
-        You are an expert researcher who can find interesting stories about art, culture, 
-        and famous people associated with places
 
 logging:
   pattern:
