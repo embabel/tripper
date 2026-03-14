@@ -1,6 +1,8 @@
 # This workflow will build a Kotlin project with Maven
 name: Build
 on:
+  repository_dispatch:
+    types: [agent-snapshots-deployed]
   push:
   pull_request:
     types: [ opened, synchronize, reopened ]
